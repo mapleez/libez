@@ -1,4 +1,5 @@
 #include <stdio.h>
+// #include <unistd.h>
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
@@ -6,10 +7,12 @@
 typedef int (*cmp_func) (const void*, const void*);
 
 int* random_array (int num) {
-	int * array = (int*) 
-		malloc (num * sizeof (int));
 	int seed = time (NULL);
 	int i = 0;
+	int * array = (int*) 
+		malloc (num * sizeof (int));
+	if (! array) 
+		return NULL;
 	for (; i < num; i ++) {
 		srand (seed/*time (NULL)*/);
 		seed = array [i] = rand ();
@@ -30,7 +33,7 @@ int a [] = {
 };
 
 #	define NUM 7
-
+// insert sort
 void insert_sort (int* arr, int num) {
 	/*
 	int i, j;
@@ -59,7 +62,7 @@ void insert_sort (int* arr, int num) {
 }
 // #include <stdint.h>
 // #include <stddef.h>
-
+// insert sort
 void insert_sort_t (void* arr, int num, size_t elm_size, cmp_func func) {
 	int index, ptr;
 	void* tmp = malloc (elm_size);
@@ -80,6 +83,61 @@ void insert_sort_t (void* arr, int num, size_t elm_size, cmp_func func) {
 	}
 }
 
+// select sort test
+void select_sort (int * arr, int num) {
+	int index, step = 0, min;
+	for (index = 0; index < num - 1; ++ index) {
+		min = index;
+		for (step = index + 1; step < num; ++ step)
+			if (arr [step] < arr [min]) min = step;
+
+		if (min != index) {
+			arr [index] ^= arr [min];
+			arr [min] ^= arr [index];
+			arr [index] ^= arr [min];
+			/*
+			temp = arr [index];
+			arr [index] = arr [min];
+			arr [min] = temp;
+			*/
+		}
+	}
+}
+
+
+void select_sort_t (void* arr, int num, size_t elm_size, cmp_func fxn) {
+	int index, step = 0, min;
+	void* temp = malloc (elm_size);
+	for (index = 0; index < num - 1; ++ index) {
+		min = index;
+		for (step = index + 1; step < num; ++ step)
+			if (1 == fxn (arr + step * elm_size, arr + min * elm_size)) min = step;
+		
+		if (min != index) {
+			memcpy (temp, arr + index * elm_size, elm_size);
+			memcpy (arr + index * elm_size, arr + min * elm_size, elm_size);
+			memcpy (arr + min * elm_size, temp, elm_size);
+		}
+	}
+
+	free (temp);
+}
+
+// bubble sort
+void bubble_sort (int * arr, int num) {
+	int index = num, step;
+	while (index >= 0) {
+		for (step = 0; step < index; ++ step) {
+			if (arr [step] > arr [step + 1]) {
+				arr [step] ^= arr [step + 1];
+				arr [step + 1] ^= arr [step];
+				arr [step] ^= arr [step + 1];
+			}
+		}
+		-- index;
+	}
+}
+
 int cmp_int_func (const void* a, const void* b) {
 	if (*(int*)a > *(int*)b)
 		return -1;
@@ -90,16 +148,23 @@ int cmp_int_func (const void* a, const void* b) {
 int
 main (int argc, char* argv []) {
 	int i = 0;
-	// int * array = random_array (20);
-	for (; i < NUM; ++ i) {
-		printf ("arr [%d] = %d\n", i, a [i]);
+	int * array = random_array (5);
+	for (; i < 5; ++ i) {
+		printf ("arr [%d] = %d\n", i, array [i]);
 	}
 	printf ("\n--------------------\n");
 
 	// insert_sort ((void*) a, NUM);
-	insert_sort_t ((void*) a, NUM, sizeof (int), cmp_int_func);
-	for (i = 0; i < NUM; ++ i) {
-		printf ("arr [%d] = %d\n", i, a [i]);
+	// insert_sort_t ((void*) a, NUM, sizeof (int), cmp_int_func);
+	// selection_sort (array, 20);
+	
+	// if (array)
+	select_sort_t (array, 5, sizeof (int), cmp_int_func);
+//	else 
+//		printf ("%s\n", "error...");
+// 	sleep (2);
+	for (i = 0; i < 5; ++ i) {
+		printf ("arr [%d] = %d\n", i, array [i]);
 	}
 	// printf ("\n--------------------\n");
 	return 0;
