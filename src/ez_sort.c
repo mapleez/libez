@@ -11,6 +11,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+/*
+   swap memory block
+*/
 size_t ez_mem_swap (void* a, void* b, size_t size) {
 	void* tmp = NULL;
 	if (!a || !b || !size) 
@@ -24,13 +27,16 @@ size_t ez_mem_swap (void* a, void* b, size_t size) {
 	return size;
 }
 
+/*
+   Selection Sort
+*/
 void 
 ez_select_sort (
 		void* arr, 
 		int num, 
 		size_t elm_size, 
 		cmp_func fxn,
-		bool asc)  // from big to small
+		bool asc = true)  // from big to small
 {
 	int index, step = 0, min;
 	int order_flag = asc ? 
@@ -73,13 +79,16 @@ ez_select_sort (
 }
 
 
+/*
+   Insertion Sort
+*/
 void
 ez_insert_sort (
 		void* arr, 
 		int num, 
 		size_t elm_size,
 		cmp_func cmpfxn,
-		bool asc)
+		bool asc = true)
 {
 
 	int index, ptr;
@@ -111,4 +120,44 @@ ez_insert_sort (
 	free (tmp);
 	tmp = NULL;
 }
+
+
+/*
+   Bubble Sort
+*/
+void 
+bubble_sort (
+		void* arr, 
+		int num, 
+		size_t elm_size, 
+		cmp_func func,
+		bool asc = true) 
+{
+	int index = num - 1, step;
+	int order = asc ?
+		SMALLER : // from small to big 
+		BIGGER; // from big to small
+
+	if (! arr || ! num || ! elm_size)
+		return;
+	while (index > 0) {
+		for (step = 0; step < index; ++ step) {
+			if (order == 
+					func (arr + step * elm_size, 
+						arr + (step + 1) * elm_size)) {
+				ez_mem_swap (arr + step * elm_size
+							 arr + (step + 1) * elm_size,
+							 elm_size);
+				/*
+				memcpy (temp, arr + step * elm_size, elm_size);
+				memcpy (arr + step * elm_size, arr + (step + 1) * elm_size, elm_size);
+				memcpy (arr + (step + 1) * elm_size, temp, elm_size);
+				*/
+			}
+		}
+		-- index;
+	}
+
+}
+
 

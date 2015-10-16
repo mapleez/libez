@@ -125,17 +125,41 @@ void select_sort_t (void* arr, int num, size_t elm_size, cmp_func fxn) {
 
 // bubble sort
 void bubble_sort (int * arr, int num) {
-	int index = num, step;
-	while (index >= 0) {
+	int index = num - 1, step;
+	while (index > 0) {
 		for (step = 0; step < index; ++ step) {
 			if (arr [step] > arr [step + 1]) {
+				// int temp = arr [step];
+				// arr [step] = arr [step + 1];
+				// arr [step + 1] = temp;
 				arr [step] ^= arr [step + 1];
 				arr [step + 1] ^= arr [step];
 				arr [step] ^= arr [step + 1];
+
 			}
 		}
 		-- index;
 	}
+}
+
+void 
+bubble_sort_t (void* arr, int num, size_t elm_size, cmp_func func) {
+	int index = num - 1, step;
+	void* temp = malloc (elm_size);
+	while (index > 0) {
+		for (step = 0; step < index; ++ step) {
+			if (-1 == func (arr + step * elm_size, 
+						arr + (step + 1) * elm_size)) {
+				memcpy (temp, arr + step * elm_size, elm_size);
+				memcpy (arr + step * elm_size, arr + (step + 1) * elm_size, elm_size);
+				memcpy (arr + (step + 1) * elm_size, temp, elm_size);
+			}
+		}
+		-- index;
+	}
+
+	free (temp);
+	temp = NULL;
 }
 
 int cmp_int_func (const void* a, const void* b) {
@@ -159,7 +183,8 @@ main (int argc, char* argv []) {
 	// selection_sort (array, 20);
 	
 	// if (array)
-	select_sort_t (array, 5, sizeof (int), cmp_int_func);
+	bubble_sort_t (array, 5, sizeof (int), cmp_int_func);
+	// bubble_sort (array, 5);
 //	else 
 //		printf ("%s\n", "error...");
 // 	sleep (2);

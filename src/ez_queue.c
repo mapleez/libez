@@ -1,4 +1,4 @@
-#include <_queue.h>
+#include <ez_queue.h>
 #include <stdio.h>
 #include <stdlib.h>
 

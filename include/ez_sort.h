@@ -37,5 +37,10 @@ void ez_select_sort (void*, int, size_t, cmp_func, bool);
 extern
 void ez_insert_sort (void*, int, size_t, cmp_func, bool);
 
+/*
+   Bubble Sort
+*/
+extern
+void ez_bubble_sort (void*, int, size_t, cmp_func, bool);
 
 #endif // ~ _EZ_SORT_H_
