@@ -1,5 +1,5 @@
-#ifndef __QUEUE_H_
-#	define __QUEUE_H_
+#ifndef _EZ_QUEUE_H_
+#	define _EZ_QUEUE_H_
 #include <stdbool.h>
 
 #	define _element   int
@@ -23,4 +23,4 @@ extern bool dequeue (_queue);
 extern _element* front (_queue);
 extern _element* frontanddequeue (_queue);
 
-#endif // ~ __QUEUE_H_
+#endif // ~ _EZ_QUEUE_H_

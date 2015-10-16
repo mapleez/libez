@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <list.h>
-#include <_stack.h>
+#include <ez_stack.h>
 #include <stdbool.h>
 #include <ctype.h>
 #include <string.h>

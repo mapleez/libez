@@ -5,7 +5,7 @@
 
 */
 
-#include "_stack.h"
+#include "ez_stack.h"
 #include "ez.h"
 #include <stddef.h>
 #include <time.h>

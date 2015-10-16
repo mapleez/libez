@@ -6,5 +6,4 @@
 #	define println(___s) \
 		printf ("%s\n", ___s)
 
-
 #endif // ~ _EZ_H_

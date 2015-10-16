@@ -4,7 +4,7 @@
 	describe : the impliment of list
 */
 
-#include "list.h"
+#include "ez_list.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>

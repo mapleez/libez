@@ -5,8 +5,8 @@
 
 */
 
-#ifndef __STACK_H_
-#	define __STACK_H_
+#ifndef _EZ_STACK_H_
+#	define _EZ_STACK_H_
 
 #include <stdbool.h>
 #	define EMPTY_MARK  -1
@@ -42,4 +42,4 @@ extern void show (_stack);
 #endif // ~ __debug__
 
 
-#endif // ~ __STACK_H_
+#endif // ~ _EZ_STACK_H_

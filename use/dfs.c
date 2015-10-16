@@ -1,7 +1,8 @@
-#include "list.h"
+#include "ez_list.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 
 #	define vertex_num	8

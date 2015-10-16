@@ -4,8 +4,8 @@
 	describe : the list ADT
 */
 
-#ifndef _LIST_H_
-#	define _LIST_H_
+#ifndef _EZ_LIST_H_
+#	define _EZ_LIST_H_
 
 #include <stdbool.h>
 
@@ -35,4 +35,4 @@ extern bool insert (_list, _element, _position);
 extern bool insert_real (_list, _element);
 
 
-#endif // ~ _LIST_H_
+#endif // ~ _EZ_LIST_H_

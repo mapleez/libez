@@ -16,10 +16,10 @@ all: libez
 libez: libezstack.o libezlist.o libezsort.o
 
 
-libezstack.o: _stack.c 	
+libezstack.o: ez_stack.c 	
 	$(CC) $(LIBFLAG) $(INCLUDE) $(OBJFLAG) $@ $(CFLAG) $< $(DEBUG)
 
-libezlist.o: list.c 
+libezlist.o: ez_list.c 
 	$(CC) $(LIBFLAG) $(INCLUDE) $(OBJFLAG) $@ $(CFLAG) $< $(DEBUG)
 
 libezsort.o: ez_sort.c

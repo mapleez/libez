@@ -30,7 +30,7 @@ clear:
 #
 #libez: libezstack.o libezlist.o
 #
-#libezstack.o: $(SRC)/_stack.c _stack.h
+#libezstack.o: $(SRC)/ez_stack.c _stack.h
 #	$(CC) $(INCLUDE) $(SRC) $(OBJFLAG) $@ $(CFLAG) $< $(DEBUG)
 #
 #libezlist.o: _list.c _list.h
