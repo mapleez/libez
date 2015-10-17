@@ -104,6 +104,33 @@ void select_sort (int * arr, int num) {
 	}
 }
 
+int binary_search (int* arr, int num, int key) {
+	int mid, high = num - 1, low = 0;
+	while (low <= high) {
+		mid = (high + low) / 2;
+		if (arr [mid] == key)
+			return mid;
+		else if (arr [mid] > key)
+			high = mid - 1;
+		else /*if (arr [mid] < key)*/
+			low = mid + 1;
+	}
+	return -1;
+}
+
+int binary_search_t (void* arr, int num, size_t elm_size, cmp_func fxn, void* key) {
+	int mid, high = num - 1, low = 0;
+	while (low <= high) {
+		mid = (high + low) / 2;
+		if (0 == fxn (arr + mid * elm_size, key))
+			return mid;
+		else if (-1 == fxn (arr + mid * elm_size, key))
+			high = mid - 1;
+		else
+			low = mid + 1;
+	}
+	return -1;
+}
 
 void select_sort_t (void* arr, int num, size_t elm_size, cmp_func fxn) {
 	int index, step = 0, min;
@@ -165,15 +192,21 @@ bubble_sort_t (void* arr, int num, size_t elm_size, cmp_func func) {
 int cmp_int_func (const void* a, const void* b) {
 	if (*(int*)a > *(int*)b)
 		return -1;
-	else 
+	else if (*(int*)a == *(int*) b) 
+		return 0;
+	else
 		return 1;
 }
 
 int
 main (int argc, char* argv []) {
+#ifdef NUM
+#undef NUM
+#	define NUM 10
+#endif
 	int i = 0;
-	int * array = random_array (5);
-	for (; i < 5; ++ i) {
+	int * array = random_array (NUM);
+	for (; i < NUM; ++ i) {
 		printf ("arr [%d] = %d\n", i, array [i]);
 	}
 	printf ("\n--------------------\n");
@@ -183,15 +216,25 @@ main (int argc, char* argv []) {
 	// selection_sort (array, 20);
 	
 	// if (array)
-	bubble_sort_t (array, 5, sizeof (int), cmp_int_func);
-	// bubble_sort (array, 5);
+	// bubble_sort_t (array, 5, sizeof (int), cmp_int_func);
+	bubble_sort (array, NUM);
 //	else 
 //		printf ("%s\n", "error...");
 // 	sleep (2);
-	for (i = 0; i < 5; ++ i) {
+	for (i = 0; i < NUM; ++ i) {
 		printf ("arr [%d] = %d\n", i, array [i]);
 	}
-	// printf ("\n--------------------\n");
+	printf ("\n--------------------\n");
+	for (i = NUM - 1; i >= 0; -- i) {
+		printf ("search %d: %d\n", 
+				array [i], 
+				binary_search_t (array, NUM, sizeof (int), cmp_int_func, array + i));
+	}
+
+	printf ("\n--------------------\n");
+	printf ("search %d: %d\n", 
+			i, 
+			binary_search_t (array, NUM, sizeof (int), cmp_int_func, &i));
 	return 0;
 }
 
