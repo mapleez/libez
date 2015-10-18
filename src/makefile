@@ -13,8 +13,10 @@ DEBUG = -g
 
 all: libez
 
-libez: libezstack.o libezlist.o libezsort.o
+libez: libezstack.o libezlist.o libezsort.o libezsearch.o libezmbs.o
 
+libezsearch.o: ez_search.c
+	$(CC) $(LIBFLAG) $(INCLUDE) $(OBJFLAG) $@ $(CFLAG) $< $(DEBUG)
 
 libezstack.o: ez_stack.c 	
 	$(CC) $(LIBFLAG) $(INCLUDE) $(OBJFLAG) $@ $(CFLAG) $< $(DEBUG)
@@ -25,8 +27,12 @@ libezlist.o: ez_list.c
 libezsort.o: ez_sort.c
 	$(CC) $(LIBFLAG) $(INCLUDE) $(OBJFLAG) $@ $(CFLAG) $< $(DEBUG)
 
+libezmbs.o: ez_modbus.c
+	$(CC) $(LIBFLAG) $(INCLUDE) $(OBJFLAG) $@ $(CFLAG) $< $(DEBUG)
 
 clear: 
 	@rm -f ./libezstack.o && echo "delete libezstack.o"; \
 	 rm -f ./libezlist.o && echo "delete libezlist.o"; \
-	 rm -f ./libezsort.o && echo "delete libezsort.o";
+	 rm -f ./libezsort.o && echo "delete libezsort.o"; \
+	 rm -f ./libezsearch.o && echo "delete libezsearch.o"; \
+	 rm -f ./libezmbs.o && echo "delete libezmbs.o"; 

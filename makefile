@@ -2,7 +2,7 @@
 # date : 2015/5/18
 # describe : compile the stack structure module
 
-SUBDIR = src use.d 
+SUBDIR = src unit 
 MAKE = make
 
 subsystem:

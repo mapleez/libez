@@ -3,6 +3,10 @@
 #	define _EZ_H_
 #include <stdio.h>
 
+#ifndef NULL
+#	define NULL ((void*) 0)
+#endif // ~ NULL
+
 #	define println(___s) \
 		printf ("%s\n", ___s)
 

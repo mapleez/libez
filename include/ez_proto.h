@@ -1,9 +1,13 @@
 #ifndef _EZ_PROTO_H_
 
 #	define _EZ_PROTO_H_
+
 #include "ez.h"
 #include <stdint.h>
 #include <stdbool.h>
+
+#	define tobigend16(___D)  (((uint16_t)((___D) & 0xff00) >> 8) | ((uint16_t)((___D) & 0x00ff) << 8))
+#	define tolittleend16(___D) tobigend16(___D)
 
 struct _mbs_unit_be;
 struct _mbs_unit_le;

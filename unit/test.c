@@ -197,6 +197,11 @@ int cmp_int_func (const void* a, const void* b) {
 	else
 		return 1;
 }
+#include <stdint.h>
+
+// #	define tobigend16(___D)  (((uint16_t)((___D) & 0xff00) >> 8) | ((uint16_t)((___D) & 0x00ff) << 8))
+// #	define tolittleend16(___D) tobigend16(___D)
+// #	define tolittleend16(___D)  (((uint16_t)((___D) & 0xff00) >> 8) | ((uint16_t)((___D) & 0x00ff) << 8))
 
 int
 main (int argc, char* argv []) {

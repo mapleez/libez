@@ -36,7 +36,7 @@ ez_select_sort (
 		int num, 
 		size_t elm_size, 
 		cmp_func fxn,
-		bool asc = true)  // from big to small
+		bool asc)  // from big to small
 {
 	int index, step = 0, min;
 	int order_flag = asc ? 
@@ -88,7 +88,7 @@ ez_insert_sort (
 		int num, 
 		size_t elm_size,
 		cmp_func cmpfxn,
-		bool asc = true)
+		bool asc)
 {
 
 	int index, ptr;
@@ -131,7 +131,7 @@ bubble_sort (
 		int num, 
 		size_t elm_size, 
 		cmp_func func,
-		bool asc = true) 
+		bool asc) 
 {
 	int index = num - 1, step;
 	int order = asc ?
@@ -145,7 +145,7 @@ bubble_sort (
 			if (order == 
 					func (arr + step * elm_size, 
 						arr + (step + 1) * elm_size)) {
-				ez_mem_swap (arr + step * elm_size
+				ez_mem_swap (arr + step * elm_size,
 							 arr + (step + 1) * elm_size,
 							 elm_size);
 				/*
