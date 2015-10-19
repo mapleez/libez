@@ -2,6 +2,117 @@
 #include <stdlib.h>
 #include <string.h>
 
+static bytes* _create_request_01;
+static bytes* _create_request_02;
+static bytes* _create_request_03;
+static bytes* _create_request_04;
+
+
+/*
+   @1 function code
+   @2 transport flag
+   @3 device id
+   @4 start address
+   @5 register count
+return : 
+   return the byte string;
+*/
+typedef bytes (*_create_req_1_4)(
+	int trans,
+	int devid,
+	int start,
+	int reg_cnt,
+	int* frm_len);
+
+/*
+   function array,
+   code from 1 to 4
+ */
+static 
+_create_req_1_4 _func_1_4 [] = {
+	// func = 0x01
+	_create_request_01,
+
+	// func = 0x02
+	_create_request_02,
+
+	// func = 0x03
+	_create_request_03,
+	
+	// func = 0x04
+	_create_request_04
+};
+
+static bytes 
+_create_request_04 (
+	int trans,
+	int devid,
+	int start,
+	int reg_cnt,
+	int* frm_len) 
+{
+	pmbs_tcp_req_head frame = (pmbs_tcp_req_head)
+		malloc (*frm_len = 
+				sizeof (mbs_tcp_req_head));
+	frame -> _trans = 
+		(uint16_t) (trans & 0x0000ffff);
+
+	frame -> _len = 0x0600;  // Big endian
+
+	frame -> _proto = 0x00;
+	frame -> _devid = (uint16_t) (devid & 0xff);
+
+	// code = 0x04
+	frame -> _func = mbs_func_read_input;
+
+	frame -> _body._start_addr = 
+		tobigend16 (start)
+		// (uint16_t) (((start & 0xff00) >> 8) | 
+		// 	((start & 0x00ff) << 8));
+
+	frame -> _body._reg_count = 
+		tobigend16 (reg_cnt);
+		// (uint16_t) (((reg_cnt & 0xff00) >> 8) |
+		// 	((reg_cnt & 0x00ff) << 8));
+
+	return (bytes) frame;
+}
+
+static bytes 
+_create_request_03 (
+	int trans,
+	int devid,
+	int start,
+	int reg_cnt,
+	int* frm_len) 
+{
+	pmbs_tcp_req_head frame = (pmbs_tcp_req_head)
+		malloc (*frm_len = 
+				sizeof (mbs_tcp_req_head));
+	frame -> _trans = 
+		(uint16_t) (trans & 0x0000ffff);
+
+	frame -> _len = 0x0600;  // Big endian
+
+	frame -> _proto = 0x00;
+	frame -> _devid = (uint16_t) (devid & 0xff);
+
+	// code = 0x03
+	frame -> _func = mbs_func_read_holdings;
+
+	frame -> _body._start_addr = 
+		tobigend16 (start)
+		// (uint16_t) (((start & 0xff00) >> 8) | 
+		// 	((start & 0x00ff) << 8));
+
+	frame -> _body._reg_count = 
+		tobigend16 (reg_cnt);
+		// (uint16_t) (((reg_cnt & 0xff00) >> 8) |
+		// 	((reg_cnt & 0x00ff) << 8));
+
+	return (bytes) frame;
+}
+
 /*
    @1 function code
    @2 transport flag
@@ -17,28 +128,38 @@ ez_create_mbs_tcp_request (
 	int trans,
 	int devid,
 	int start,
-	int reg_cnt)
+	int reg_cnt,
+	int* frm_len)
 {
-	pmbs_tcp_req_head frame = (pmbs_tcp_req_head)
-		malloc (sizeof (mbs_tcp_req_head));
-	frame -> _trans = 
-		(uint16_t) (trans & 0x0000ffff);
+	if (func_code <= 4)
+		return _func_1_4 [func_code] (
+					trans, devid, start,
+					reg_cnt, frm_len);
 
-	frame -> _len = 0x0600;  // Big endian
+	else if (func_code <= 6) {
+	} else if (func_code <= 0x10) {
+	}
+	// pmbs_tcp_req_head frame = (pmbs_tcp_req_head)
+	// 	malloc (*frm_len = 
+	// 			sizeof (mbs_tcp_req_head));
+	// frame -> _trans = 
+	// 	(uint16_t) (trans & 0x0000ffff);
 
-	frame -> _proto = 0x00;
-	frame -> _devid = (uint16_t) (devid & 0xff);
-	frame -> _func = func_code;
+	// frame -> _len = 0x0600;  // Big endian
 
-	frame -> _body._start_addr = 
-		(uint16_t) (((start & 0xff00) >> 8) | 
-			((start & 0x00ff) << 8));
+	// frame -> _proto = 0x00;
+	// frame -> _devid = (uint16_t) (devid & 0xff);
+	// frame -> _func = func_code;
 
-	frame -> _body._reg_count = 
-		(uint16_t) (((reg_cnt & 0xff00) >> 8) |
-			((start & 0x00ff) << 8));
+	// frame -> _body._start_addr = 
+	// 	(uint16_t) (((start & 0xff00) >> 8) | 
+	// 		((start & 0x00ff) << 8));
 
-	return (bytes) frame;
+	// frame -> _body._reg_count = 
+	// 	(uint16_t) (((reg_cnt & 0xff00) >> 8) |
+	// 		((reg_cnt & 0x00ff) << 8));
+
+	// return (bytes) frame;
 }
 
 
@@ -88,4 +209,14 @@ ez_parse_mbs_tcp_response (
 	return rsp -> _data_len;
 }
 
+#if 1
 
+// unit testing
+int main (int argc, char* argv []) {
+	int len = 0;
+	bytes frame = ez_create_mbs_tcp_request (3, 0x9983, 0x1, 0x6332, 0x9828, &len);
+	int i  =0;
+	return 0;
+}
+
+#endif // DEBUG
