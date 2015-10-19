@@ -74,6 +74,32 @@ typedef
 	* pmbs_tcp_req_head;
 
 typedef
+struct _mbs_tcp_req_0f_head {
+	/* the same as the one above */
+	mbs_tcp_req_head _comm;
+
+	/* byte length */
+	uint8_t _bytes;
+
+	/* output values */
+	uint16_t _vals;
+} mbs_tcp_req_0f_head,
+	* pmbs_tcp_req_0f_head;
+
+typedef
+struct _mbs_tcp_req_10_head {
+	/* the same as the one above */
+	mbs_tcp_req_head _comm;
+
+	/* byte length */
+	uint8_t _bytes;
+
+	/* register values */
+	uint16_t _first_val;
+} mbs_tcp_req_10_head,
+	* pmbs_tcp_req_10_head;
+
+typedef
  struct _mbs_tcp_rsp {
 	
 	/* transport flag, LE */

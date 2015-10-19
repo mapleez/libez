@@ -2,6 +2,8 @@
 #	define _EZ_MODBUS_H_
 
 #include "ez_proto.h"
+#	define EZ_MBS_MAIN_VERSION   1
+#	define EZ_MBS_SUB_VERSION   0 
 
 // mbs function code
 #	define mbs_func_read_cols		0x01
@@ -12,8 +14,11 @@
 #	define mbs_func_write_holding	0x06
 #	define mbs_func_write_cols		0x0f
 #	define mbs_func_write_hlodings  0x10
+
+#if EZ_MBS_MAIN_VERSION > 1
 #	define mbs_func_read_file 		0x14
 #	define mbs_func_write_file		0x15
+#endif // ~ EZ_MBS_VERSION
 
 typedef struct _mbs_tcp_rsp_datablock {
 	int _start_addr;
@@ -30,13 +35,15 @@ typedef struct _mbs_tcp_rsp_datablock {
    @3 device id
    @4 start address
    @5 register count
-   @6 created frame length
+   @6 register value if nessesary, or NULL
+   @7 created frame length
 return : 
    return the byte string;
 */
 extern bytes 
  ez_create_mbs_tcp_request (
-		 FUNC_CODE, int, int, int, int, int*);
+		 FUNC_CODE, int, int, 
+		 int, int, uint16_t*, int*);
 
 /*
    @1 request frame header ptr
