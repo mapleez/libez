@@ -203,6 +203,7 @@ int cmp_int_func (const void* a, const void* b) {
 // #	define tolittleend16(___D) tobigend16(___D)
 // #	define tolittleend16(___D)  (((uint16_t)((___D) & 0xff00) >> 8) | ((uint16_t)((___D) & 0x00ff) << 8))
 
+#if 0
 int
 main (int argc, char* argv []) {
 #ifdef NUM
@@ -243,4 +244,17 @@ main (int argc, char* argv []) {
 	return 0;
 }
 
+#endif
+
+#if 0
+int main (int argc, 
+		char* argv []) {
+
+	// wchar_t* csd = L"中国";
+	// wprintf ("%s\n", csd);
+	// return 0;
+
+}
+
+#endif 
 

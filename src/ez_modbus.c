@@ -2,42 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-// static bytes* _create_request_01;
-// static bytes* _create_request_02;
-// static bytes* _create_request_03;
-// static bytes* _create_request_04;
-
-
-/*
-   @1 function code
-   @2 transport flag
-   @3 device id
-   @4 start address
-   @5 register count
-return : 
-   return the byte string;
-*/
-// typedef bytes (*_create_req_1_4)(
-// 	FUNC_CODE, int, int, int, int, int*);
-
-/*
-   function array,
-   code from 1 to 4
- */
-// static 
-// _create_req_1_4 _func_1_4 [] = {
-// 	// func = 0x01
-// 	_create_request_01,
-// 
-// 	// func = 0x02
-// 	_create_request_02,
-// 
-// 	// func = 0x03
-// 	_create_request_03,
-// 	
-// 	// func = 0x04
-// 	_create_request_04
-// };
+static bytes _func_1_4 ();
+static bytes _func_5_6 ();
+static bytes _func_15_16 ();
 
 static bytes 
 _func_1_4 (
@@ -245,9 +212,6 @@ ez_parse_mbs_tcp_response (
 
 // unit testing
 int main (int argc, char* argv []) {
-	// int len = 0;
-	// bytes frame = ez_create_mbs_tcp_request (3, 0x9983, 0x1, 0x6332, 0x9828, &len);
-	// int i  =0;
 	return 0;
 }
 

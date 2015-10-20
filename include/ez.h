@@ -2,6 +2,7 @@
 
 #	define _EZ_H_
 #include <stdio.h>
+#include <stdint.h>
 
 #ifndef NULL
 #	define NULL ((void*) 0)
@@ -28,3 +29,4 @@ typedef int (*cmp_func)(const void*, const void*);
 		} while (0)
 
 #endif // ~ _EZ_H_
+
