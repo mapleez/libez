@@ -15,9 +15,6 @@ struct _mbs_tcp_req_head;
 struct _mbs_tcp_req_body;
 struct _mbs_tcp_rsp;
 
-typedef uint8_t* bytes;
-typedef uint8_t  byte;
-
 #pragma pack (1)
 
 /* big endian 16 bits unit */

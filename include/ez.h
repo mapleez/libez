@@ -18,6 +18,8 @@
 #	define ORDER_DESC     (true)
 #	define ORDER_ASC	  (false)
 
+typedef uint8_t* bytes;
+typedef uint8_t  byte;
 
 typedef int (*cmp_func)(const void*, const void*);
 

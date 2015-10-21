@@ -7,22 +7,23 @@
 typedef class ez_sockclient {
 
 private:
-	ez_inet_sock _sock;
-	ez_inet_sock _srv;
+	pez_inet_sock _sock;
+	pez_inet_sock _srv;
 public:
 	ez_sockclient (pez_inet_sock, pez_inet_sock);
 	ez_sockclient ();
-	ez_sockclient (char*, int, char* int);
+	ez_sockclient (char*, int, char*, int);
 
 	void set_server (const char*, const int);
 	void set_sock (const char*, const int);
 
-	void dispose_client ();
+	void client_dispose ();
 
-	int open ();
-	bool close ();
-	int read (bytes, int, int);
-	int write (bytes, int);
+	bool client_open ();
+	inline bool client_close ();
+	inline bool client_shutdown (int);
+	inline int client_read (bytes, int, unsigned int);
+	inline int client_write (bytes, int);
 
 }* pez_sockclient;
 
