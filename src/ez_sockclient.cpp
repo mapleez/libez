@@ -25,11 +25,15 @@ ez_sockclient :: ez_sockclient (
 {
 	this -> _srv = _srv;
 	this -> _sock = _client;
+	this -> _srv -> _sockfd = 
+		socket (AF_INET, SOCK_STREAM, IPPROTO_TCP);
 }
 
 ez_sockclient :: ez_sockclient () {
-	// this -> _srv = ez_create_inet_sock ("", 0);
-	// this -> _sock = ez_create_inet_sock ("", 0);
+	this -> _srv = ez_create_inet_sock ("", 0);
+	this -> _sock = ez_create_inet_sock ("", 0);
+	this -> _srv -> _sockfd = 
+		socket (AF_INET, SOCK_STREAM, IPPROTO_TCP);
 }
 
 ez_sockclient :: ez_sockclient (
@@ -39,6 +43,8 @@ ez_sockclient :: ez_sockclient (
 		ez_create_inet_sock (_srv_ip, _srv_port);
 	this -> _sock = 
 		ez_create_inet_sock (_client_ip, _client_port);
+	this -> _srv -> _sockfd = 
+		socket (AF_INET, SOCK_STREAM, IPPROTO_TCP);
 }
 
 void ez_sockclient :: set_server (
@@ -76,13 +82,22 @@ void ez_sockclient :: client_dispose () {
 // call connect ()
 bool
 ez_sockclient :: client_open () {
+	struct sockaddr_in * ptr = NULL;
 	if (! this -> _srv -> _addr) {
 		this -> _srv -> _addr = (struct sockaddr*) 
 			malloc (sizeof (struct sockaddr));
 	}
-	// TODO...
+	ptr = (struct sockaddr_in*) this -> _srv -> _addr;
+	// this -> _srv -> _addr -> sin_family = AF_INET;
+	ptr -> sin_family = AF_INET;
 
+	// this -> _srv -> _addr -> sin_addr.s_addr = 
+	ptr -> sin_addr.s_addr = 
+		htonl (this -> _srv -> _ip._ip_i); // IP
 
+	// this -> _srv -> _addr -> sin_port = 
+	ptr -> sin_port = 
+		htons (this -> _srv -> _port); // PORT
 
 	return 
 		0 == connect (this -> _srv -> _sockfd, 
