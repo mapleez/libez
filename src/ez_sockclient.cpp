@@ -1,7 +1,9 @@
 #include "ez_sockclient.h"
+#include <string.h>
 #include "ez_sock.h"
 #include <stdlib.h>
 #include <iostream>
+#include <errno.h>
 // #include <string.h>
 
 #ifdef _MSC_VER
@@ -93,7 +95,7 @@ ez_sockclient :: client_open () {
 
 	// this -> _srv -> _addr -> sin_addr.s_addr = 
 	ptr -> sin_addr.s_addr = 
-		htonl (this -> _srv -> _ip._ip_i); // IP
+		this -> _srv -> _ip._ip_i; // IP
 
 	// this -> _srv -> _addr -> sin_port = 
 	ptr -> sin_port = 
@@ -114,8 +116,9 @@ ez_sockclient :: client_close () {
 
 inline bool 
 ez_sockclient :: client_shutdown (int _flag) {
+	// 0 if successful , else return -1
 	return 
-		shutdown (this -> _srv -> _sockfd, _flag);
+		0 == shutdown (this -> _srv -> _sockfd, _flag);
 }
 
 inline int 
@@ -134,12 +137,13 @@ ez_sockclient :: client_write (
 			  _buf, _len, 0);
 }
 
-#if 1
+#if 0
 
 int 
 main (int argc, char* argv []) {
+#if 1 
 	pez_sockclient client = new ez_sockclient;
-	client -> set_server ("10.14.4.167", 5556);
+	client -> set_server ("42.121.69.11", 80);
 	if (! client -> client_open ()) {
 		cout << "error in open socket" << endl;
 		client -> client_dispose ();
@@ -155,7 +159,31 @@ main (int argc, char* argv []) {
 		client = NULL;
 		return 0;
 	}
+#endif
 
+#if 0
+	int sock = 0;
+	int res = 0;
+	// struct sockaddr addr;
+	struct sockaddr_in ptr/* = (struct sockaddr_in*) &addr*/;
+	uint16_t port = 23;
+	sock = socket (AF_INET, SOCK_STREAM, 0);
+	bzero (&ptr, sizeof (ptr));
+	if (sock == -1) {
+		printf ("error in create socket\n");
+	}
+
+	ptr.sin_family = AF_INET;
+	ptr.sin_port = htons (port);
+	ptr.sin_addr.s_addr = (inet_addr ("10.14.4.167"));
+	// res = inet_pton (AF_INET, "10.14.4.167", &ptr.sin_addr);
+
+	if (-1 == connect (sock, (struct sockaddr*) &ptr, sizeof (ptr))) {
+		printf ("error in connect socket\n%d", errno);
+	}
+
+	shutdown (sock, SHUT_RDWR);
+#endif 
 	return 0;
 }
 
