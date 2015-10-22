@@ -7,15 +7,15 @@
 typedef class ez_sockclient {
 
 private:
-	pez_inet_sock _sock;
+	// pez_inet_sock _sock;
 	pez_inet_sock _srv;
 public:
-	ez_sockclient (pez_inet_sock, pez_inet_sock);
+	ez_sockclient (pez_inet_sock);
 	ez_sockclient ();
-	ez_sockclient (char*, int, char*, int);
+	ez_sockclient (const char*, const int);
 
 	void set_server (const char*, const int);
-	void set_sock (const char*, const int);
+	// void set_sock (const char*, const int);
 
 	void client_dispose ();
 

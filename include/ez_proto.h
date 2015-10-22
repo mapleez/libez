@@ -6,8 +6,16 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+// depend with byte order
+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
 #	define tobigend16(___D)  (((uint16_t)((___D) & 0xff00) >> 8) | ((uint16_t)((___D) & 0x00ff) << 8))
-#	define tolittleend16(___D) tobigend16(___D)
+#	define tolittleend16(___D) (___D)
+
+#elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+
+#	define tolittleend16(___D)  (((uint16_t)((___D) & 0xff00) >> 8) | ((uint16_t)((___D) & 0x00ff) << 8))
+#	define tobigend16(___D)  (___D)
+#endif
 
 struct _mbs_unit_be;
 struct _mbs_unit_le;
