@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#ifdef __GNUC__
 // depend with byte order
 #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
 #	define tobigend16(___D)  (((uint16_t)((___D) & 0xff00) >> 8) | ((uint16_t)((___D) & 0x00ff) << 8))
@@ -16,6 +17,8 @@
 #	define tolittleend16(___D)  (((uint16_t)((___D) & 0xff00) >> 8) | ((uint16_t)((___D) & 0x00ff) << 8))
 #	define tobigend16(___D)  (___D)
 #endif
+
+#endif // ~ __GNUC__
 
 struct _mbs_unit_be;
 struct _mbs_unit_le;
