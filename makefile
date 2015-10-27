@@ -4,19 +4,27 @@
 
 SUBDIR = src unit 
 MAKE = make
+BASE = .
 
-subsystem:
-	@for subdir in $(SUBDIR); \
-		do \
-			echo "make in $$subdir";	\
-			(cd $$subdir && $(MAKE)) || exit 1; \
-		done
+lib:
+	$(MAKE) -C src/ all
 
-clear:
-	@for subdir in $(SUBDIR);	\
-		do \
-			(cd $$subdir && $(MAKE) clear) || exit 1;	\
-		done
+clean:
+	$(MAKE) -C src/ clean
+
+
+# subsystem:
+# 	@for subdir in $(SUBDIR); \
+# 		do \
+# 			echo "make in $$subdir";	\
+# 			(cd $$subdir && $(MAKE)) || exit 1; \
+# 		done
+# 
+# clear:
+# 	@for subdir in $(SUBDIR);	\
+# 		do \
+# 			(cd $$subdir && $(MAKE) clear) || exit 1;	\
+# 		done
 
 #CC=gcc
 #CFLAG=-c

@@ -30,7 +30,7 @@ libezsort.o: ez_sort.c
 libezmbs.o: ez_modbus.c
 	$(CC) $(LIBFLAG) $(INCLUDE) $(OBJFLAG) $@ $(CFLAG) $< $(DEBUG)
 
-clear: 
+clean: 
 	@rm -f ./libezstack.o && echo "delete libezstack.o"; \
 	 rm -f ./libezlist.o && echo "delete libezlist.o"; \
 	 rm -f ./libezsort.o && echo "delete libezsort.o"; \
