@@ -2,29 +2,12 @@
 # date : 2015/5/18
 # describe : compile the stack structure module
 
-SUBDIR = src unit 
-MAKE = make
-BASE = .
-
 lib:
 	$(MAKE) -C src/ all
 
 clean:
 	$(MAKE) -C src/ clean
 
-
-# subsystem:
-# 	@for subdir in $(SUBDIR); \
-# 		do \
-# 			echo "make in $$subdir";	\
-# 			(cd $$subdir && $(MAKE)) || exit 1; \
-# 		done
-# 
-# clear:
-# 	@for subdir in $(SUBDIR);	\
-# 		do \
-# 			(cd $$subdir && $(MAKE) clear) || exit 1;	\
-# 		done
 
 #CC=gcc
 #CFLAG=-c
