@@ -2,11 +2,13 @@
 # date : 2015/5/18
 # describe : compile the stack structure module
 
-lib:
+all:
 	$(MAKE) -C src/ all
+	$(MAKE) -C unit/
 
 clean:
 	$(MAKE) -C src/ clean
+	$(MAKE) -C unit/ clean
 
 
 #CC=gcc

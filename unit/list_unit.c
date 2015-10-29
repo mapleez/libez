@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "ez.h"
-#include "list.h"
+#include "ez_list.h"
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>

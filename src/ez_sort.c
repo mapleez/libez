@@ -107,7 +107,7 @@ ez_insert_sort (
 		memcpy (tmp, (arr + index * elm_size), elm_size);
 
 		while (ptr >= 0 && 
-			  (func (arr + ptr * elm_size, tmp) == order_flag))
+			  (cmpfxn (arr + ptr * elm_size, tmp) == order_flag))
 		{
 			memcpy (arr + (ptr + 1) * elm_size, 
 					arr + ptr * elm_size,

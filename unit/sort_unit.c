@@ -21,7 +21,7 @@ int int_cmp (const void* a,
 int main (int argc, char* argv []) {
 
 	int i = 0;
-	ez_insert_sort (array, 12, int_cmp);
+	ez_insert_sort (array, 12, sizeof (int), int_cmp, true);
 	for (; i < 12; ++ i)
 		printf ("array [%d] = %d\n",
 				i, array [i]);

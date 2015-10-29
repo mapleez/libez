@@ -2,9 +2,30 @@
 #include <stdlib.h>
 #include <string.h>
 
-static bytes _func_1_4 ();
-static bytes _func_5_6 ();
-static bytes _func_15_16 ();
+static bytes _func_1_4 (
+	FUNC_CODE,
+	int,
+	int,
+	int,
+	int,
+	int*); 
+
+static bytes _func_5_6 (
+	FUNC_CODE,
+	int,
+	int,
+	int,
+	int,
+	int*);
+
+static bytes _func_15_16 (
+	FUNC_CODE,
+	int,
+	int,
+	int,
+	int,
+	uint16_t*,
+	int*);
 
 static bytes 
 _func_1_4 (

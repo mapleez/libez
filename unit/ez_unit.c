@@ -13,3 +13,4 @@ int* random_int_array (int num) {
 	}
 	return array;
 }
+
