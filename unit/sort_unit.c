@@ -2,6 +2,8 @@
 
 int int_cmp (const void*, const void*);
 
+#	define NUM 12
+
 int array [] = {
 	9,32,12,
 	87,423,98,
@@ -21,8 +23,11 @@ int int_cmp (const void* a,
 int main (int argc, char* argv []) {
 
 	int i = 0;
-	ez_insert_sort (array, 12, sizeof (int), int_cmp, true);
-	for (; i < 12; ++ i)
+	// TODO, error when ASC
+	// ez_insert_sort (array, NUM, sizeof (int), int_cmp, false);
+	// ez_select_sort (array, NUM, sizeof (int), int_cmp, true);
+	ez_bubble_sort (array, NUM, sizeof (int), int_cmp, true);
+	for (; i < NUM; ++ i)
 		printf ("array [%d] = %d\n",
 				i, array [i]);
 	return 0;

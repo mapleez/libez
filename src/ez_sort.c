@@ -39,6 +39,7 @@ ez_select_sort (
 		bool asc)  // from big to small
 {
 	int index, step = 0, min;
+	// TODO, error when ASC
 	int order_flag = asc ? 
 		SMALLER :  // from big to small
 		BIGGER;		// from small to big
@@ -93,6 +94,7 @@ ez_insert_sort (
 
 	int index, ptr;
 	void* tmp = NULL;
+	// TODO ... error when ASC
 	int order_flag = asc ? 
 		SMALLER: // from bigger to smaller
 		BIGGER; // from smaller to bigger
@@ -126,7 +128,7 @@ ez_insert_sort (
    Bubble Sort
 */
 void 
-bubble_sort (
+ez_bubble_sort (
 		void* arr, 
 		int num, 
 		size_t elm_size, 
@@ -134,6 +136,7 @@ bubble_sort (
 		bool asc) 
 {
 	int index = num - 1, step;
+	// TODO, error when ASC
 	int order = asc ?
 		SMALLER : // from small to big 
 		BIGGER; // from big to small
@@ -148,11 +151,6 @@ bubble_sort (
 				ez_mem_swap (arr + step * elm_size,
 							 arr + (step + 1) * elm_size,
 							 elm_size);
-				/*
-				memcpy (temp, arr + step * elm_size, elm_size);
-				memcpy (arr + step * elm_size, arr + (step + 1) * elm_size, elm_size);
-				memcpy (arr + (step + 1) * elm_size, temp, elm_size);
-				*/
 			}
 		}
 		-- index;
