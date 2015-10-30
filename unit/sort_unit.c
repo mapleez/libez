@@ -1,5 +1,12 @@
 #include "ez_sort.h"
 
+inline int test_int_cmp (int, int);
+
+inline int 
+test_int_cmp (int _a, int _b) {
+	return int_cmp (&_a, &_b);
+}
+
 int int_cmp (const void*, const void*);
 
 #	define NUM 12
@@ -16,17 +23,20 @@ int int_cmp (const void* a,
 		const void* b) {
 	int res = *(int*)a > *(int*)b ?
 		-1 : *(int*)a - *(int*)b ?
-		0 : 1;
+		1 : 0;
 	return res;
 }
 
 int main (int argc, char* argv []) {
 
 	int i = 0;
-	// TODO, error when ASC
-	// ez_insert_sort (array, NUM, sizeof (int), int_cmp, false);
-	// ez_select_sort (array, NUM, sizeof (int), int_cmp, true);
-	ez_bubble_sort (array, NUM, sizeof (int), int_cmp, true);
+	// ez_insert_sort_i (array, NUM, int_cmp);
+
+	// ez_insert_sort (array, NUM, sizeof (int), int_cmp, true);
+
+	ez_select_sort (array, NUM, sizeof (int), int_cmp, true);
+	// ez_bubble_sort (array, NUM, sizeof (int), int_cmp, true);
+
 	for (; i < NUM; ++ i)
 		printf ("array [%d] = %d\n",
 				i, array [i]);

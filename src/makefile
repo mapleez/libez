@@ -5,7 +5,7 @@
 BASE = ..
 INCLUDE = $(BASE)/include
 
-CFLAGS = -O2 -g -I$(INCLUDE)
+CFLAGS = -g -I$(INCLUDE)
 CC = gcc
 OBJFLAG = -o
 LIBHEAD = $(INCLUDE)/ez.h

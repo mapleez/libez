@@ -23,6 +23,11 @@ void ez_select_sort (void*, int, size_t, cmp_func, bool);
 extern
 void ez_insert_sort (void*, int, size_t, cmp_func, bool);
 
+#if 0
+extern
+void ez_insert_sort_i (int*, int, cmp_func);
+#endif
+
 /*
    Bubble Sort
 */

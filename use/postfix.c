@@ -1,7 +1,7 @@
-#include <ez.h>
+#include "ez.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <list.h>
+#include "ez_list.h"
 #include <ez_stack.h>
 #include <stdbool.h>
 #include <ctype.h>

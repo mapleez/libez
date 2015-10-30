@@ -4,17 +4,21 @@
 
 
 CC = gcc
-CFLAG = 
-OBJFLAG = -o
-INCLUDE = -I../include/
-BIN = ../src/libezstack.o ../src/libezlist.o
+INCLUDE = -I../include
+BIN = ../libez.a
 DEBUG = -g
+CFLAGS = $(INCLUDE) $(DEBUG)
+EXEFILES = postfix dfs
 
-all: postfix 
+.PHONY: all clean
 
-postfix: postfix.c 
-	$(CC) $(BIN) $(INCLUDE) $(OBJFLAG) $@ $(CFLAG) $^ $(DEBUG)
+all: $(EXEFILES)
 
-clear: 
-	@echo "nothing to be deleted!";
+$(EXEFILES): $(BIN)
+
+# postfix: postfix.c 
+# 	$(CC) $(BIN) $(INCLUDE) $(OBJFLAG) $@ $(CFLAG) $^ $(DEBUG)
+
+clean: 
+	rm postfix dfs
 

@@ -5,7 +5,7 @@
 BASE = ..
 INCLUDE = $(BASE)/include
 
-CFLAGS = -O2 -g -I$(INCLUDE)
+CFLAGS = -g -I$(INCLUDE)
 CC = gcc
 OBJFLAG = -o
 LIBNAME = $(BASE)/libez.a
@@ -32,3 +32,4 @@ ez_unit.o: $(INCLUDE)/ez.h $(INCLUDE)/ez_unit.h
 
 clean:
 	rm $(EXEFILES)
+	rm ez_unit.o

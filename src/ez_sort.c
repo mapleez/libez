@@ -39,7 +39,6 @@ ez_select_sort (
 		bool asc)  // from big to small
 {
 	int index, step = 0, min;
-	// TODO, error when ASC
 	int order_flag = asc ? 
 		SMALLER :  // from big to small
 		BIGGER;		// from small to big
@@ -94,10 +93,9 @@ ez_insert_sort (
 
 	int index, ptr;
 	void* tmp = NULL;
-	// TODO ... error when ASC
 	int order_flag = asc ? 
-		SMALLER: // from bigger to smaller
-		BIGGER; // from smaller to bigger
+		BIGGER: // from bigger to smaller
+		SMALLER; // from smaller to bigger
 
 	if (!arr || !cmpfxn)
 		return;
@@ -123,6 +121,43 @@ ez_insert_sort (
 	tmp = NULL;
 }
 
+#if 0 
+/* only for debug */
+void ez_insert_sort_i (int* arr, 
+		int num, cmp_func cmpfxn) {
+	
+	int index, ptr;
+	int tmp = 0;
+	// TODO ... error when ASC
+	// int order_flag = asc ? 
+	//	SMALLER: // from bigger to smaller
+	//	BIGGER; // from smaller to bigger
+
+	if (!arr || !cmpfxn)
+		return;
+	for (index = 1; index < num; ++ index) {
+		ptr = index - 1;
+		// important
+		// memcpy (tmp, (arr + index * elm_size), elm_size);
+		tmp = arr [index];
+
+		while (ptr >= 0 && 
+			  (cmpfxn (arr + ptr, &tmp) == SMALLER))
+		{
+			// memcpy (arr + (ptr + 1) * elm_size, 
+			// 		arr + ptr * elm_size,
+			// 		elm_size);
+			arr [ptr + 1] = arr [ptr];
+			ptr --;
+		}
+		// memcpy (arr + (ptr + 1) * elm_size, tmp, elm_size);
+		arr [ptr + 1] = tmp;
+	}
+
+	// free (tmp);
+	// tmp = NULL;
+}
+#endif // DEBUG
 
 /*
    Bubble Sort
@@ -136,10 +171,9 @@ ez_bubble_sort (
 		bool asc) 
 {
 	int index = num - 1, step;
-	// TODO, error when ASC
 	int order = asc ?
-		SMALLER : // from small to big 
-		BIGGER; // from big to small
+		BIGGER: // from small to big 
+		SMALLER; // from big to small
 
 	if (! arr || ! num || ! elm_size)
 		return;
