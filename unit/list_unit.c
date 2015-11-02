@@ -21,7 +21,7 @@ int main (argc, argv)
 {	
 	int i = 0, len = strlen (array) + 1;
 	_position ch;
-	mylist = create_list (); 
+	mylist = ez_list_create (); 
 	// _element buf = (_element) malloc (sizeof (_element));
 	if (NULL == mylist) {
 		println ("malloc error!");
@@ -30,12 +30,12 @@ int main (argc, argv)
 	_position pos = mylist;
 
 	// isempty ()
-	if (empty (mylist))
+	if (ez_list_empty (mylist))
 		println ("is empty!");
 	// insert ()
 	for (; i < len; i ++) {
 		if (pos != NULL &&
-				insert (mylist, 
+				ez_list_insert (mylist, 
 					array [i], pos)) {
 			printf ("insert %c\n", array [i]);
 		} else 
@@ -43,18 +43,18 @@ int main (argc, argv)
 		pos = (_position) (pos -> next);
 	}
 
-	if (find (mylist, (int) 'x') != NULL) 
+	if (ez_list_find (mylist, (int) 'x') != NULL) 
 		printf ("find %c \n", 'x');
 	else 
 		printf ("find %c error\n", 'x'); 
 
 
-	if ((ch = find_pre (mylist, (int) 'x')) != NULL) 
+	if ((ch = ez_list_find_pre (mylist, (int) 'x')) != NULL) 
 		printf ("find_pre %c \n", ch -> val);
 	else 
 		println ("find_pre error\n"); 
 
-	del_all (mylist);
+	ez_list_del_all (mylist);
 
 	return 0;
 }

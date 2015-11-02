@@ -10,7 +10,7 @@ bool full_queue (_queue _q) {
 }
 
 
-bool empty_queue (_queue) {
+bool empty_queue (_queue _q) {
 
 	return false;
 }
@@ -44,19 +44,19 @@ bool enqueue (_queue _q, _element _e) {
 }
 
 
-bool dequeue (_queue) {
+bool dequeue (_queue _q) {
 	if (! _q)
 		return false;
 }
 
 
-_element* front (_queue) {
+_element* front (_queue _q) {
 
 	return NULL;
 }
 
 
-_element* frontanddequeue (_queue) {
+_element* frontanddequeue (_queue _q) {
 
 	return NULL;
 }

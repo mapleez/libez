@@ -36,6 +36,15 @@ extern pez_inet_sock
 extern void
  ez_dispose_inet_sock (pez_inet_sock);
 
+extern char* 
+ ez_addr_to_string (char*, struct sockaddr_in*);
+
+extern int
+ ez_stringaddr_to_int (int*, char*);
+
+extern char*
+ ez_int_to_stringaddr (char*, int);
+
 #ifdef __cplusplus
 }
 #endif

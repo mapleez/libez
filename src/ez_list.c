@@ -23,23 +23,30 @@
 //	struct _node* next;
 //}; 
 
-bool empty (_list _l) {
+bool ez_list_empty (_list _l) {
 	return (_l -> next == NULL);
 }
 
 
-_list create_list () {
+_list ez_list_create () {
 	_list res = (_list) calloc (1, _list_size);
 	return res;
 }
 
 
-bool islast (_list _l, _position _p) {
+bool ez_list_islast (_list _l, _position _p) {
 	return (_p -> next == NULL);
 }
 
 
-void del (_list _l, _element _e) {
+/*
+   Delete the element from list,
+   if the element doesn't exist, nothing
+   will be done.
+*/
+void 
+ez_list_del (_list _l, _element _e) {
+
 	_position tmp = _l;
 	if (equal (_l, _e)) { // list header
 		_l = _l -> next;
@@ -47,19 +54,20 @@ void del (_list _l, _element _e) {
 		tmp = NULL;
 		return;
 	}
-	while (tmp -> next != NULL && 
-            ! equal (tmp -> next, _e))
-		tmp = tmp -> next;
-    if (tmp -> next != NULL && 
-            equal (tmp -> next, _e)) {
-        tmp -> next = tmp -> next -> next;
-        free (tmp -> next);
-        tmp = NULL;
-    }
+
+	while (tmp -> next) {
+		if (! equal (tmp -> next, _e))
+			tmp = tmp -> next;
+		else {
+			tmp -> next = tmp -> next -> next;
+			free (tmp -> next);
+			tmp -> next = NULL;
+		}
+	}
 }
 
 
-bool insert (_list _l, _element _e, _position _p) {
+bool ez_list_insert (_list _l, _element _e, _position _p) {
     _position tmp = (_position) malloc (_list_size);
     if (tmp == NULL) return false;
     tmp -> next = _p -> next;
@@ -70,27 +78,37 @@ bool insert (_list _l, _element _e, _position _p) {
 }
 
 
-_position find (_list _l, _element _e) {
+/*
+   Find the first element equaling argument @2,
+   If such element doesn't exist, return NULL,
+   else return position.
+*/
+_position 
+ez_list_find (_list _l, _element _e) {
+
     _position p = _l;
-    while (p -> next != NULL && 
-            ! equal (p, _e))
+    while (p -> next && ! equal (p, _e))
         p = p -> next;
-    return (equal (p, _e) ? 
-            p : NULL);
+	return p;
+    // return (equal (p, _e) ? 
+    //         p : NULL);
 } 
 
-_position find_pre (_list _l, _element _e) {    
+_position 
+ez_list_find_pre (_list _l, _element _e) {    
+
     _position pre = _l;
     if (equal (pre, _e))
         return NULL;
-    while (pre -> next != NULL && 
+    while (pre -> next && 
             ! equal (pre -> next,  _e)) 
         pre = pre -> next;
-    return (equal (pre, _e) ? 
-            pre : NULL);
+	return pre;
+    // return (equal (pre, _e) ? 
+    //         pre : NULL);
 }
 
-void del_all (_list _l) {
+void ez_list_del_all (_list _l) {
     _position tmp = _l, ptr;
     while (tmp -> next != NULL) {
         ptr = tmp -> next;
@@ -120,7 +138,7 @@ void del_all (_list _l) {
 //
 //}
 
-bool insert_real (_list _l, _element _e) {
+bool ez_list_insert_real (_list _l, _element _e) {
 	_position p = _l;
 	_position elm = calloc (1, _list_size);
 
