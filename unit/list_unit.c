@@ -7,10 +7,9 @@
 #include <stddef.h>
 
 
-
-char* array = "typdef string stdilb"
-			  "unit.c share bin bookmarks"
-			  "extern void del list element first";
+int array [] = {
+1,2,3,4,5,6,7,8,9, 10,
+11,12,13, 14,15,16,17,18,19,20,21,22,23};
 
 
 _list mylist;
@@ -19,7 +18,7 @@ int main (argc, argv)
 	int argc;
 	char* argv [];
 {	
-	int i = 0, len = strlen (array) + 1;
+	int i = 0, len = 23;
 	_position ch;
 	mylist = ez_list_create (); 
 	// _element buf = (_element) malloc (sizeof (_element));
@@ -43,16 +42,16 @@ int main (argc, argv)
 		pos = (_position) (pos -> next);
 	}
 
-	if (ez_list_find (mylist, (int) 'x') != NULL) 
-		printf ("find %c \n", 'x');
+	if (ez_list_find (mylist, (int) 20)!= NULL) 
+		printf ("find %d \n", 20);
 	else 
-		printf ("find %c error\n", 'x'); 
+		printf ("find %d error\n", 20); 
 
 
-	if ((ch = ez_list_find_pre (mylist, (int) 'x')) != NULL) 
-		printf ("find_pre %c \n", ch -> val);
+	if ((ch = ez_list_find_pre (mylist, (int) 12)) != NULL) 
+		printf ("find_pre %d \n", ch -> val);
 	else 
-		println ("find_pre error\n"); 
+		printf ("find_pre %d error\n", ch -> val); 
 
 	ez_list_del_all (mylist);
 
