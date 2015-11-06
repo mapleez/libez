@@ -11,6 +11,20 @@
 #	define println(___s) \
 		printf ("%s\n", ___s)
 
+#ifdef __GNUC__
+// depend with byte order
+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+#	define tobigend16(___D)  (((uint16_t)((___D) & 0xff00) >> 8) | ((uint16_t)((___D) & 0x00ff) << 8))
+#	define tolittleend16(___D) (___D)
+
+#elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+
+#	define tolittleend16(___D)  (((uint16_t)((___D) & 0xff00) >> 8) | ((uint16_t)((___D) & 0x00ff) << 8))
+#	define tobigend16(___D)  (___D)
+#endif
+
+#endif // ~ __GNUC__
+
 #	define BIGGER	(-1)
 #	define EQUAL  	(0)
 #	define SMALLER  (1)
