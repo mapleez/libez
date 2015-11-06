@@ -53,13 +53,14 @@ ez_addr_to_string
 // return INADDR_ANY
 // else return 
 int
-ez_stringaddr_to_int (int* _iaddr, char* _addr) {
-	if (! _addr || !_iaddr)
+ez_stringaddr_to_int (char* _addr) {
+	int iaddr;
+	if (! _addr)
 		return -1;
 	if ('*' == *_addr)
-		return *_iaddr = 0;
+		return 0;
 	char* ptr = _addr;
-	unsigned char* iptr = (unsigned char*) _iaddr;
+	unsigned char* iptr = (unsigned char*) &iaddr;
 	while ('\0' != *ptr) {
 		if (isdigit (*ptr)) {
 			*iptr = *iptr * 10 + (*ptr - '0');
@@ -71,7 +72,7 @@ ez_stringaddr_to_int (int* _iaddr, char* _addr) {
 			return -1;
 	}
 
-	return *_iaddr;
+	return iaddr;
 }
 
 char*
