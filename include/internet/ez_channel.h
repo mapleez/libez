@@ -3,33 +3,10 @@
 
 #include "ez.h"
 
-typedef struct _ez_endpoint {
-	pez_endpoint* _next;
 
-#if defined __linux__ || defined __GNUC__ || defined __MINGW__
-	int _sockfd;
-#else
-	SOCKET _sockfd;
-#endif // __linux__ || __GNUC___
-
-	void (_recv_callback*) (void*);
-	void (_send_callback*) (void*);
-
-	void* _recvdata;
-	void* _senddata;
-
-} ez_endpoint
-	* pez_endpoint;
-
-
-typedef struct _ez_chnl_conf {
-
-	int _sendtimeout;
-
-} ez_chnl_conf,
-	* pez_chnl_conf;
-
-
+/*
+   Socket array bind to a same remote address
+*/
 typedef struct _ez_channel {
 
 	pez_endpoint * _next;
@@ -39,9 +16,9 @@ typedef struct _ez_channel {
 } ez_channel,
 	* pez_channel;
 
-
 // --------- channel -------------
 
+// initialize channel
 extern pez_channel
  ez_init_channel
  (const char*, const unsigned short);
@@ -68,12 +45,12 @@ extern int
 
 // send datas from all endpoints
 extern int
- ez_channel_send (pez_channel, void*, int);
+ ez_channel_send (pez_channel);
 
 
 // recv datas from all endpoints
 extern int
- ez_channel_recv (pez_channel, void*, int*);
+ ez_channel_recv (pez_channel);
 
 
 // poll all endpoints
@@ -82,30 +59,6 @@ extern int
 
 
 // ---------- endpoint ------------
-
-// send data at this endpoint;
-// extern int
-//  ez_endpoint_send (pez_endpoint, void*, int);
-// 
-// 
-// // recv data at this endpoint;
-// extern int
-//  ez_endpoint_recv (pez_endpoint, void*, int*);
-// 
-// 
-// // poll data at this endpoint;
-// extern int
-//  ez_endpoint_poll (pez_endpoint);
-// 
-// 
-// // close this sock at this endpoint;
-// extern int
-//  ez_close_endpoint (pez_endpoint);
-// 
-// 
-// // dispose this endpoint.
-// extern int
-//  ez_dispose_endpoint (pez_endpoint);
 
 
 #endif // ~ _EZ_CHANNEL_H_
