@@ -1,5 +1,6 @@
 #include "internet/ez_channel.h"
 #include "internet/ez_socktools.h"
+#include <stdlib.h>
 
 #ifdef __MSC_VER
 static int initilized = 0;
@@ -10,7 +11,7 @@ static int initilized = 0;
  * @2 -- the remote port if needed.
 */
 pez_channel ez_init_channel 
-(const char* _addr, const unsigned short _port) {
+(char* _addr, const unsigned short _port) {
 	pez_channel channel;
 
 #ifdef __MSC_VER
@@ -37,15 +38,20 @@ pez_channel ez_init_channel
 	return channel;
 }
 
-void ez_config_channel 
-(pez_channel _chan, pez_chnl_conf _conf) {
-	// TODO
-}
+// void ez_config_channel 
+// (pez_channel _chan, pez_chnl_conf _conf) {
+// }
 
 
 int ez_open_channel (pez_channel _chan) {
-	int num = _chan -> _num;
-	pez_endpoint ptr = _chan -> _next;
+	int num;
+	pez_endpoint ptr;
+
+	if (! _chan)
+		return 0;
+	num = _chan -> _num;
+	ptr = _chan -> _next;
+
 
 	while (ptr) {
 		// if failure, return -1
@@ -62,7 +68,7 @@ int ez_open_channel (pez_channel _chan) {
 
 
 int ez_add_endpoint 
-	(pez_channel* _chan, pez_endpoint _endpnt) {
+	(pez_channel _chan, pez_endpoint _endpnt) {
 
 	if (! _chan || ! _endpnt) return 0;
 	_endpnt -> _next = _chan -> _next;
@@ -153,13 +159,14 @@ int ez_channel_send
 		if (!! select (ptr -> _sockfd + 1,
 			NULL, &wfds, NULL, &tv)) 
 			ptr -> _send_caller (ptr, _arg);
+
 		ptr = ptr -> _next;
 	}
 
 }
 
 int 
-ez_channel_recv (pez_channel _chan, void* arg) {
+ez_channel_recv (pez_channel _chan, void* _arg) {
 	fd_set rfds;
 	struct timeval tv;
 	pez_endpoint ptr = _chan -> _next;

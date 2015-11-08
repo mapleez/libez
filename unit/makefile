@@ -5,7 +5,7 @@
 BASE = ..
 INCLUDE = $(BASE)/include
 
-CFLAGS = -g -I$(INCLUDE)
+CFLAGS = -g -I$(INCLUDE) -I$(INCLUDE)/internet
 CC = gcc
 OBJFLAG = -o
 LIBNAME = $(BASE)/libez.a

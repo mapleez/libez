@@ -1,4 +1,4 @@
-#include "ez_sock.h"
+#include "internet/ez_socktools.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -7,21 +7,21 @@
 extern "C" {
 #endif 
 
-pez_inet_sock
-ez_create_inet_sock 
-(const char* _ip, const int _port) {
-	pez_inet_sock sock = 
-		malloc (sizeof (ez_inet_sock));
-	sock -> _port = _port;
-	sock -> _ip._ip_i = inet_addr (_ip);
-	return sock;
-}
+// pez_inet_sock
+// ez_create_inet_sock 
+// (const char* _ip, const int _port) {
+// 	pez_inet_sock sock = 
+// 		malloc (sizeof (ez_inet_sock));
+// 	sock -> _port = _port;
+// 	sock -> _ip._ip_i = inet_addr (_ip);
+// 	return sock;
+// }
 
-void
-ez_dispose_inet_sock (pez_inet_sock _psock) {
-	if (_psock) free (_psock);
-	_psock = NULL;
-}
+// void
+// ez_dispose_inet_sock (pez_inet_sock _psock) {
+// 	if (_psock) free (_psock);
+// 	_psock = NULL;
+// }
 
 // OK, just for may C study :(
 // char* __libez_create (int, int);
@@ -85,6 +85,14 @@ ez_int_to_stringaddr (char* _addr, int _iaddr) {
 	return NULL;
 }
 
+int ez_sockfd_to_point 
+	(int _fd, struct sockaddr* _res)
+{
+	socklen_t addr_len = 0;
+	if (! _res) return -1;
+	addr_len = sizeof (*_res);
+	return getsockname (_fd, _res, &addr_len); 
+}
 
 #ifdef __cplusplus
 }

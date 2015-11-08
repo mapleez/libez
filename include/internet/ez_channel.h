@@ -2,14 +2,21 @@
 #	define _EZ_CHANNEL_H_
 
 #include "ez.h"
+#include "ez_endpoint.h"
 
+#ifndef __linux__
+#include <winsock2.h>
+#else
+// #include <sys/socket.h>
+#include <arpa/inet.h>
+#endif
 
 /*
    Socket array bind to a same remote address
 */
 typedef struct _ez_channel {
 
-	pez_endpoint * _next;
+	pez_endpoint _next;
 	struct sockaddr_in _remote;
 	int _num;
 
@@ -21,12 +28,12 @@ typedef struct _ez_channel {
 // initialize channel
 extern pez_channel
  ez_init_channel
- (const char*, const unsigned short);
+ (char*, const unsigned short);
 
-// open all 
-extern void
- ez_config_channel 
- (pez_channel, pez_chnl_conf);
+// configure all the channel.
+// extern void
+//  ez_config_channel 
+//  (pez_channel, pez_chnl_conf);
 
 
 // open all endpoints in this channel
@@ -37,6 +44,7 @@ extern int
 // add endpoint to the channel head.
 extern int
  ez_add_endpoint (pez_channel, pez_endpoint);
+
 
 // we only remove the endpoint from internel list,
 // but we do not dispose it.
@@ -52,7 +60,7 @@ extern int
 
 // recv datas from all endpoints
 extern int
- ez_channel_recv (pez_channel);
+ ez_channel_recv (pez_channel, void*);
 
 
 /* 

@@ -28,12 +28,20 @@ extern int
 extern char*
  ez_int_to_stringaddr (char*, int);
 
-extern void 
+/*
+ * Get the bounded address from a socket fd.
+ * If successful ,return 0, otherwise return 
+ * -1;
+ * This function will call function 
+ *     getsockname ();
+ * If the @1 is NULL, return -1;
+*/
+extern int
  ez_sockfd_to_point 
 #if defined __GNUC__ || defined __MINGW__
- (int, pez_endpoint);
+ (int, struct sockaddr*);
 #else
- (SOCKET, pez_endpoint);
+ (SOCKET, struct sockaddr*);
 #endif
 
 #ifdef __cplusplus

@@ -3,15 +3,21 @@
 
 #include "ez.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif 
+
+
+typedef struct _ez_endpoint 
+	ez_endpoint, *pez_endpoint;
+
+typedef int (*callback) (void*, void*);
+
 /*
    socket array list, head list
 */
-
-typedef int (callback*) (void*, void*);
-
-typedef 
 struct _ez_endpoint {
-	pez_endpoint* _next;
+	pez_endpoint _next;
 
 #if defined __linux__ || defined __GNUC__ || defined __MINGW__
 	int _sockfd;
@@ -25,8 +31,7 @@ struct _ez_endpoint {
 	void* _recv_buff;
 	void* _send_buff;
 
-} ez_endpoint
-	* pez_endpoint;
+}; 
 
 /*
    create an endpoint.
@@ -45,7 +50,7 @@ struct _ez_endpoint {
    else return NULL;
 */
 extern pez_endpoint 
- ez_endpoint_init (int, int, int, callback, callback, int, int);
+ ez_endpoint_init (int, int, int, callback, callback, callback, int, int);
 
 
 /*
@@ -59,6 +64,9 @@ extern pez_endpoint
 extern int
  ez_endpoint_despose (pez_endpoint);
 
+#ifdef __cplusplus
+}
+#endif
 
 /*
 extern int
