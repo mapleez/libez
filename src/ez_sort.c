@@ -27,6 +27,29 @@ size_t ez_mem_swap (void* a, void* b, size_t size) {
 	return size;
 }
 
+
+// void ez_simple_swap (void* _a, void* _b) {
+// 	*(int*) _a ^= *(int*) _b;
+// 	*(int*) _b ^= *(int*) _a;
+// 	*(int*) _a ^= *(int*) _b;
+// }
+
+/*
+   Pointer Swap
+*/
+void ez_ptr_swap (void** _a, void** _b) {
+	int* tmp = (int*) *_a;
+	*_a = *_b;
+	*_b = (void*) tmp;
+	// (intptr_t _a, intptr_t _b) {
+
+	// ((intptr_t) *_a) ^= ((intptr_t) *_b);
+	// ((intptr_t) *_b) ^= ((intptr_t) *_a);
+	// ((intptr_t) *_a) ^= ((intptr_t) *_b);
+
+}
+
+
 /*
    Selection Sort
 */
@@ -192,4 +215,21 @@ ez_bubble_sort (
 
 }
 
+#if 0
+int main (int argc, char* argv []) {
+	
+	char x = '\x30';
+	char y = '\x39';
+	// int* a = &argc;
+	// int x = 100;
+	// int y = 20;
+	// int* b = &x;
+	// ez_ptr_swap (&a, &b);
+	ez_simple_swap (char, &x, &y);
+
+	printf ("");
+	return 0;
+
+}
+#endif
 

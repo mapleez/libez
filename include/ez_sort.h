@@ -12,6 +12,23 @@ extern
 size_t ez_mem_swap (void*, void*, size_t);
 
 /*
+ * Simple Swap
+*/
+#	define ez_simple_swap(___type, ___a, ___b)  \
+	do {    \
+		*(___type*) ___a ^= *(___type*) ___b;	\
+		*(___type*) ___b ^= *(___type*) ___a;	\
+		*(___type*) ___a ^= *(___type*) ___b;	\
+	} while (0);
+
+
+/*
+   Pointer Swap
+*/
+extern
+void ez_ptr_swap (void* *, void* *);
+
+/*
    Selection Sort
 */
 extern
