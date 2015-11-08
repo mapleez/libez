@@ -7,7 +7,7 @@
    socket array list, head list
 */
 
-typedef void (callback*) (void*);
+typedef int (callback*) (void*, void*);
 
 typedef 
 struct _ez_endpoint {
@@ -20,6 +20,7 @@ struct _ez_endpoint {
 #endif // __linux__ || __GNUC___
 	callback _send_caller;
 	callback _recv_caller;
+	callback _conn_caller;
 
 	void* _recv_buff;
 	void* _send_buff;
@@ -49,6 +50,8 @@ extern pez_endpoint
 
 /*
    Dispose socket and its buffer blocks.
+   This function will shutdown both buffer
+   and close socket.
 
    @1 -- an entity to dispose.
    It will always return 1;
