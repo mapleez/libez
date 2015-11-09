@@ -6,10 +6,14 @@
 static int initilized = 0;
 #endif // ~ __MSC_VER
 
-/* initialize
- * @1 -- the remote address to bind.
- * @2 -- the remote port if needed.
-*/
+
+/* Initialize channel
+ * @1 address to bind.
+ * @2 port to bind (for tcp and udp).
+ * Return : If successful, a new channel will
+ *    be created and returned its ptr. Otherwise
+ *    return NULL.
+ */
 pez_channel ez_init_channel 
 (char* _addr, const unsigned short _port) {
 	pez_channel channel;
@@ -43,19 +47,26 @@ pez_channel ez_init_channel
 // }
 
 
+/* 
+ * Open all endpoints in this channel
+ * @1 The channel to be opened.
+ * Return : if successful, it would return
+ *    the number of endpoint been opened 
+ *    successfully almost.
+ */
 int ez_open_channel (pez_channel _chan) {
-	int num;
+	int num = 0;
 	pez_endpoint ptr;
 
 	if (! _chan)
 		return -1;
-	num = _chan -> _num;
+	// num = _chan -> _num;
 	ptr = _chan -> _next;
 
 
 	while (ptr) {
 		// if failure, return -1
-		num -= ptr -> 
+		num += ptr -> 
 			_conn_caller (ptr, _chan);
 		
 		ptr = ptr -> _next;
@@ -67,6 +78,13 @@ int ez_open_channel (pez_channel _chan) {
 }
 
 
+/* 
+ * Add endpoint to the channel head.
+ * @1 The target channel.
+ * @2 The endpoint to be added.
+ * Return : If success then return 1, 
+ *     otherwise return 0.
+*/
 int ez_add_endpoint 
 	(pez_channel _chan, pez_endpoint _endpnt) {
 
@@ -78,6 +96,15 @@ int ez_add_endpoint
 }
 
 
+/* 
+ * We only remove the endpoint from internel list,
+ * but we do not dispose it.
+ * @1 The target channel.
+ * @2 The endpoint to be removed. We only cheched
+ * if the socket number is equied.
+ * Return : If success then return 1, otherwise
+ *      it return 0;
+*/
 int ez_remove_endpoint 
 	(pez_channel _chan, pez_endpoint _endpnt) {
 
@@ -143,10 +170,23 @@ int ez_remove_endpoint
 }
 
 
+/*
+ * Send datas from all endpoints
+ * maybe @2 could be remove! Humm ...
+ * All the endpoint Will call its write callback
+ *       that you registed or the default.
+ * Return : returns the count of successfully
+ *       calling write callback. That is, if 
+ *       2 endpoint successfully call its 
+ *       write callback, the return value would
+ *       be 2. And if no one is successful, return
+ *       0.
+*/
 int ez_channel_send 
 	(pez_channel _chan, void* _arg) {
 	fd_set wfds;
 	struct timeval tv;
+	int num = 0;
 	pez_endpoint ptr = _chan -> _next;
 
 	tv.tv_sec = 0;
@@ -159,13 +199,28 @@ int ez_channel_send
 
 		if (!! select (ptr -> _sockfd + 1,
 			NULL, &wfds, NULL, &tv)) 
-			ptr -> _send_caller (ptr, _chan);
+			ptr -> _send_caller (ptr, _chan) &&
+				++ num; 
 
 		ptr = ptr -> _next;
 	}
 
+	return num;
 }
 
+
+/*
+ * recv datas from all endpoints
+ * maybe @2 could be remove! @_*
+ * All the endpoint Will call its recv callback
+ *       that you registed or the default.
+ * Return : returns the count of successfully
+ *       calling recv callback. That is, if 
+ *       2 endpoint successfully call its 
+ *       write callback, the return value would
+ *       be 2. And if no one is successful, return
+ *       0.
+*/
 int 
 ez_channel_recv (pez_channel _chan, void* _arg) {
 	fd_set rfds;
@@ -188,6 +243,14 @@ ez_channel_recv (pez_channel _chan, void* _arg) {
 
 }
 
+
+/* 
+ * Dispose all the endpoints.
+ * This function will return the remined
+ * endpoint number in the list. That is to
+ * say. If all the endpoint dispose successful,
+ * then it will return 0. otherwise non zero;
+*/
 int
 ez_dispose_all (pez_channel _chan) {
 	if (! _chan) return 0;

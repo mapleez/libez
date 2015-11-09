@@ -31,6 +31,24 @@ _default_icmp_conn_callback (void*, void*);
 #	define _default_read_buff_len 256
 #	define _default_write_buff_len 256
 
+/*
+   create an endpoint.
+
+   @1 -- socket domain.
+   @2 -- socket type.
+   @3 -- protocol.
+   @4 -- read call back, if NULL, will be 
+     setted by default function.
+   @5 -- write call back, if NULL, will be 
+	 setted by default function.
+   @6 -- connection call back, if NULL, will
+     be setted by default function.
+   @7 -- read buffer length.
+   @8 -- write buffer length.
+
+   Return ez_endpoint ptr if successful,
+   else return NULL;
+*/
 pez_endpoint 
 ez_endpoint_init 
 	(int _domain, int _type, int _proto, 
@@ -81,6 +99,14 @@ ez_endpoint_init
 }
 
 
+/*
+   Dispose socket and its buffer blocks.
+   This function will shutdown both buffer
+   and close socket.
+
+   @1 -- an entity to dispose.
+   It will always return 1;
+*/
 int ez_endpoint_despose (pez_endpoint _endpnt) {
 	if (_endpnt) {
 
@@ -107,6 +133,11 @@ int ez_endpoint_despose (pez_endpoint _endpnt) {
 	return 1;
 }
 
+/*
+ * Return received bytes number
+ * @1 -- endpoint entity.
+ * @2 -- channel entity.
+*/
 static int
 _default_read_callback (void* _endpnt, void* _arg) {
 	pez_endpoint end = _endpnt;
@@ -119,6 +150,12 @@ _default_read_callback (void* _endpnt, void* _arg) {
 	return res;
 }
 
+/*
+ * Default write callback to be Registed into
+ * endpoint if user support NULL write callback.
+ * @1 -- endpoint entity.
+ * @2 -- channel entity.
+*/
 static int
 _default_write_callback (void* _endpnt, void* _arg){
 	pez_endpoint end = _endpnt;
@@ -131,6 +168,14 @@ _default_write_callback (void* _endpnt, void* _arg){
 	return res;
 }
 
+
+/*
+ * Default connect callback in TCP protocol,
+ * to be Registed into endpoint if user 
+ * support NULL write callback.
+ * @1 -- endpoint entity.
+ * @2 -- channel entity.
+*/
 static int
 _default_tcp_conn_callback (void* _endpnt, void* _arg) {
 	pez_endpoint end = _endpnt;
