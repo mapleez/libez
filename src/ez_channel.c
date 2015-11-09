@@ -48,7 +48,7 @@ int ez_open_channel (pez_channel _chan) {
 	pez_endpoint ptr;
 
 	if (! _chan)
-		return 0;
+		return -1;
 	num = _chan -> _num;
 	ptr = _chan -> _next;
 
@@ -56,7 +56,7 @@ int ez_open_channel (pez_channel _chan) {
 	while (ptr) {
 		// if failure, return -1
 		num -= ptr -> 
-			_conn_caller (ptr, &_chan -> _remote);
+			_conn_caller (ptr, _chan);
 		
 		ptr = ptr -> _next;
 	}
@@ -73,6 +73,7 @@ int ez_add_endpoint
 	if (! _chan || ! _endpnt) return 0;
 	_endpnt -> _next = _chan -> _next;
 	_chan -> _next = _endpnt;
+	++ _chan -> _num;
 	return 1;
 }
 
@@ -158,7 +159,7 @@ int ez_channel_send
 
 		if (!! select (ptr -> _sockfd + 1,
 			NULL, &wfds, NULL, &tv)) 
-			ptr -> _send_caller (ptr, _arg);
+			ptr -> _send_caller (ptr, _chan);
 
 		ptr = ptr -> _next;
 	}
@@ -181,7 +182,7 @@ ez_channel_recv (pez_channel _chan, void* _arg) {
 
 		if (!! select (ptr -> _sockfd + 1,
 			&rfds, NULL, NULL, &tv)) 
-			ptr -> _recv_caller (ptr, _arg);
+			ptr -> _recv_caller (ptr, _chan);
 		ptr = ptr -> _next;
 	}
 

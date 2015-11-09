@@ -7,7 +7,7 @@
 #ifndef __linux__
 #include <winsock2.h>
 #else
-// #include <sys/socket.h>
+
 #include <arpa/inet.h>
 #endif
 
@@ -52,13 +52,14 @@ extern int
  ez_remove_endpoint (pez_channel, pez_endpoint);
 
 
-
 // send datas from all endpoints
+// maybe @2 could be remove! Humm ...
 extern int
  ez_channel_send (pez_channel, void*);
 
 
 // recv datas from all endpoints
+// maybe @2 could be remove! @_*
 extern int
  ez_channel_recv (pez_channel, void*);
 

@@ -39,12 +39,14 @@ struct _ez_endpoint {
    @1 -- socket domain.
    @2 -- socket type.
    @3 -- protocol.
-   @4 -- read call back, if NULL, will set
-	 default function.
-   @5 -- write call back, if NULL, will set
-     default function.
-   @6 -- read buffer length.
-   @7 -- write buffer length.
+   @4 -- read call back, if NULL, will be 
+     setted by default function.
+   @5 -- write call back, if NULL, will be 
+	 setted by default function.
+   @6 -- connection call back, if NULL, will
+     be setted by default function.
+   @7 -- read buffer length.
+   @8 -- write buffer length.
 
    Return ez_endpoint ptr if successful,
    else return NULL;

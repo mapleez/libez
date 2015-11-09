@@ -3,8 +3,19 @@
 
 int main (int argc, char* argv []) {
 	int res = 0;
+	bytes arg = (bytes) malloc (256);
 	pez_channel chan = ez_init_channel ("10.14.4.167", 21);
+	pez_endpoint end = ez_endpoint_init (AF_INET, 
+			SOCK_STREAM, IPPROTO_TCP, NULL, NULL,
+			NULL, 256, 256);
+	res = ez_add_endpoint (chan, end);
+
 	res = ez_open_channel (chan);
+	res = ez_channel_recv (chan, arg);
+	res = ez_remove_endpoint (chan, end);
+
+	res = ez_dispose_all (chan);
+	printf ("");
 
 	// char* ptr = ez_addr_to_string (,);
 	// printf ("%s\n", ptr);

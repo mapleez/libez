@@ -1,4 +1,5 @@
-#include "internet/ez_endpoint.h"
+// #include "internet/ez_endpoint.h"
+#include "internet/ez_channel.h"
 #include <stdlib.h>
 
 #ifdef __MSC_VER
@@ -46,8 +47,10 @@ ez_endpoint_init
 
 	res = (pez_endpoint) 
 		malloc (sizeof (ez_endpoint));
-	if (res)
+	if (! res)
 		return NULL;
+
+	res -> _sockfd = sockfd;
 
 	// link list
 	res -> _next = NULL;
@@ -106,17 +109,40 @@ int ez_endpoint_despose (pez_endpoint _endpnt) {
 
 static int
 _default_read_callback (void* _endpnt, void* _arg) {
-	return -1;
+	pez_endpoint end = _endpnt;
+	pez_channel chan = _arg;
+	int res = 0;
+	if (! end || ! chan)
+		return 0;
+	res = recv (end -> _sockfd,
+			end -> _recv_buff, 0xff, 0);
+	return res;
 }
 
 static int
 _default_write_callback (void* _endpnt, void* _arg){
-	return -1;
+	pez_endpoint end = _endpnt;
+	pez_channel chan = _arg;
+	int res = 0;
+	if (! end || ! chan)
+		return 0;
+	res = send (end -> _sockfd, 
+			end -> _recv_buff, 0xff, 0);
+	return res;
 }
 
 static int
 _default_tcp_conn_callback (void* _endpnt, void* _arg) {
-	return -1;
+	pez_endpoint end = _endpnt;
+	pez_channel chan = _arg;
+	int res = 0;
+	if (! end || ! chan)
+		return 0;
+	res = connect (end -> _sockfd, 
+			(struct sockaddr*) &chan -> _remote, 
+			sizeof (struct sockaddr));
+	if (res) return 1;
+	return 0;
 }
 
 
