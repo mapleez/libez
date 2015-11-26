@@ -1,4 +1,6 @@
 #include "internet/ez_channel.h"
+#include <stdlib.h>
+#include <stdio.h>
 // #include "internet/ez_endpoint.h"
 
 int main (int argc, char* argv []) {
