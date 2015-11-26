@@ -10,9 +10,17 @@ extern "C" {
 extern int
 ez_bytes_index_sep (bytes, bytes, int, int);
 
-// returns the first byte in byte sequence.
+// returns the first index in byte sequence.
+// return -1 if error or @2 cannot be found
+// in @1
 extern int
 ez_bytes_index_byte (bytes, byte, int);
+
+// returns the number of bytes @2 apparance in @1
+// return -1 if error, return 0 if there is
+// no one.
+extern int
+ez_bytes_count_bytes (bytes, bytes, int, int);
 
 // reports whether the bytes @2 == @1
 extern int
