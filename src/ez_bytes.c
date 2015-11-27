@@ -50,23 +50,21 @@ int ez_bytes_index_sep
 
 int ez_bytes_count_bytes 
 (bytes _s, bytes _sep, int _slen, int _seplen) {
-  int i = 0, // the index of _s
-			num = 0; 
-	char c;
+  // int i = 0, // the index of _s
+	int num = 0; 
+	unsigned char c;
   bytes ptr = _s;
   if (! _slen || ! _seplen || 
       _slen < _seplen || ! _s || ! _sep)
     return -1;
 	c = *_sep;
 
-	// TODO
-	for (; i < _slen; /*++ i*/) {
+	while (ptr - _s < _slen) {
 		int idx = ez_bytes_index_byte (ptr, c, _slen);
 		if (idx < _slen - 1 ||
 				(idx == _slen - 1 && _seplen == 1))
 			if (ez_bytes_equal_sep (ptr, _sep, _seplen, _seplen)) {
 				++ num;
-				i += _seplen;
 				ptr += _seplen;
 			} else 
 				ptr += 1;

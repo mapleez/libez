@@ -15,10 +15,11 @@ int main (int argc, char* argv []) {
 
 	// test ez_bytes_count_bytes ()
 	{
-		// ERROR 11/27
+		char * _s = "fafnjnvajnvkajzhongfafnkvnajflejfzhong";
 		int count = ez_bytes_count_bytes 
-			(s, sep, strlen (s), strlen (sep));
-		printf ("%s  %s  count = %d\n", s, sep, count);
+			(_s, "zhong", strlen (_s), strlen ("zhong"));
+		printf ("%s  %s  count = %d\n", _s, "zhong", count);
 	}
 	return 0;
 }
+
