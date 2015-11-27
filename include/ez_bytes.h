@@ -1,6 +1,12 @@
 #ifndef _EZ_BYTES_H_
 # define _EZ_BYTES_H_
 
+/*
+ * author : ez
+ * date : 2015/11/26
+ * describe : algorithm for bytes sequence.
+*/
+
 #include "ez.h"
 
 #ifdef __cplusplus

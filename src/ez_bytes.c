@@ -40,7 +40,7 @@ int ez_bytes_index_sep
     int idx = ez_bytes_index_byte (ptr, c, _slen);
     if (idx < _slen - 1 || 
         (idx == _slen - 1 && _seplen == 1)) {
-      if (ez_bytes_equal_sep (ptr, _sep, _slen, _seplen))
+      if (ez_bytes_equal_sep (ptr, _sep, _seplen, _seplen))
         return idx;
     }
   }
@@ -59,15 +59,17 @@ int ez_bytes_count_bytes
     return -1;
 	c = *_sep;
 
-	for (; i < _slen; ++ i) {
+	// TODO
+	for (; i < _slen; /*++ i*/) {
 		int idx = ez_bytes_index_byte (ptr, c, _slen);
 		if (idx < _slen - 1 ||
 				(idx == _slen - 1 && _seplen == 1))
-			if (ez_bytes_equal_sep (ptr, _sep, _slen, _seplen)) {
+			if (ez_bytes_equal_sep (ptr, _sep, _seplen, _seplen)) {
 				++ num;
 				i += _seplen;
-				ptr += i;
-			}
+				ptr += _seplen;
+			} else 
+				ptr += 1;
 	}
 
 	return num;
