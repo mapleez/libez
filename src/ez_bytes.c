@@ -10,17 +10,17 @@ int ez_bytes_index_byte (bytes _s, byte _b, int _slen) {
   return -1;
 }
 
-int ez_bytes_equal_sep 
+bool ez_bytes_equal_sep 
 (bytes _s, bytes _sep, int _slen, int _seplen) {
   if (! _s || ! _sep || _slen != _seplen)
-    return 0;
+    return false;
   -- _slen;
 
   for (; _slen >= 0; -- _slen) {
     if (_s [_slen] != _sep [_slen])
-      return 0;
+      return false;
   }
-  return 1;
+  return true;
 }
 
 
@@ -73,4 +73,17 @@ int ez_bytes_count_bytes
 	return num;
 }
 
+
+bool ez_bytes_hasprefix 
+(bytes _s, bytes _sep, int _slen, int _seplen) {
+	return _seplen <= _slen && 
+		ez_bytes_equal_sep (_s, _sep, _seplen, _seplen);
+}
+
+
+bool ez_bytes_hassuffix 
+(bytes _s, bytes _sep, int _slen, int _seplen) {
+	return _seplen <= _slen && 
+		ez_bytes_equal_sep (_s + _slen - _seplen, _sep, _seplen, _seplen);
+}
 

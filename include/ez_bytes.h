@@ -8,6 +8,7 @@
 */
 
 #include "ez.h"
+#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -29,9 +30,16 @@ extern int
 ez_bytes_count_bytes (bytes, bytes, int, int);
 
 // reports whether the bytes @2 == @1
-extern int
+extern bool
 ez_bytes_equal_sep (bytes, bytes, int, int);
 
+
+extern bool 
+ez_bytes_hasprefix (bytes, bytes, int, int);
+
+
+extern bool 
+ez_bytes_hassuffix (bytes, bytes, int, int);
 
 #ifdef __cplusplus
 }
