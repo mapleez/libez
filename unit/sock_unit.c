@@ -17,7 +17,7 @@ int main (int argc, char* argv []) {
 	res = ez_remove_endpoint (chan, end);
 
 	res = ez_dispose_all (chan);
-	printf ("");
+	printf ("ok");
 
 	// char* ptr = ez_addr_to_string (,);
 	// printf ("%s\n", ptr);

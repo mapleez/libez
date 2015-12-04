@@ -5,6 +5,8 @@
 */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <stdarg.h>
 #include <time.h>
 #include "ez_log.h"
 
@@ -21,7 +23,7 @@ ez_logger_new (fname_build _func) {
 
 	if (! _func) {
 		res -> _type = LOGTYPE_DEFAULT;
-		res -> _nm_build = _def_get_logger_fname_by_date ();
+		res -> _nm_build = _def_get_logger_fname_by_date;
 	} else {
 		res -> _type = LOGTYPE_USER;
 		res -> _nm_build = _func;
@@ -32,38 +34,37 @@ ez_logger_new (fname_build _func) {
 	if (! res -> _fstream) {
 		// printf ("Error in opening file %s.\n", fname);
 		free (fname);
-		ez_static_logger_despose (res);
-		return res = NULL, 
-					 fname = NULL;
+		ez_logger_despose (&res);
+                fname = NULL;
 	}
 	return res;
 }
 
-void ez_static_logger_despose (pez_static_logger _log) {
-	if (_log) {
-		if (_log -> _fstream) {
-			int err = fclose (_log -> _fstream);
+void ez_logger_despose (pez_logger* _log) {
+	if (*_log) {
+		if ((*_log) -> _fstream) {
+			int err = fclose ((*_log) -> _fstream);
 			if (err)
 				println ("Error in close log file.\n");
 		}
-		free (_log);
-		_log = NULL;
+		free (*_log);
+		*_log = NULL;
 	}
 }
 
 // log with string
-bool ez_static_logger_log (pez_static_logger _log, const char* _str) {
+bool ez_logger_log (pez_logger _log, const char* _str) {
 	size_t wtlen = 0;
 	int str_len = strlen (_str);
 	if (! _log || ! _str) return false;
 
-	wtlen = fwrite (_str, sizeof (char), str_len, _log -> _fream);
+	wtlen = fwrite (_str, sizeof (char), str_len, _log -> _fstream);
 	return wtlen == ((size_t) str_len);
 }
 
 // log with format string
-bool ez_static_logger_logf 
-(pez_static_logger _log, const char* _fmt, ...) {
+bool ez_logger_logf 
+(pez_logger _log, const char* _fmt, ...) {
 	if (! _log || ! _fmt || ! _log -> _fstream) 
 		return false;
 	{
@@ -73,7 +74,7 @@ bool ez_static_logger_logf
 		err = vfprintf (_log -> _fstream, _fmt, args);
 		va_end (args);
 
-		if (done >= 0)
+		if (err >= 0)
 			return true;
 		else 
 			return false;
@@ -81,9 +82,18 @@ bool ez_static_logger_logf
 }
 
 static char* _def_get_logger_fname_by_date () {
-	char* fname = (char*) calloc (32, 0);
+	char* fname = (char*) calloc (0x10, 0);
 	time_t itime = time (NULL);
-	struct tm* timefmt = localtime (&itime);
-	// TODO
+
+        // this is static memory.
+        size_t len = strftime (fname, 0x10, 
+            "Log%Y%m%d.log", localtime (&itime));
+        if (len >= 0)
+          return fname;
+        else {
+          free (fname);
+          return fname = NULL;
+        }
 }
+
 

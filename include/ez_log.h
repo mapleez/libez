@@ -42,13 +42,13 @@ typedef struct _ez_logger {
 
 extern pez_logger ez_logger_new (fname_build);
 
-extern void ez_logger_despose (pez_logger);
+extern void ez_logger_despose (pez_logger*);
 
 // log with string
 extern bool ez_logger_log (pez_logger, const char*);
 
 // log with format string
-extern bool ez_logger_logf (pez_logger, const char*, const char*, ...);
+extern bool ez_logger_logf (pez_logger, const char*, ...);
 
 #ifdef __cplusplus
 }
