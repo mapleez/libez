@@ -1,3 +1,8 @@
+/*
+ * author : ez
+ * date : 2015/4/20
+ * describe : Depth first searching
+*/
 #include "ez_list.h"
 #include <stdio.h>
 #include <stdlib.h>
