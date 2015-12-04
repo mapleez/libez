@@ -21,6 +21,14 @@ extern "C" {
 
 #	define SIZE_LOGGER   (sizeof (ez_logger))
 
+#	define FILE_EXISTS(___FNAME)			(access ((___FNAME), F_OK) == 0)
+#	define FILE_READABLE(___FNAME)  	(access ((___FNAME), R_OK) == 0)
+#	define FILE_WRITABLE(___FNAME)  	(access ((___FNAME), W_OK) == 0)
+#	define FILE_EXECUTABLE(___FNAME)  (access ((___FNAME), X_OK) == 0)
+#	define FILE_RDWT(___FNAME)   (access ((___FNAME), R_OK | W_OK) == 0)
+#	define FILE_RDWTX(___FNAME)     \
+	(access ((___FNAME), R_OK | W_OK | X_OK) == 0)
+
 typedef char* (*fname_build) ();
 
 typedef struct _ez_logger {
