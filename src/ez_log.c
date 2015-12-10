@@ -10,6 +10,8 @@
 #include <time.h>
 #include "ez_log.h"
 
+// static char _buff [0x40];
+
 static char* _def_get_logger_fname_by_date ();
 
 pez_logger 
@@ -82,25 +84,29 @@ bool ez_logger_logf
 }
 
 // this function will add timestamp automatically
-inline bool
-ez_logger_logln (pez_logger _log, const char* _str) {
-
-  return false;
+bool ez_logger_logln 
+(pez_logger _log, const char* _str) {
+  char buff [0x30] = {0, };
+  time_t timestamp = time (NULL);
+  bool flag = !! strftime (buff, 0x30, 
+      "[%s] %Y/%m/%d %H:%M:%S", localtime (&timestamp));
+  return 
+    flag && ez_logger_logf (_log, "%s %s\n", buff, _str);
 }
 
 static char* _def_get_logger_fname_by_date () {
-	char* fname = (char*) calloc (0x10, 0);
-	time_t itime = time (NULL);
-
-        // this is static memory.
-        size_t len = strftime (fname, 0x10, 
-            "Log%Y%m%d.log", localtime (&itime));
-        if (len >= 0)
-          return fname;
-        else {
-          free (fname);
-          return fname = NULL;
-        }
+  char* fname = (char*) calloc (0x10, 0);
+  time_t itime = time (NULL);
+  
+  // this is static memory.
+  size_t len = strftime (fname, 0x10, 
+      "Log%Y%m%d.log", localtime (&itime));
+  if (len >= 0)
+    return fname;
+  else {
+    free (fname);
+    return fname = NULL;
+  }
 }
 
 

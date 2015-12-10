@@ -1,4 +1,5 @@
 #include "ez_log.h"
+#include <string.h>
 
 int main (argc, argv)
   int argc;
@@ -23,6 +24,8 @@ int main (argc, argv)
   // test ez_logger_new ()
   {
     bool err = false;
+    char buff [16];
+    memset (buff, '\0', 0x10);
     pez_logger logger = ez_logger_new (NULL);
     int i = 0;
     if (! logger) {
@@ -36,6 +39,12 @@ int main (argc, argv)
 
     for (i = 0; i < 100; i ++)
       ez_logger_logf (logger, "%s\n", "hello, world");
+
+    for (i = 0; i < 100; i ++) {
+      sprintf (buff, "%d ", i);
+      printf ("%s\n", ez_logger_logln (logger, buff) ? 
+          "true" : "false");
+    }
 
     ez_logger_despose (&logger);
     println ("despose ok!");
