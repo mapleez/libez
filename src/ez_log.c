@@ -81,6 +81,13 @@ bool ez_logger_logf
 	}
 }
 
+// this function will add timestamp automatically
+inline bool
+ez_logger_logln (pez_logger _log, const char* _str) {
+
+  return false;
+}
+
 static char* _def_get_logger_fname_by_date () {
 	char* fname = (char*) calloc (0x10, 0);
 	time_t itime = time (NULL);
