@@ -6,43 +6,84 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-struct _mbs_unit_be;
-struct _mbs_unit_le;
+// for request frame header, and also the response
+// frame header.
 struct _mbs_tcp_req_head;
-struct _mbs_tcp_req_body;
-struct _mbs_tcp_rsp;
+
+// for request frame
+struct _mbs_tcp_req_body_wr_s;
+struct _mbs_tcp_req_body_wr_m;
+struct _mbs_tcp_req_body_rd;
+
+// for response frame
+struct _mbs_tcp_rsp_wr;
+struct _mbs_tcp_rsp_rd;
 
 #pragma pack (1)
+typedef uint8_t funccode_t;
 
-/* big endian 16 bits unit */
-typedef 
- struct _mbs_unit_be {
-	uint8_t _hi;
-	uint8_t _lo;
-} mbs_unit_be,
-	* pmbs_unit_be;
-
-/* little endian 16 bits unit */
-typedef 
- struct _mbs_unit_le {
-	uint8_t _lo;
-	uint8_t _hi;
-} mbs_unit_le,
-	* pmbs_unit_le;
-
+// for write function code
 typedef
- struct _mbs_tcp_req_body {
+ struct _mbs_tcp_req_body_wr_s {
+	/* header of request frame */
+	mbs_tcp_req_head _hdr;
+
+	/* function code */
+	funccode_t _func;
+
 	/* requesting start register address, BE */
+	uint16_t _start_addr;
+
+	/* value to write into */
+	uint16_t _value;
+
+} mbs_tcp_req_body_wr_s,
+	*pmbs_tcp_req_body_wr_s;
+
+// for write multiple unit function code
+typedef
+ struct _mbs_tcp_req_body_wr_m {
+	/* header of request frame */
+	mbs_tcp_req_head _hdr;
+
+	/* function code */
+	funccode_t _func;
+
+	/* requesting start register address, BE */
+	uint16_t _start_addr;
+
+	/* value length */
+	uint8_t _byte_len;
+
+	/* 
+	 * values to write into.
+	 * If it's coil, each unit has 1 byte,
+	 * otherwise each register has 2 bytes.
+	*/
+	uint8_t _value [];
+
+} mbs_tcp_req_body_wr_m,
+	*pmbs_tcp_req_body_wr_m;
+
+// for read function code
+typedef
+ struct _mbs_tcp_req_body_rd {
+	/* header of request frame */
+	mbs_tcp_req_head _hdr;
+
+	/* function code */
+	funccode_t _func;
+
 	uint16_t _start_addr;
 
 	/* requesting register count, BE */
 	uint16_t _reg_count;
-} mbs_tcp_req_body;
 
-// typedef mbs_unit mbs_count;
-// typedef pmbs_unit pmbs_count;
-#	define FUNC_CODE uint8_t
+} mbs_tcp_req_body_rd,
+	*pmbs_tcp_req_body_rd;
 
+
+// request frame header
 typedef 
  struct _mds_tcp_req_head {
 
@@ -58,58 +99,21 @@ typedef
 	/* the modbus network device id */
 	uint8_t  _devid;
 
-	/* function code */
-	FUNC_CODE _func;
-
-	/* request body */
-	mbs_tcp_req_body _body;
-
 } mbs_tcp_req_head,
 	* pmbs_tcp_req_head;
 
+// response frame header.
+typedef mbs_tcp_req_head 
+ mbs_tcp_rsp_head, *pmbs_tcp_rsp_head;
+
+// response frame for read function code
 typedef
-struct _mbs_tcp_req_0f_head {
-	/* the same as the one above */
-	mbs_tcp_req_head _comm;
+ struct _mbs_tcp_rsp_rd {
 
-	/* byte length */
-	uint8_t _bytes;
-
-	/* output values */
-	uint16_t _vals;
-} mbs_tcp_req_0f_head,
-	* pmbs_tcp_req_0f_head;
-
-typedef
-struct _mbs_tcp_req_10_head {
-	/* the same as the one above */
-	mbs_tcp_req_head _comm;
-
-	/* byte length */
-	uint8_t _bytes;
-
-	/* register values */
-	uint16_t _first_val;
-} mbs_tcp_req_10_head,
-	* pmbs_tcp_req_10_head;
-
-typedef
- struct _mbs_tcp_rsp {
+	 mbs_tcp_rsp_head _hdr;
 	
-	/* transport flag, LE */
-	uint16_t _trans;
-	
-	/* protocol flag, always be 0 */
-	uint16_t _proto;
-
-	/* the length of frame afterwords, BE */
-	uint16_t _len;
-
-	/* the modbus network device id */
-	uint8_t  _devid;
-
 	/* function code */
-	FUNC_CODE _func;
+	funccode_t _func;
 
 	/* data length */
 	uint8_t _data_len;
@@ -122,13 +126,33 @@ typedef
 	   Big endian (16 bits per
 	   unit).
 	*/
-	uint8_t _first_data;
+	uint8_t _first_data [];
 
-} mbs_tcp_rsp,
-	* pmbs_tcp_rsp;
+} mbs_tcp_rsp_rd,
+	* pmbs_tcp_rsp_rd;
 
+// response frame for write function code
+typedef
+ struct _mbs_tcp_rsp_wr {
+
+	 mbs_tcp_rsp_head _hdr;
+	
+	/* function code */
+	funccode_t _func;
+
+	/* start register address */
+	uint16_t _start_addr;
+
+	union {
+		// the value after write.
+		uint16_t _value;
+		// the changed number of register.
+		uint16_t _count;
+	} _res;
+
+} mbs_tcp_rsp_rd,
+	* pmbs_tcp_rsp_rd;
 #pragma pack ()
 
-
-
 #endif // ~ _EZ_PROTO_H_
+
