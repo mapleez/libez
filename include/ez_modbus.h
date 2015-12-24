@@ -2,11 +2,13 @@
 #	define _EZ_MODBUS_H_
 
 #include "ez_proto.h"
-#	define EZ_MBS_MAIN_VERSION   1
-#	define EZ_MBS_SUB_VERSION   0 
+#	define EZ_MBS_MAJOR_VER     1
+#	define EZ_MBS_MINOR_VER     1 
+#	define EZ_MBS_VERSION ("ezmbs-v" __xstr (EZ_MBS_MAJOR_VER) "." \
+		__xstr (EZ_MBS_MINOR_VER))
 
 // mbs function code
-#	define mbs_func_read_cols		0x01
+#	define mbs_func_read_coils		0x01
 #	define mbs_func_read_disperse	0x02
 #	define mbs_func_read_holdings	0x03
 #	define mbs_func_read_input		0x04
@@ -29,6 +31,9 @@ typedef struct _mbs_tcp_rsp_datablock {
 } mbs_tcp_rsp_datablock,
 	* pmbs_tcp_rsp_datablock;
 
+// error
+#	define FUNC_CODE int
+
 /*
    @1 function code
    @2 transport flag
@@ -45,6 +50,46 @@ extern bytes
 		 FUNC_CODE, int, int, 
 		 int, int, uint16_t*, int*);
 
+
+/*
+ * Create modbus request frame to
+ * read single register or coils.
+ *
+ * @1 transfer flags.
+ * @2 start register
+ * @3 the number of coil
+ * return : request frame
+*/
+extern pmbs_tcp_req_body_rd
+ezmbs_tcp_create_read_coils (int, int, int);
+
+extern pmbs_tcp_req_body_rd
+ezmbs_tcp_create_read_input (int, int, int);
+
+extern pmbs_tcp_req_body_rd
+ezmbs_tcp_create_read_disperse (int, int, int);
+
+extern pmbs_tcp_req_body_rd
+ezmbs_tcp_create_read_holdings (int, int, int);
+
+extern void
+ezmbs_free_frame (void*);
+
+
+/*
+ * Create modbus request frame to
+ * write single registers or coils.
+ *
+ * @1 start register
+ * @2 transfer flags.
+ * @3 value to write into.
+ * return : request frame
+*/
+extern pmbs_tcp_req_body_wr_s
+ezmbs_tcp_create_write_single (int, int, int);
+
+
+#if 0
 /*
    @1 request frame header ptr
    @2 response frame ptr
@@ -61,5 +106,6 @@ extern int
 		 pmbs_tcp_rsp,
 		 pmbs_tcp_rsp_datablock);
 
+#endif
 
 #endif // ~ _EZ_MODBUS_H_

@@ -2,6 +2,17 @@
 #include <stdlib.h>
 #include <string.h>
 
+static pmbs_tcp_req_body_rd
+_ezmbs_tcp_create_read (int, int, int, int);
+
+static void ez_panic (const char*);
+
+static void ez_panic (const char* _str) {
+	printf ("%s\n", _str);
+}
+
+
+#if 0
 static bytes _func_1_4 (
 	FUNC_CODE,
 	int,
@@ -48,7 +59,7 @@ _func_1_4 (
 	frame -> _devid = (uint16_t) (devid & 0xff);
 
 	// code = 0x01 ~ 0x04
-	frame -> _func = func_code;
+	// frame -> _func = func_code;
 
 	frame -> _body._start_addr = 
 		tobigend16 (start);
@@ -145,44 +156,115 @@ _func_15_16 (
 	}
 }	
 
+#endif 
+
+void ezmbs_free_frame (void* _ptr) {
+	free (_ptr);
+}
+
 /*
-   @1 function code
-   @2 transport flag
-   @3 device id
-   @4 start address
-   @5 register count, or register
-	value, or coil value
-return : 
-   return the byte string;
+ * Create modbus request frame to
+ * read coils.
+ *
+ * @1 transfer flags.
+ * @2 start address of coil 
+ * @3 the number of coil
+ * return : request frame
 */
-bytes
-ez_create_mbs_tcp_request (
-	FUNC_CODE func_code,
-	int trans,
-	int devid,
-	int start,
-	int reg_cnt,
-	uint16_t* vals,
-	int* frm_len)
-{
-	// include 1 ~ 4
-	if (func_code <= 4)
-		return _func_1_4 (func_code, trans, 
-				devid, start, reg_cnt, frm_len);
-	else if (func_code <= 6) // include 5, 6
-		return _func_5_6 (func_code, trans,
-				devid, start, reg_cnt, frm_len);
-	else if (func_code <= 0x10)// include 16, 15
-		return _func_15_16 (func_code, trans,
-				devid, start, reg_cnt, 
-				vals, frm_len);
-#if EZ_MBS_MAIN_VERSION <= 1
-	else 
-		return NULL;
-#endif // ~ EZ_MBS_VERSION
+pmbs_tcp_req_body_rd
+ezmbs_tcp_create_read_coils (int _trans, int _addr, int _count) {
+	return _ezmbs_tcp_create_read (_trans, _addr, 
+			_count, mbs_func_read_coils);
+}
+
+/*
+ * Create modbus request frame to
+ * read holding registers.
+ *
+ * @1 transfer flags.
+ * @2 start address of holding register.
+ * @3 the number of holding register.
+ * return : request frame
+*/
+pmbs_tcp_req_body_rd
+ezmbs_tcp_create_read_holdings (int _trans, int _addr, int _count) {
+	return _ezmbs_tcp_create_read (_trans, _addr, 
+			_count, mbs_func_read_holdings);
+}
+
+/*
+ * Create modbus request frame to
+ * read disperse.
+ *
+ * @1 transfer flags.
+ * @2 start address of disperse inputing.
+ * @3 the number of disperse inputing.
+ * return : request frame
+*/
+pmbs_tcp_req_body_rd
+ezmbs_tcp_create_read_disperse (int _trans, int _addr, int _count) {
+	return _ezmbs_tcp_create_read (_trans, _addr, 
+			_count, mbs_func_read_disperse);
+}
+
+/*
+ * Create modbus request frame to
+ * read input register.
+ *
+ * @1 transfer flags.
+ * @2 start address of input register.
+ * @3 the number of input register.
+ * return : request frame
+*/
+pmbs_tcp_req_body_rd
+ezmbs_tcp_create_read_input (int _trans, int _addr, int _count) {
+	return _ezmbs_tcp_create_read (_trans, _addr, 
+			_count, mbs_func_read_input);
 }
 
 
+/*
+ * Create modbus request frame to
+ * read single register or coils.
+ *
+ * @1 start register
+ * @2 transfer flags.
+ * return : request frame
+*/
+static pmbs_tcp_req_body_rd
+_ezmbs_tcp_create_read (int _trans, int _addr, int _count, int _func) {
+
+	pmbs_tcp_req_body_rd frame = (pmbs_tcp_req_body_rd) 
+		malloc (sizeof (*frame));
+	if (! frame)
+		ez_panic ("malloc a mbstcp_read_single frame error.");
+	frame -> _hdr._trans = (uint16_t) (_trans & 0x0000ffff);
+	frame -> _hdr._len = 0x0600;  // Big endian
+	frame -> _hdr._proto = 0x00;
+	frame -> _hdr._devid = 0;
+	frame -> _func = (funccode_t) _func;
+	frame -> _start_addr = tobigend16 (_addr);
+	frame -> _reg_count = tobigend16 (_count);
+	return frame;
+
+	// if (func_code <= 4)
+	// 	return _func_1_4 (func_code, trans, 
+	// 			devid, start, reg_cnt, frm_len);
+	// else if (func_code <= 6) // include 5, 6
+	// 	return _func_5_6 (func_code, trans,
+	// 			devid, start, reg_cnt, frm_len);
+	// else if (func_code <= 0x10)// include 16, 15
+	// 	return _func_15_16 (func_code, trans,
+	// 			devid, start, reg_cnt, 
+	// 			vals, frm_len);
+// #if EZ_MBS_MAIN_VERSION <= 1
+// 	else 
+// 		return NULL;
+// #endif // ~ EZ_MBS_VERSION
+}
+
+
+#if 0 
 /*
    @1 request frame header ptr
    @2 response frame ptr
@@ -235,6 +317,7 @@ ez_parse_mbs_tcp_response (
 int main (int argc, char* argv []) {
 	return 0;
 }
+#endif 
 
 #endif // DEBUG
 

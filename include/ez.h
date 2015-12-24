@@ -8,6 +8,9 @@
 #	define NULL ((void*) 0)
 #endif // ~ NULL
 
+#	define __xstr(___s) __str (___s)
+#	define __str(___s) #___s
+
 #	define println(___s) \
 		printf ("%s\n", ___s)
 
