@@ -28,6 +28,14 @@
 
 #endif // ~ __GNUC__
 
+// for malloc () memory aligment
+#if defined (__sun) || defined (__sparc) || defined (__sparc__)
+#	define MEM_PREFIX (sizeof (long long))
+#else
+#	define MEM_PREFIX (sizeof (size_t))
+#endif
+
+
 #	define BIGGER	(-1)
 #	define EQUAL  	(0)
 #	define SMALLER  (1)

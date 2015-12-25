@@ -69,6 +69,9 @@ typedef
 	/* requesting start register address, BE */
 	uint16_t _start_addr;
 
+	/* the number of unit, BE. */
+	uint16_t _count;
+
 	/* value length */
 	uint8_t _byte_len;
 

@@ -15,45 +15,27 @@
 #	define mbs_func_write_col		0x05
 #	define mbs_func_write_holding	0x06
 #	define mbs_func_write_cols		0x0f
-#	define mbs_func_write_hlodings  0x10
+#	define mbs_func_write_holdings  0x10
 
-#if EZ_MBS_MAIN_VERSION > 1
+#if EZ_MBS_MAJOR_VER > 1
 #	define mbs_func_read_file 		0x14
 #	define mbs_func_write_file		0x15
 #endif // ~ EZ_MBS_VERSION
 
-typedef struct _mbs_tcp_rsp_datablock {
-	int _start_addr;
-	int _count;
-	int _devid;
-	int _elm_size;
-	void* _datas;
-} mbs_tcp_rsp_datablock,
-	* pmbs_tcp_rsp_datablock;
-
-// error
-#	define FUNC_CODE int
-
-/*
-   @1 function code
-   @2 transport flag
-   @3 device id
-   @4 start address
-   @5 register count
-   @6 register value if nessesary, or NULL
-   @7 created frame length
-return : 
-   return the byte string;
-*/
-extern bytes 
- ez_create_mbs_tcp_request (
-		 FUNC_CODE, int, int, 
-		 int, int, uint16_t*, int*);
+// for singly writing, 
+// notice: the value must be big-endian, so the 
+// real value of coil_val_on is 0xff00, you should not convert to 
+// big-endian.
+#	define coil_val_off  0x0000
+#	define coil_val_on   0xff00
+// for multiply writing
+#	define coils_val_off 0x1
+#	define coils_val_on  0x0
 
 
 /*
  * Create modbus request frame to
- * read single register or coils.
+ * read coils.
  *
  * @1 transfer flags.
  * @2 start register
@@ -63,30 +45,101 @@ extern bytes
 extern pmbs_tcp_req_body_rd
 ezmbs_tcp_create_read_coils (int, int, int);
 
+
+/*
+ * Create modbus request frame to
+ * read register (funccode_t = 0x04).
+ *
+ * @1 transfer flags.
+ * @2 start register
+ * @3 the number of register 
+ * return : request frame
+*/
 extern pmbs_tcp_req_body_rd
 ezmbs_tcp_create_read_input (int, int, int);
 
+/*
+ * Create modbus request frame to
+ * read disperse (funccode_t = 0x02).
+ *
+ * @1 transfer flags.
+ * @2 start register
+ * @3 the number of register 
+ * return : request frame
+*/
 extern pmbs_tcp_req_body_rd
 ezmbs_tcp_create_read_disperse (int, int, int);
 
+/*
+ * Create modbus request frame to
+ * read holding register (funccode_t = 0x03).
+ *
+ * @1 transfer flags.
+ * @2 start register
+ * @3 the number of register 
+ * return : request frame
+*/
 extern pmbs_tcp_req_body_rd
 ezmbs_tcp_create_read_holdings (int, int, int);
 
+/*
+ * Release the memory of frame.
+ *
+ * @1 the frame to release.
+*/
 extern void
 ezmbs_free_frame (void*);
 
 
 /*
  * Create modbus request frame to
- * write single registers or coils.
+ * write single coil.
  *
- * @1 start register
- * @2 transfer flags.
+ * @1 transfer flags.
+ * @2 start register
  * @3 value to write into.
  * return : request frame
 */
 extern pmbs_tcp_req_body_wr_s
-ezmbs_tcp_create_write_single (int, int, int);
+ezmbs_tcp_create_write_single_coil (int, int, int);
+
+
+/*
+ * Create modbus request frame to
+ * write single registers.
+ *
+ * @1 transfer flags.
+ * @2 start register
+ * @3 value to write into.
+ * return : request frame
+*/
+extern pmbs_tcp_req_body_wr_s
+ezmbs_tcp_create_write_single_reg (int, int, int);
+
+/*
+ * Create modbus request frame to
+ * Write multiple registers.
+ *
+ * @1 transfer flags.
+ * @2 start register
+ * @3 the number of register.
+ * @4 the value list, each register has 2 bytes.
+ * return : request frame
+*/
+extern pmbs_tcp_req_body_wr_m
+ezmbs_tcp_create_write_multi_regs (int, int, int, uint16_t*);
+
+/*
+ * Create modbus request frame to
+ * write multiple coils.
+ *
+ * @1 transfer flags.
+ * @2 start register
+ * @3 value to write into.
+ * return : request frame
+*/
+extern pmbs_tcp_req_body_wr_m
+ezmbs_tcp_create_write_multi_coils (int, int, int, uint8_t*);
 
 
 #if 0
