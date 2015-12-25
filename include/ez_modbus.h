@@ -141,24 +141,4 @@ ezmbs_tcp_create_write_multi_regs (int, int, int, uint16_t*);
 extern pmbs_tcp_req_body_wr_m
 ezmbs_tcp_create_write_multi_coils (int, int, int, uint8_t*);
 
-
-#if 0
-/*
-   @1 request frame header ptr
-   @2 response frame ptr
-   @3 parsed data structure ptr
-return :
-	return response data block, 
-	and parsed register count if
-	successful.
-	else return NULL and 0;
-*/
-extern int
- ez_parse_mbs_tcp_response (
-		 pmbs_tcp_req_head,
-		 pmbs_tcp_rsp,
-		 pmbs_tcp_rsp_datablock);
-
-#endif
-
 #endif // ~ _EZ_MODBUS_H_

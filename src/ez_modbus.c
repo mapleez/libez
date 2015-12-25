@@ -11,8 +11,6 @@ _ezmbs_tcp_create_write_single (int, int, int, int);
 static void ez_panic (const char*);
 static void* ezmbs_malloc (size_t);
 
-
-
 static void ez_panic (const char* _str) {
 	printf ("%s\n", _str);
 }
@@ -230,7 +228,7 @@ extern pmbs_tcp_req_body_wr_m ezmbs_tcp_create_write_multi_regs
 	return frame;
 }
 
-
+// NOTE: hmm... it should be tested detailedly;
 /*
  * Create modbus request frame to
  * Write multiple coils.
@@ -239,15 +237,19 @@ extern pmbs_tcp_req_body_wr_m ezmbs_tcp_create_write_multi_regs
  * @2 start coils.
  * @3 the number of coils.
  * @4 the value list, each coils has 1 bytes. 0x01 if ON, otherwise
- *     0x00 for OFF.
+ *     0x00 for OFF. We treat non-zero byte as ON and zero as OFF.
  * return : request frame
 */
-extern pmbs_tcp_req_body_wr_m ezmbs_tcp_create_write_multi_coils 
+pmbs_tcp_req_body_wr_m ezmbs_tcp_create_write_multi_coils 
 (int _trans, int _start, int _count, uint8_t* _vals) {
-	/*
-	int byte_len = _count << 1, i = 0;
+	int byte_len = 0, tmp = 0, word = 0, mod = _count & 0x0F;
 	uint16_t* dataptr = NULL;
-	pmbs_tcp_req_body_wr_m frame = (pmbs_tcp_req_body_wr_m)
+	pmbs_tcp_req_body_wr_m frame = NULL;
+	// tmp = _count / 8;
+	word = (_count / 16) + (!! mod);
+	byte_len = word << 1; // ! tmp ? 2 : tmp + (!! mod);
+
+	frame = (pmbs_tcp_req_body_wr_m)
 		ezmbs_malloc (sizeof (mbs_tcp_req_body_wr_m) + byte_len);
 	if (!frame) {
 		ez_panic ("Error.");
@@ -255,19 +257,25 @@ extern pmbs_tcp_req_body_wr_m ezmbs_tcp_create_write_multi_coils
 	}
 
 	frame -> _hdr._trans = _trans;
-	frame -> _hdr._proto = _proto;
-	frame -> _hdr._len = 7 + byte_len;
+	frame -> _hdr._proto = 0;
+	frame -> _hdr._len = tobigend16 (7 + byte_len);
 	frame -> _hdr._devid = 0;
 	frame -> _func = mbs_func_write_cols;
 	frame -> _start_addr = tobigend16 (_start);
 	frame -> _count = tobigend16 (_count);
-	frame -> _byte_len = byte_len;
+	frame -> _byte_len = (uint8_t) _count;
 	dataptr = (uint16_t*) (&frame -> _value);
-	for (; i < _count; ++ i)
-		dataptr [i] = tobigend16 (_vals [i]);
+
+	// tmp = 0; // as dataptr offset.
+	do {
+		int ptr = 0, i = tmp << 4, ptr_len;
+		ptr_len = word - tmp == 1 ? mod : 16;
+		for (; ptr < ptr_len; ++ ptr)
+			dataptr [tmp] |= (!! _vals [i + ptr]) << ptr;
+		dataptr [tmp] = tobigend16 (dataptr [tmp]);
+	} while (word > ++ tmp);
+
 	return frame;
-	*/
-	return NULL;
 }
 
 #if 0 
