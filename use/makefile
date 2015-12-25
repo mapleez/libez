@@ -8,7 +8,7 @@ INCLUDE = -I../include
 BIN = ../libez.a
 DEBUG = -g
 CFLAGS = $(INCLUDE) $(DEBUG)
-EXEFILES = postfix dfs
+EXEFILES = postfix dfs mbs
 
 .PHONY: all clean
 

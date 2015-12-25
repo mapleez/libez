@@ -9,7 +9,7 @@ int main (int argc, char* argv []) {
 	pez_channel chan = ez_init_channel ("10.14.4.167", 21);
 	pez_endpoint end = ez_endpoint_init (AF_INET, 
 			SOCK_STREAM, IPPROTO_TCP, NULL, NULL,
-			NULL, 256, 256);
+			NULL);
 	res = ez_add_endpoint (chan, end);
 
 	res = ez_open_channel (chan);

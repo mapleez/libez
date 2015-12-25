@@ -53,8 +53,9 @@ pez_endpoint
 ez_endpoint_init 
 	(int _domain, int _type, int _proto, 
 	 callback _read, callback _write,
-	 callback _conn, int _rdbuff_len, 
-	 int _wtbuff_len) 
+	 callback _conn)
+	 // , int _rdbuff_len, 
+	 // int _wtbuff_len
 {
 
 	int sockfd = 0;
@@ -82,21 +83,51 @@ ez_endpoint_init
 		_default_tcp_conn_callback;
 
 	// buffers
-	res -> _recv_buff = malloc (_rdbuff_len ? 
-			_rdbuff_len : _default_read_buff_len);
-	res -> _send_buff = malloc (_wtbuff_len ? 
-			_wtbuff_len : _default_write_buff_len);
+	// res -> _recv_buff = malloc (_rdbuff_len ? 
+	// 		_rdbuff_len : _default_read_buff_len);
+	// res -> _send_buff = malloc (_wtbuff_len ? 
+	// 		_wtbuff_len : _default_write_buff_len);
 
-	if (! res -> _recv_buff || 
-		! res -> _send_buff) {
-		free (res -> _recv_buff);
-		free (res -> _send_buff);
-		free (res);
-		return NULL;
-	} 
+	// if (! res -> _recv_buff || 
+	// 	! res -> _send_buff) {
+	// 	free (res -> _recv_buff);
+	// 	free (res -> _send_buff);
+	// 	free (res);
+	// 	return NULL;
+	// } 
 
 	return res;
 }
+
+extern pez_endpoint
+ ez_endpoint_set_sentbuff (pez_endpoint _end, void* _buf) {
+	 if (! _end || ! _buf || _end -> _send_buff)
+		 return NULL;
+	 _end -> _send_buff = _buf;
+	 return _end;
+}
+
+extern pez_endpoint
+ ez_endpoint_set_recvbuff (pez_endpoint _end, void* _buf) {
+	 if (! _end || ! _buf || _end -> _recv_buff) 
+		 return NULL;
+	 _end -> _recv_buff = _buf;
+	 return _end;
+}
+
+extern void* 
+ ez_endpoint_get_sentbuff (pez_endpoint _end) {
+	 if (! _end)
+		 return NULL;
+	 return _end -> _send_buff;
+}
+
+extern void*
+ ez_endpoint_get_recvbuff (pez_endpoint _end) {
+	 if (! _end)
+		 return NULL;
+	 return _end -> _recv_buff;
+ }
 
 
 /*
@@ -143,7 +174,7 @@ _default_read_callback (void* _endpnt, void* _arg) {
 	pez_endpoint end = _endpnt;
 	pez_channel chan = _arg;
 	int res = 0;
-	if (! end || ! chan)
+	if (! end || ! chan || ! end -> _recv_buff)
 		return 0;
 	res = recv (end -> _sockfd,
 			end -> _recv_buff, 0xff, 0);
@@ -161,10 +192,12 @@ _default_write_callback (void* _endpnt, void* _arg){
 	pez_endpoint end = _endpnt;
 	pez_channel chan = _arg;
 	int res = 0;
-	if (! end || ! chan)
+	if (! end || ! chan || ! end -> _send_buff)
 		return 0;
 	res = send (end -> _sockfd, 
-			end -> _recv_buff, 0xff, 0);
+			end -> _send_buff, 0xff, 0);
+	// res = send (end -> _sockfd, 
+	// 		end -> _recv_buff, 0xff, 0);
 	return res;
 }
 
@@ -186,7 +219,7 @@ _default_tcp_conn_callback (void* _endpnt, void* _arg) {
 	res = connect (end -> _sockfd, 
 			(struct sockaddr*) &chan -> _remote, 
 			sizeof (struct sockaddr));
-	if (res) return 1;
+	if (! res) return 1; // successful
 	return 0;
 }
 

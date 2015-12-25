@@ -45,14 +45,24 @@ struct _ez_endpoint {
 	 setted by default function.
    @6 -- connection call back, if NULL, will
      be setted by default function.
-   @7 -- read buffer length.
-   @8 -- write buffer length.
 
    Return ez_endpoint ptr if successful,
    else return NULL;
 */
 extern pez_endpoint 
- ez_endpoint_init (int, int, int, callback, callback, callback, int, int);
+ ez_endpoint_init (int, int, int, callback, callback, callback);
+
+extern pez_endpoint
+ ez_endpoint_set_sentbuff (pez_endpoint, void*);
+
+extern pez_endpoint
+ ez_endpoint_set_recvbuff (pez_endpoint, void*);
+
+extern void* 
+ ez_endpoint_get_sentbuff (pez_endpoint);
+
+extern void*
+ ez_endpoint_get_recvbuff (pez_endpoint);
 
 
 /*

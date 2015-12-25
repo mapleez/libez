@@ -225,21 +225,26 @@ int
 ez_channel_recv (pez_channel _chan, void* _arg) {
 	fd_set rfds;
 	struct timeval tv;
+	int num = 0;
 	pez_endpoint ptr = _chan -> _next;
 
 	tv.tv_sec = 0;
 	tv.tv_usec = 0;
-
 	while (ptr) {
 
 		FD_ZERO (&rfds);
 		FD_SET (ptr -> _sockfd, &rfds);
 
 		if (!! select (ptr -> _sockfd + 1,
-			&rfds, NULL, NULL, &tv)) 
-			ptr -> _recv_caller (ptr, _chan);
+			&rfds, NULL, NULL, &tv)) {
+			ptr -> _recv_caller (ptr, _chan) &&
+				(++ num);
+		} else {
+			println ("select no!");
+		}
 		ptr = ptr -> _next;
 	}
+	return num;
 
 }
 
