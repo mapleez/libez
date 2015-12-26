@@ -30,7 +30,6 @@ struct _ez_endpoint {
 
 	void* _recv_buff;
 	void* _send_buff;
-
 }; 
 
 /*

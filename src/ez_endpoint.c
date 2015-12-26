@@ -28,8 +28,8 @@ static int
 _default_icmp_conn_callback (void*, void*);
 
 
-#	define _default_read_buff_len 256
-#	define _default_write_buff_len 256
+// #	define _default_read_buff_len 256
+// #	define _default_write_buff_len 256
 
 /*
    create an endpoint.
@@ -149,15 +149,16 @@ int ez_endpoint_despose (pez_endpoint _endpnt) {
 		}
 
 		_endpnt -> _next = NULL;
+		// we do not free the buffer memory.
+		_endpnt -> _recv_buff = NULL;
+		_endpnt -> _send_buff = NULL;
 
-		if (_endpnt -> _recv_buff)
-			free (_endpnt -> _recv_buff);
-
-		if (_endpnt -> _recv_buff)
-			free (_endpnt -> _send_buff);
+		// if (_endpnt -> _recv_buff)
+		// 	free (_endpnt -> _recv_buff);
+		// if (_endpnt -> _recv_buff)
+		// 	free (_endpnt -> _send_buff);
 
 		free (_endpnt);
-
 		_endpnt = NULL;
 	}
 
