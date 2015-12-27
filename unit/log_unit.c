@@ -1,5 +1,6 @@
 #include "ez_log.h"
 #include <string.h>
+#include <unistd.h>
 
 int main (argc, argv)
   int argc;
@@ -40,10 +41,11 @@ int main (argc, argv)
     for (i = 0; i < 100; i ++)
       ez_logger_logf (logger, "%s\n", "hello, world");
 
-    for (i = 0; i < 100; i ++) {
+    for (i = 0; i < 10; i ++) {
       sprintf (buff, "%d ", i);
       printf ("%s\n", ez_logger_logln (logger, buff) ? 
           "true" : "false");
+			sleep (1);
     }
 
     ez_logger_despose (&logger);
