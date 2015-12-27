@@ -36,14 +36,14 @@ int main (int argc, char* argv []) {
 			return 0;
 		}
 
-		sent_endpoint = ez_channel_send (chan, NULL);
+		sent_endpoint = ez_channel_send (chan, sizeof (read_holdings), NULL);
 		if (sent_endpoint > 0) {
 			println ("good sending!");
 		}
 
 		// round-robin.
 		while (! recv_endpoint) {
-			recv_endpoint = ez_channel_recv (chan, NULL);
+			recv_endpoint = ez_channel_recv (chan, 40, NULL);
 			if (recv_endpoint > 0)
 				println ("good receiving!");
 		}

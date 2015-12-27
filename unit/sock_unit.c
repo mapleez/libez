@@ -13,11 +13,11 @@ int main (int argc, char* argv []) {
 	res = ez_add_endpoint (chan, end);
 
 	res = ez_open_channel (chan);
-	res = ez_channel_recv (chan, arg);
+	res = ez_channel_recv (chan, 256, arg);
 	res = ez_remove_endpoint (chan, end);
 
 	res = ez_dispose_all (chan);
-	printf ("ok");
+	println ("ok");
 
 	// char* ptr = ez_addr_to_string (,);
 	// printf ("%s\n", ptr);

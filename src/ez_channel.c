@@ -183,7 +183,7 @@ int ez_remove_endpoint
  *       0.
 */
 int ez_channel_send 
-	(pez_channel _chan, void* _arg) {
+	(pez_channel _chan, int _len, void* _arg) {
 	fd_set wfds;
 	struct timeval tv;
 	int num = 0;
@@ -199,7 +199,7 @@ int ez_channel_send
 
 		if (!! select (ptr -> _sockfd + 1,
 			NULL, &wfds, NULL, &tv)) 
-			ptr -> _send_caller (ptr, _chan) &&
+			ptr -> _send_caller (ptr, _len, _chan) &&
 				++ num; 
 
 		ptr = ptr -> _next;
@@ -222,7 +222,7 @@ int ez_channel_send
  *       0.
 */
 int 
-ez_channel_recv (pez_channel _chan, void* _arg) {
+ez_channel_recv (pez_channel _chan, int _len, void* _arg) {
 	fd_set rfds;
 	struct timeval tv;
 	int num = 0;
@@ -237,11 +237,12 @@ ez_channel_recv (pez_channel _chan, void* _arg) {
 
 		if (!! select (ptr -> _sockfd + 1,
 			&rfds, NULL, NULL, &tv)) {
-			ptr -> _recv_caller (ptr, _chan) &&
+			ptr -> _recv_caller (ptr, _len, _chan) &&
 				(++ num);
-		} else {
-			println ("select no!");
-		}
+		} 
+		// else {
+		// 	println ("select no!");
+		// }
 		ptr = ptr -> _next;
 	}
 	return num;

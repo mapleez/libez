@@ -11,7 +11,8 @@ extern "C" {
 typedef struct _ez_endpoint 
 	ez_endpoint, *pez_endpoint;
 
-typedef int (*callback) (void*, void*);
+typedef int (*rwcallback) (void*, int, void*);
+typedef int (*conncallback) (void*, void*);
 
 /*
    socket array list, head list
@@ -24,9 +25,9 @@ struct _ez_endpoint {
 #else
 	SOCKET _sockfd;
 #endif // __linux__ || __GNUC___
-	callback _send_caller;
-	callback _recv_caller;
-	callback _conn_caller;
+	rwcallback _send_caller;
+	rwcallback _recv_caller;
+	conncallback _conn_caller;
 
 	void* _recv_buff;
 	void* _send_buff;
@@ -49,7 +50,7 @@ struct _ez_endpoint {
    else return NULL;
 */
 extern pez_endpoint 
- ez_endpoint_init (int, int, int, callback, callback, callback);
+ ez_endpoint_init (int, int, int, rwcallback, rwcallback, conncallback);
 
 extern pez_endpoint
  ez_endpoint_set_sentbuff (pez_endpoint, void*);

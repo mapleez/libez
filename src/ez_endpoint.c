@@ -15,8 +15,8 @@
 extern "C" {
 #endif
 
-static int _default_read_callback (void*, void*);
-static int _default_write_callback (void*, void*);
+static int _default_read_callback (void*, int, void*);
+static int _default_write_callback (void*, int, void*);
 
 static int 
 _default_tcp_conn_callback (void*, void*);
@@ -52,8 +52,8 @@ _default_icmp_conn_callback (void*, void*);
 pez_endpoint 
 ez_endpoint_init 
 	(int _domain, int _type, int _proto, 
-	 callback _read, callback _write,
-	 callback _conn)
+	 rwcallback _read, rwcallback _write,
+	 conncallback _conn)
 	 // , int _rdbuff_len, 
 	 // int _wtbuff_len
 {
@@ -171,14 +171,14 @@ int ez_endpoint_despose (pez_endpoint _endpnt) {
  * @2 -- channel entity.
 */
 static int
-_default_read_callback (void* _endpnt, void* _arg) {
+_default_read_callback (void* _endpnt, int _len, void* _arg) {
 	pez_endpoint end = _endpnt;
 	pez_channel chan = _arg;
 	int res = 0;
 	if (! end || ! chan || ! end -> _recv_buff)
 		return 0;
 	res = recv (end -> _sockfd,
-			end -> _recv_buff, 0xff, 0);
+			end -> _recv_buff, _len, 0);
 	return res;
 }
 
@@ -189,14 +189,14 @@ _default_read_callback (void* _endpnt, void* _arg) {
  * @2 -- channel entity.
 */
 static int
-_default_write_callback (void* _endpnt, void* _arg){
+_default_write_callback (void* _endpnt, int _len, void* _arg) {
 	pez_endpoint end = _endpnt;
 	pez_channel chan = _arg;
 	int res = 0;
 	if (! end || ! chan || ! end -> _send_buff)
 		return 0;
 	res = send (end -> _sockfd, 
-			end -> _send_buff, 0xff, 0);
+			end -> _send_buff, _len, 0);
 	// res = send (end -> _sockfd, 
 	// 		end -> _recv_buff, 0xff, 0);
 	return res;

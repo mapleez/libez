@@ -102,7 +102,7 @@ extern int
  *       0.
 */
 extern int
- ez_channel_send (pez_channel, void*);
+ ez_channel_send (pez_channel, int, void*);
 
 
 /*
@@ -118,7 +118,7 @@ extern int
  *       0.
 */
 extern int
- ez_channel_recv (pez_channel, void*);
+ ez_channel_recv (pez_channel, int, void*);
 
 
 /* 
