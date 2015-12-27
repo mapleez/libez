@@ -20,5 +20,5 @@ $(EXEFILES): $(BIN)
 # 	$(CC) $(BIN) $(INCLUDE) $(OBJFLAG) $@ $(CFLAG) $^ $(DEBUG)
 
 clean: 
-	rm postfix dfs
+	rm postfix dfs mbs
 

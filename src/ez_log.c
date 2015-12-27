@@ -94,6 +94,7 @@ bool ez_logger_logln
     flag && ez_logger_logf (_log, "%s %s\n", buff, _str);
 }
 
+// default function to get logger file name.
 static char* _def_get_logger_fname_by_date () {
   char* fname = (char*) calloc (0x10, 0);
   time_t itime = time (NULL);
