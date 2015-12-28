@@ -27,7 +27,7 @@ int main (argc, argv)
     bool err = false;
     char buff [16];
     memset (buff, '\0', 0x10);
-    pez_logger logger = ez_logger_new (NULL, LOGTYPE_FILE);
+    pez_logger logger = ez_logger_new (NULL, NULL, LOGTYPE_CONSOLE, NULL);
     int i = 0;
     if (! logger) {
       println ("error create new logger!");
@@ -35,9 +35,10 @@ int main (argc, argv)
     }
 
 
-		for (i = 1; i <= 10; i ++) {
-			printf ("%s\n", ez_logger_alert (logger, "%s %d", "this is number", i) ?
-					"true" : "false");
+		for (i = 1; i <= 100000; i ++) {
+			// printf ("%s\n", ez_logger_alert (logger, "%s %d", "this is number", i) ?
+				//	"true" : "false");
+			ez_logger_alert (logger, "%s %d", "number = ", i);
 			sleep (1);
 		}
     // println ("successful");

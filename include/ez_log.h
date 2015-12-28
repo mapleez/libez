@@ -43,20 +43,23 @@ extern "C" {
 #	define LOGLEVEL_TRACE      LOGLEVEL_DEBUG
 #	define LOGLEVEL_DEFAULT    LOGLEVEL_DEBUG
 
+// logger type
 #	define LOGTYPE_CONSOLE  0
 #	define LOGTYPE_FILE     1 
 
-typedef char* (*fname_build) ();
+typedef struct _ez_logger ez_logger, *pez_logger;
+typedef int (*logger_init) (pez_logger, void* args);
+typedef int (*logger_release) (pez_logger*);
 
-typedef struct _ez_logger {
+struct _ez_logger {
 	int _type;
 	FILE* _fstream;
-	fname_build _nm_build;
-} ez_logger,
-	* pez_logger;
+	logger_init _init;
+	logger_release _despose;
+};
 
 // create a new logger
-extern pez_logger ez_logger_new (fname_build, int);
+extern pez_logger ez_logger_new (logger_init, logger_release, int, void*);
 
 // dispose the logger
 extern void ez_logger_despose (pez_logger*);
