@@ -62,7 +62,7 @@ struct _ez_logger {
 extern pez_logger ez_logger_new (logger_init, logger_release, int, void*);
 
 // dispose the logger
-extern void ez_logger_despose (pez_logger*);
+extern int ez_logger_despose (pez_logger*);
 
 extern bool ez_logger_alert     (pez_logger, const char*, ...);
 extern bool ez_logger_info      (pez_logger, const char*, ...);

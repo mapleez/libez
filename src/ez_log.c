@@ -40,16 +40,12 @@ pez_logger ez_logger_new
 	return res;
 }
 
-void ez_logger_despose (pez_logger* _log) {
-	if (*_log) {
-		if ((*_log) -> _fstream) {
-			int err = fclose ((*_log) -> _fstream);
-			if (err)
-				println ("Error in close log file.\n");
-		}
-		free (*_log);
-		*_log = NULL;
-	}
+int ez_logger_despose (pez_logger* _log) {
+	int res = 0;
+	pez_logger ptr = *_log;
+	if (ptr)
+		res = ptr -> _despose (_log);
+	return res;
 }
 
 #if 0

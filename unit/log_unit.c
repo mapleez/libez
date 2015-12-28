@@ -39,7 +39,7 @@ int main (argc, argv)
 			// printf ("%s\n", ez_logger_alert (logger, "%s %d", "this is number", i) ?
 				//	"true" : "false");
 			ez_logger_alert (logger, "%s %d", "number = ", i);
-			sleep (1);
+			// sleep (1);
 		}
     // println ("successful");
     // for (; i < 100; i ++)
