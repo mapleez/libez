@@ -27,26 +27,32 @@ int main (argc, argv)
     bool err = false;
     char buff [16];
     memset (buff, '\0', 0x10);
-    pez_logger logger = ez_logger_new (NULL);
+    pez_logger logger = ez_logger_new (NULL, LOGTYPE_FILE);
     int i = 0;
     if (! logger) {
       println ("error create new logger!");
       return 0;
     }
 
-    println ("successful");
-    for (; i < 100; i ++)
-      ez_logger_log (logger, "hello, world   ");
 
-    for (i = 0; i < 100; i ++)
-      ez_logger_logf (logger, "%s\n", "hello, world");
-
-    for (i = 0; i < 10; i ++) {
-      sprintf (buff, "%d ", i);
-      printf ("%s\n", ez_logger_logln (logger, buff) ? 
-          "true" : "false");
+		for (i = 1; i <= 10; i ++) {
+			printf ("%s\n", ez_logger_alert (logger, "%s %d", "this is number", i) ?
+					"true" : "false");
 			sleep (1);
-    }
+		}
+    // println ("successful");
+    // for (; i < 100; i ++)
+    //   ez_logger_log (logger, "hello, world   ");
+
+    // for (i = 0; i < 100; i ++)
+    //   ez_logger_logf (logger, "%s\n", "hello, world");
+
+    // for (i = 0; i < 10; i ++) {
+    //   sprintf (buff, "%d ", i);
+    //   printf ("%s\n", ez_logger_logln (logger, buff) ? 
+    //       "true" : "false");
+		// 	sleep (1);
+    // }
 
     ez_logger_despose (&logger);
     println ("despose ok!");

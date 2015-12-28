@@ -10,12 +10,18 @@
 #include <time.h>
 #include "ez_log.h"
 
-// static char _buff [0x40];
-
 static char* _def_get_logger_fname_by_date ();
+static char* _def_get_logger_console_by_date ();
+
+// static char _buff [0x40];
+static fname_build _default_builder [] = {
+	_def_get_logger_console_by_date,
+	_def_get_logger_fname_by_date
+};
+
 
 pez_logger 
-ez_logger_new (fname_build _func) {
+ez_logger_new (fname_build _func, int _type) {
 	char* fname = NULL;
 	pez_logger res = 
 		(pez_logger) malloc (SIZE_LOGGER);
@@ -23,11 +29,13 @@ ez_logger_new (fname_build _func) {
 
 	if (! res) return NULL;
 
+	res -> _type = _type;
 	if (! _func) {
-		res -> _type = LOGTYPE_DEFAULT;
-		res -> _nm_build = _def_get_logger_fname_by_date;
+		// res -> _type = LOGTYPE_DEFAULT; 
+		// _def_get_logger_fname_by_date;
+		res -> _nm_build = _default_builder [_type];
 	} else {
-		res -> _type = LOGTYPE_USER;
+		// res -> _type = LOGTYPE_USER;
 		res -> _nm_build = _func;
 	}
 
@@ -110,4 +118,38 @@ static char* _def_get_logger_fname_by_date () {
   }
 }
 
+static char* _def_get_logger_console_by_date () {
+	return "STDIO";
+}
+
+
+bool ez_logger_alert     (pez_logger _log, const char* _fmt, ...) {
+  char buff [LOGFMTBUFF_LEN] = {0, };
+	va_list args;
+	int time_len = 0, stored_len = 0;
+  time_t timestamp = time (NULL);
+  time_len = strftime (buff, LOGFMTBUFF_LEN, 
+      "[%s] %Y/%m/%d %H:%M:%S[A] ", localtime (&timestamp));
+	if (! time_len)
+		return false;
+
+	va_start (args, _fmt);
+	stored_len = vsprintf (buff + time_len, _fmt, args);
+	va_end (args);
+	if (! stored_len)
+		return false;
+	stored_len += time_len;
+	buff [stored_len ++] = '\n';
+  return stored_len == fwrite (buff, sizeof (char), 
+			stored_len, _log -> _fstream);
+}
+
+bool ez_logger_info      (pez_logger _log, const char* _fmt, ...) {}
+bool ez_logger_debug     (pez_logger _log, const char* _fmt, ...) {}
+bool ez_logger_error     (pez_logger _log, const char* _fmt, ...) {} 
+bool ez_logger_warn      (pez_logger _log, const char* _fmt, ...) {}
+bool ez_logger_notice    (pez_logger _log, const char* _fmt, ...) {}
+bool ez_logger_critical  (pez_logger _log, const char* _fmt, ...) {}
+bool ez_logger_emergency (pez_logger _log, const char* _fmt, ...) {}
+bool ez_logger_trace     (pez_logger _log, const char* _fmt, ...) {}
 
