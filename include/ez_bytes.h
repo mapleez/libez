@@ -41,6 +41,13 @@ ez_bytes_hasprefix (bytes, bytes, int, int);
 extern bool 
 ez_bytes_hassuffix (bytes, bytes, int, int);
 
+// convert from unsigned long long to string.
+// return the string lengh. if @1 is not allocated.
+// return 0. the string length cannot include NULL
+// terminal.
+extern int
+ez_bytes_ull2string (bytes, unsigned long long);
+
 #ifdef __cplusplus
 }
 #endif

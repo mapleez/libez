@@ -7,6 +7,13 @@ int main (int argc, char* argv []) {
 	// test ez_bytes_index_sep ()
 	char * s = "fds,dsf,fea,cxfda,fzfd,faffd,fd,sdfsd";
 	char * sep = "f";
+
+	{
+		byte string [20]; // = malloc ()
+		int len = ez_bytes_ull2string (string, 327132);
+		println (string);
+	}
+
 	{
 		int index = ez_bytes_index_sep 
 			((bytes)s, (bytes)sep, strlen (s), strlen (sep));

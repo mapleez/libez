@@ -87,3 +87,25 @@ bool ez_bytes_hassuffix
 		ez_bytes_equal_sep (_s + _slen - _seplen, _sep, _seplen, _seplen);
 }
 
+int ez_bytes_ull2string (bytes _buf, unsigned long long _val) {
+	bytes ptr = _buf, tmp = _buf;
+	int len = 0;
+	if (! ptr) return 0;
+	do {
+		*ptr ++ = '0' + (_val % 10);
+		_val /= 10;
+	} while (_val);
+
+	len = ptr - _buf;
+	*ptr = '\0';
+	ptr --;
+
+	while (ptr > tmp) {
+		*tmp ^= *ptr;
+		*ptr ^= *tmp;
+		*tmp ^= *ptr;
+		ptr --;
+		tmp ++;
+	}
+	return len;
+}
