@@ -1,5 +1,10 @@
 #include "ez_bytes.h"
 
+/*
+ * author : ez
+ * date : 2015/11/26
+ * describe : algorithm for bytes sequence.
+*/
 
 int ez_bytes_index_byte (bytes _s, byte _b, int _slen) {
   int i = 0;
@@ -87,6 +92,11 @@ bool ez_bytes_hassuffix
 		ez_bytes_equal_sep (_s + _slen - _seplen, _sep, _seplen, _seplen);
 }
 
+
+// convert from unsigned long long to string.
+// return the string lengh. if @1 is not allocated.
+// return 0. the string length cannot include NULL
+// terminal.
 int ez_bytes_ull2string (bytes _buf, unsigned long long _val) {
 	bytes ptr = _buf, tmp = _buf;
 	int len = 0;
@@ -109,3 +119,36 @@ int ez_bytes_ull2string (bytes _buf, unsigned long long _val) {
 	}
 	return len;
 }
+
+
+// convert from long long to string.
+// return the string lengh. if @1 is not allocated.
+// return 0. the string length cannot include NULL
+// terminal.
+int ez_bytes_ll2string (bytes _buf, long long _val) {
+	bytes ptr = _buf, tmp = _buf;
+	long long val = _val;
+	int len = 0;
+	if (! ptr) return 0;
+	if (val < 0) val = - val;
+
+	do {
+		*ptr ++ = '0' + (val % 10);
+		val /= 10;
+	} while (val);
+
+	if (_val < 0) *ptr ++ = '-';
+	len = ptr - _buf;
+	*ptr = '\0';
+	ptr --;
+
+	while (ptr > tmp) {
+		*tmp ^= *ptr;
+		*ptr ^= *tmp;
+		*tmp ^= *ptr;
+		ptr --;
+		tmp ++;
+	}
+	return len;
+}
+
