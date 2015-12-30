@@ -10,8 +10,10 @@ int main (int argc, char* argv []) {
 
 	{
 		byte string [20]; // = malloc ()
+		byte string1 [20];
 		int len = ez_bytes_ull2string (string, 327132);
-		println (string);
+		len = ez_bytes_ll2string (string1, -7431412);
+		printf ("%s, %s\n", string, string1);
 	}
 
 	{
