@@ -42,7 +42,7 @@ infix_to_postfix (const char* _fix) {
 	int len, i = 0, idx = 0;
 	len = strlen (_fix) + 1;
 	char* post = calloc (len + 1, sizeof (char));
-	_stack stk = create_stack (len);
+	pez_stack stk = ez_stack_create (len);
 	for (; i < len; i ++) {
 		int prec = precedence (_fix [i]);
 
@@ -51,32 +51,32 @@ infix_to_postfix (const char* _fix) {
 
 		} else if (prec != other_ch && 
 				prec != left_bracket && prec != right_bracket) { // not other and bracket
-			int top_prec = precedence (top (stk)); 
+			int top_prec = precedence (ez_stack_top (stk)); 
 			if (prec > top_prec || top_prec == left_bracket)
-				push (stk, _fix [i]);
+				ez_stack_push (stk, _fix [i]);
 			else if (prec <= top_prec) {
-				while (! empty_stk (stk))
+				while (! ez_stack_empty (stk))
 					if ((top_prec = precedence 
-						(top (stk))) >= prec)
-						post [idx ++] = topandpop (stk);
-				push (stk, _fix [i]);
+						(ez_stack_top (stk))) >= prec)
+						post [idx ++] = ez_stack_topandpop (stk);
+				ez_stack_push (stk, _fix [i]);
 			} 			
 		} else if (prec == right_bracket) {
-			while (! empty_stk (stk)) 
-				if (precedence (top (stk))
+			while (! ez_stack_empty (stk)) 
+				if (precedence (ez_stack_top (stk))
 						!= left_bracket)
 					post [idx ++] = 
-						topandpop (stk);
+						ez_stack_topandpop (stk);
 				else {
-					pop (stk);
+					ez_stack_pop (stk);
 					break;
 				}
 		} else if (prec == left_bracket) {
-			push (stk, _fix [i]);
+			ez_stack_push (stk, _fix [i]);
 		}
 	} 
-	while (! empty_stk (stk)) {
-		post [idx ++] = topandpop (stk);
+	while (! ez_stack_empty (stk)) {
+		post [idx ++] = ez_stack_topandpop (stk);
 	}
 
 	return post;

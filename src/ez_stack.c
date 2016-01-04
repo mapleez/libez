@@ -14,17 +14,17 @@
 
 
 
-bool empty_stk (_stack _s) {
+bool ez_stack_empty (pez_stack _s) {
 	return ((_s -> sp) == EMPTY_MARK);
 }
 
-bool full_stk (_stack _s) {
+bool ez_stack_full (pez_stack _s) {
 	return ((_s -> sp + 1) == 
 			(_s -> capacity));
 }
 
-_stack create_stack (int _maxsize) {
-	_stack s = (_stack) malloc (_stk_size);
+pez_stack ez_stack_create (int _maxsize) {
+	pez_stack s = (pez_stack) malloc (_stk_size);
 	if (s != NULL) {
 		s -> array = (_tp *) malloc (_tp_size * _maxsize);
 		if (s -> array == NULL) {
@@ -37,44 +37,44 @@ _stack create_stack (int _maxsize) {
 	return s;
 }
 
-void clear_stack (_stack _s) {
+void ez_stack_clear (pez_stack _s) {
 	if (_s != NULL) {
 		memset (_s -> array, 0, _s -> capacity);
 		_s -> sp = EMPTY_MARK;
 	}
 }
 
-_tp top (_stack _s) {
-	if (! empty_stk (_s)) {
+_tp ez_stack_top (pez_stack _s) {
+	if (! ez_stack_empty (_s)) {
 		return _s -> array [_s -> sp];
 	}
 	return 0;
 }
 
-bool pop (_stack _s) {
-	if (! empty_stk (_s)) {
+bool ez_stack_pop (pez_stack _s) {
+	if (! ez_stack_empty (_s)) {
 		_s -> sp --;
 		return true;
 	}
 	return false;
 }
 
-bool push (_stack _s, _tp _e) {
-	if (! full_stk (_s)) {
+bool ez_stack_push (pez_stack _s, _tp _e) {
+	if (! ez_stack_full (_s)) {
 		_s -> array [++ _s -> sp] = _e;
 		return true;
 	}
 	return false;
 }
 
-_tp topandpop (_stack _s) {
-	if (! empty_stk (_s)) {
+_tp ez_stack_topandpop (pez_stack _s) {
+	if (! ez_stack_empty (_s)) {
 		return _s -> array [_s -> sp --];
 	}
 	return 0;
 }
 
-void dispose_stack (_stack _s) {
+void ez_stack_dispose (pez_stack _s) {
 	if (_s != NULL) {
 		free (_s -> array);
 		free (_s);
@@ -84,7 +84,7 @@ void dispose_stack (_stack _s) {
 
 #ifdef __debug__
 
-void show (_stack _s) {
+void show (pez_stack _s) {
 	if (_s != NULL && _s -> sp != EMPTY_MARK) {
 		int i = 0;
 		for (; i < _s -> sp; i ++) {

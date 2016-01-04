@@ -15,30 +15,28 @@
 
 #	define _tp int
 #	define _tp_size   (sizeof (_tp))
-#	define _stk_size   (sizeof (struct _stk))
+#	define _stk_size   (sizeof (struct _ez_stack))
 
-struct _stk {
+typedef struct _ez_stack {
 	int capacity;
 	int sp;
 	_tp* array;	
-};
+} ez_stack,
+	*pez_stack;
+// typedef struct _ez_stack* pez_stack;
 
-typedef struct _stk* _stack;
+extern bool ez_stack_empty (pez_stack);
+extern bool ez_stack_full (pez_stack);
+extern pez_stack ez_stack_create (int);
+extern void ez_stack_dispose (pez_stack);
+extern void ez_stack_clear (pez_stack);
+extern bool ez_stack_push (pez_stack, _tp);
+extern bool ez_stack_pop (pez_stack);
+extern _tp ez_stack_top (pez_stack);
+extern _tp ez_stack_topandpop (pez_stack);
 
-
-extern bool empty_stk (_stack);
-extern bool full_stk (_stack);
-extern _stack create_stack (int);
-extern void dispose_stack (_stack);
-extern void clear_stack (_stack);
-extern bool push (_stack, _tp);
-extern bool pop (_stack);
-extern _tp top (_stack);
-extern _tp topandpop (_stack);
 #ifdef __debug__
-
-extern void show (_stack);
-
+extern void show (pez_stack);
 #endif // ~ __debug__
 
 

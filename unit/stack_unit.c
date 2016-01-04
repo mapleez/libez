@@ -28,10 +28,10 @@ int main (argc, argv)
 		srand (array [i]);
 	}
 
-	_stack mystack = create_stack (120);
+	pez_stack mystack = ez_stack_create (120);
 
 	printf ("empty? %s\n", 
-		empty_stk (mystack) ? "true" : "false");
+		ez_stack_empty (mystack) ? "true" : "false");
 
 	if (!mystack || !array) {
 		println ("error!\n");
@@ -39,28 +39,28 @@ int main (argc, argv)
 	}
 
 	for (i = 0; i < 100; i ++) {
-		if (! push (mystack, array [i])) {
+		if (! ez_stack_push (mystack, array [i])) {
 			printf ("push %d. %d error!\n", 
 					i, array [i]);
 		}
 	}	
 
 	printf ("full? %s\n", 
-		full_stk (mystack) ? "true" : "false");
+		ez_stack_full (mystack) ? "true" : "false");
 
 
 #ifdef __debug__
 	show (mystack);
 #endif // ~ __debug__
 
-	printf ("top %d\n", top (mystack));
+	printf ("top %d\n", ez_stack_top (mystack));
 	for (i = 0; i < 100; i ++) {
-		if (! pop (mystack)) {
+		if (! ez_stack_pop (mystack)) {
 			println ("pop element error!\n");
 		}
 	}
 
-	dispose_stack (mystack);
+	ez_stack_dispose (mystack);
 
 	return 0;
 }

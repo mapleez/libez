@@ -246,7 +246,6 @@ ez_channel_recv (pez_channel _chan, int _len, void* _arg) {
 		ptr = ptr -> _next;
 	}
 	return num;
-
 }
 
 
