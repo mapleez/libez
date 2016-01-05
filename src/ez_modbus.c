@@ -278,6 +278,30 @@ pmbs_tcp_req_body_wr_m ezmbs_tcp_create_write_multi_coils
 	return frame;
 }
 
+
+// return -1 if it's error frame, return 0 if parameter is NULL ptr,
+int ezmbs_tcp_parse_read_multi_regs16 
+(pmbs_tcp_rsp_rd _frm, int* _trans, uint16_t* _datas) {
+	uint16_t * ptr;
+	int afterwords = 0;
+	if (! _frm || ! _trans || ! _datas) return 0;
+	*_trans = tolocalend16 (_frm -> _hdr._trans);
+	afterwords = tolocalend16 (_frm -> _hdr._len);
+	if (afterwords > 3) {
+		int i = 0;
+		afterwords = tolocalend16 (_frm -> _data_len);
+		ptr = (uint16_t*) _frm -> _first_data;
+		for (; i < afterwords; ++ i)
+			_datas [i] = tolocalend16 (ptr [i]);
+		return (i + 1);
+	} else // error frame.
+		return -1;
+}
+
+int ezmbs_tcp_parse_read_multi_regs32 
+(pmbs_tcp_rsp_rd _frm, int* _trans, uint32_t* _datas) {}
+
+
 #if 0 
 /*
    @1 request frame header ptr

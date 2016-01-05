@@ -6,6 +6,8 @@
 // #include <sys/type.h>
 #include <stdlib.h>
 
+uint16_t datas [64] = {0, };
+
 int main (int argc, char* argv []) {
 	
 	{
@@ -14,7 +16,7 @@ int main (int argc, char* argv []) {
 				IPPROTO_TCP, NULL, NULL, NULL);
 		int sent_endpoint = 0, recv_endpoint = 0, sockfd = 0;
 		pmbs_tcp_req_body_rd read_holdings = 
-			ezmbs_tcp_create_read_holdings (1, 99, 10);
+			ezmbs_tcp_create_read_holdings (1, 99, 8);
 		pmbs_tcp_rsp_rd rcv_buff = malloc (40);
 
 		if (! chan || ! endpoint || ! read_holdings) {
@@ -44,8 +46,15 @@ int main (int argc, char* argv []) {
 		// round-robin.
 		while (! recv_endpoint) {
 			recv_endpoint = ez_channel_recv (chan, 40, NULL);
-			if (recv_endpoint > 0)
+			if (recv_endpoint > 0) {
+				int trans = 0, data_len = 0, idx = 0;
 				println ("good receiving!");
+				data_len = ezmbs_tcp_parse_read_multi_regs16 
+					(rcv_buff, &trans, datas);
+				if (data_len > 0)
+					for (; idx < data_len; ++ idx)
+						printf ("%d = %d\n", idx, datas [idx]);
+			}
 		}
 
 		if (! ez_dispose_all (chan))
@@ -53,3 +62,4 @@ int main (int argc, char* argv []) {
 	}
 	return 0;
 }
+

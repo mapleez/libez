@@ -141,4 +141,13 @@ ezmbs_tcp_create_write_multi_regs (int, int, int, uint16_t*);
 extern pmbs_tcp_req_body_wr_m
 ezmbs_tcp_create_write_multi_coils (int, int, int, uint8_t*);
 
+
+// parse reading-registers , each one has 16 bits
+extern int ezmbs_tcp_parse_read_multi_regs16 (pmbs_tcp_rsp_rd, int*, uint16_t*);
+extern int ezmbs_tcp_parse_read_multi_regs32 (pmbs_tcp_rsp_rd, int*, uint32_t*);
+
+// parse reading-coils, each one has ...
+extern int ezmbs_tcp_parse_read_multi_coils (pmbs_tcp_rsp_rd, uint16_t*);
+// extern int ezmbs_tcp_parse_read_multi_coils (mbs_tcp_rsp_rd, uint32_t*);
+
 #endif // ~ _EZ_MODBUS_H_
