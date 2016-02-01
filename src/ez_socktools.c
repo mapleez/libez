@@ -1,7 +1,8 @@
 #include "internet/ez_socktools.h"
 #include <stdlib.h>
 #include <string.h>
-
+#include <sys/socket.h>
+#include <sys/types.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -93,6 +94,25 @@ int ez_sockfd_to_point
 	addr_len = sizeof (*_res);
 	return getsockname (_fd, _res, &addr_len); 
 }
+
+
+struct hostent* 
+ez_hostnameto_hostent (const char* _name) {
+	if (! _name) return NULL;
+	struct hostent* ret = gethostbyname (_name);
+	return ret;
+}
+
+struct in_addr*
+ez_hostnameto_sockaddr (const char* _name) {
+	struct hostent* ret = ez_hostnameto_hostent (_name);
+	if (! ret) 
+		return NULL;
+	else
+		return (struct in_addr*) ret -> h_addr;
+}
+
+
 
 #ifdef __cplusplus
 }

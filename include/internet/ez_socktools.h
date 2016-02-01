@@ -10,8 +10,10 @@
 #elif  defined __GNUC__
 
 #include <arpa/inet.h>
+#include <netinet/in.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <netdb.h>
 
 #endif // ~ __GNUC__
 
@@ -27,6 +29,12 @@ extern int
 
 extern char*
  ez_int_to_stringaddr (char*, int);
+
+extern struct hostent*
+ ez_hostnameto_hostent (const char*);
+
+extern struct in_addr*
+ ez_hostnameto_sockaddr (const char*);
 
 /*
  * Get the bounded address from a socket fd.

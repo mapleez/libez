@@ -140,6 +140,8 @@ static int _def_release_consolelogger (pez_logger* _log) {
 
 
 bool ez_logger_alert     (pez_logger _log, const char* _fmt, ...) {
+  // the default buffer length = 256, 
+	// you'd better configure it for suitable!!!
   char buff [LOGFMTBUFF_LEN] = {0, };
 	va_list args;
 	int time_len = 0, stored_len = 0;
@@ -150,11 +152,15 @@ bool ez_logger_alert     (pez_logger _log, const char* _fmt, ...) {
 		return false;
 
 	va_start (args, _fmt);
-	stored_len = vsprintf (buff + time_len, _fmt, args);
+	stored_len = vsnprintf (buff + time_len, 
+			LOGFMTBUFF_LEN - time_len, _fmt, args);
 	va_end (args);
 	if (! stored_len)
 		return false;
+	// check the buffer length
 	stored_len += time_len;
+	if (stored_len >= LOGFMTBUFF_LEN)
+		stored_len = LOGFMTBUFF_LEN - 1;
 	buff [stored_len ++] = '\n';
   return stored_len == fwrite (buff, sizeof (char), 
 			stored_len, _log -> _fstream);
@@ -171,11 +177,14 @@ bool ez_logger_info      (pez_logger _log, const char* _fmt, ...) {
 		return false;
 
 	va_start (args, _fmt);
-	stored_len = vsprintf (buff + time_len, _fmt, args);
+	stored_len = vsnprintf (buff + time_len, 
+			LOGFMTBUFF_LEN - time_len, _fmt, args);
 	va_end (args);
 	if (! stored_len)
 		return false;
 	stored_len += time_len;
+	if (stored_len >= LOGFMTBUFF_LEN)
+		stored_len = LOGFMTBUFF_LEN - 1;
 	buff [stored_len ++] = '\n';
   return stored_len == fwrite (buff, sizeof (char), 
 			stored_len, _log -> _fstream);
@@ -192,11 +201,14 @@ bool ez_logger_debug     (pez_logger _log, const char* _fmt, ...) {
 		return false;
 
 	va_start (args, _fmt);
-	stored_len = vsprintf (buff + time_len, _fmt, args);
+	stored_len = vsnprintf (buff + time_len, 
+			LOGFMTBUFF_LEN - time_len, _fmt, args);
 	va_end (args);
 	if (! stored_len)
 		return false;
 	stored_len += time_len;
+	if (stored_len >= LOGFMTBUFF_LEN)
+		stored_len = LOGFMTBUFF_LEN - 1;
 	buff [stored_len ++] = '\n';
   return stored_len == fwrite (buff, sizeof (char), 
 			stored_len, _log -> _fstream);
@@ -213,11 +225,14 @@ bool ez_logger_error     (pez_logger _log, const char* _fmt, ...) {
 		return false;
 
 	va_start (args, _fmt);
-	stored_len = vsprintf (buff + time_len, _fmt, args);
+	stored_len = vsnprintf (buff + time_len, 
+			LOGFMTBUFF_LEN - time_len, _fmt, args);
 	va_end (args);
 	if (! stored_len)
 		return false;
 	stored_len += time_len;
+	if (stored_len >= LOGFMTBUFF_LEN)
+		stored_len = LOGFMTBUFF_LEN - 1;
 	buff [stored_len ++] = '\n';
   return stored_len == fwrite (buff, sizeof (char), 
 			stored_len, _log -> _fstream);
@@ -234,11 +249,14 @@ bool ez_logger_warn      (pez_logger _log, const char* _fmt, ...) {
 		return false;
 
 	va_start (args, _fmt);
-	stored_len = vsprintf (buff + time_len, _fmt, args);
+	stored_len = vsnprintf (buff + time_len, 
+			LOGFMTBUFF_LEN - time_len, _fmt, args);
 	va_end (args);
 	if (! stored_len)
 		return false;
 	stored_len += time_len;
+	if (stored_len >= LOGFMTBUFF_LEN)
+		stored_len = LOGFMTBUFF_LEN - 1;
 	buff [stored_len ++] = '\n';
   return stored_len == fwrite (buff, sizeof (char), 
 			stored_len, _log -> _fstream);
@@ -255,11 +273,14 @@ bool ez_logger_notice    (pez_logger _log, const char* _fmt, ...) {
 		return false;
 
 	va_start (args, _fmt);
-	stored_len = vsprintf (buff + time_len, _fmt, args);
+	stored_len = vsnprintf (buff + time_len, 
+			LOGFMTBUFF_LEN - time_len, _fmt, args);
 	va_end (args);
 	if (! stored_len)
 		return false;
 	stored_len += time_len;
+	if (stored_len >= LOGFMTBUFF_LEN)
+		stored_len = LOGFMTBUFF_LEN - 1; // because buff length = LOGFMTBUFF_LEN
 	buff [stored_len ++] = '\n';
   return stored_len == fwrite (buff, sizeof (char), 
 			stored_len, _log -> _fstream);
@@ -276,11 +297,14 @@ bool ez_logger_critical  (pez_logger _log, const char* _fmt, ...) {
 		return false;
 
 	va_start (args, _fmt);
-	stored_len = vsprintf (buff + time_len, _fmt, args);
+	stored_len = vsnprintf (buff + time_len, 
+			LOGFMTBUFF_LEN - time_len, _fmt, args);
 	va_end (args);
 	if (! stored_len)
 		return false;
 	stored_len += time_len;
+	if (stored_len >= LOGFMTBUFF_LEN)
+		stored_len = LOGFMTBUFF_LEN - 1;
 	buff [stored_len ++] = '\n';
   return stored_len == fwrite (buff, sizeof (char), 
 			stored_len, _log -> _fstream);
@@ -297,11 +321,14 @@ bool ez_logger_emergency (pez_logger _log, const char* _fmt, ...) {
 		return false;
 
 	va_start (args, _fmt);
-	stored_len = vsprintf (buff + time_len, _fmt, args);
+	stored_len = vsnprintf (buff + time_len, 
+			LOGFMTBUFF_LEN - time_len, _fmt, args);
 	va_end (args);
 	if (! stored_len)
 		return false;
 	stored_len += time_len;
+	if (stored_len >= LOGFMTBUFF_LEN)
+		stored_len = LOGFMTBUFF_LEN - 1;
 	buff [stored_len ++] = '\n';
   return stored_len == fwrite (buff, sizeof (char), 
 			stored_len, _log -> _fstream);
@@ -318,11 +345,14 @@ bool ez_logger_trace     (pez_logger _log, const char* _fmt, ...) {
 		return false;
 
 	va_start (args, _fmt);
-	stored_len = vsprintf (buff + time_len, _fmt, args);
+	stored_len = vsnprintf (buff + time_len, 
+			LOGFMTBUFF_LEN - time_len, _fmt, args);
 	va_end (args);
 	if (! stored_len)
 		return false;
 	stored_len += time_len;
+	if (stored_len >= LOGFMTBUFF_LEN)
+		stored_len = LOGFMTBUFF_LEN - 1;
 	buff [stored_len ++] = '\n';
   return stored_len == fwrite (buff, sizeof (char), 
 			stored_len, _log -> _fstream);
