@@ -71,6 +71,10 @@
 #	define ORDER_DESC     (true)
 #	define ORDER_ASC	  (false)
 
+#	define RTNVAL_SUCC 1
+#	define RTNVAL_FAIL 0 
+#	define RTNVAL_ERR  -1
+
 typedef uint8_t* bytes;
 typedef uint8_t  byte;
 

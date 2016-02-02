@@ -1,6 +1,8 @@
 #ifndef _EZ_EVENT_H_
 #	define _EZ_EVENT_H_
 
+#include "ez.h"
+
 // event mask;
 #	define EE_NONE 0
 #	define EE_READABLE 1
@@ -10,10 +12,6 @@
 #	define EE_FILE_EVENT 1
 #	define EE_NONE_EVENT 0 
 #	define EE_ALL_EVENT (EE_FILE_EVENT)
-
-#	define RTNVAL_SUCC 1
-#	define RTNVAL_FAIL 0 
-#	define RTNVAL_ERR  -1
 
 struct ezevent_loop;
 
