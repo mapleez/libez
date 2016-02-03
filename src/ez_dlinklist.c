@@ -1,12 +1,12 @@
 #include "ez_dlinklist.h"
-// #include <string.h>
 #include <stdlib.h>
 
-pez_dlist ez_dlist_create (cmp_func _cmp, free_func _free) {
+pez_dlist ez_dlist_create (void) {
 	pez_dlist list = (pez_dlist) malloc (SIZE_EZ_DLIST);
 	if (! list) return NULL;
-	list -> _match = _cmp; // don't care about whether it's NULL.
-	list -> _free = _free;
+	list -> _match = NULL;
+	list -> _free = NULL;
+	list -> _dup = NULL;
 	list -> _count = 0;
 	list -> _head = list -> _tail = NULL;
 	return list;
@@ -67,21 +67,22 @@ void ez_dlist_dispose (pez_dlist* _list) {
 }
 #	undef MASK
 
-void* ez_dlist_gethead (pez_dlist _list) {
-	void* ptr = _list -> _head ? 
-		_list -> _head -> _value : NULL;
-	return ptr;
+pdlist_elm ez_dlist_gethead (pez_dlist _list) {
+	// void* ptr = _list -> _head ? 
+	// 	_list -> _head -> _value : NULL;
+	return _list -> _head;
 }
 
-void* ez_dlist_gettail (pez_dlist _list) {
-	void* ptr = _list -> _tail ? 
-		_list -> _tail -> _value : NULL;
-	return ptr;
+pdlist_elm ez_dlist_gettail (pez_dlist _list) {
+	// void* ptr = _list -> _tail ? 
+	// 	_list -> _tail -> _value : NULL;
+	return _list -> _tail;
 }
 
 // int ez_dlist_duplicate (pez_dlist, const pez_dlist);
 
-void* ez_dlist_pushhead (pez_dlist _list, void* const _val) {
+// the _value must not be NULL
+pdlist_elm ez_dlist_pushhead (pez_dlist _list, void* const _val) {
 	pdlist_elm elm = (pdlist_elm) malloc (SIZE_EZ_DLIST_ELM);
 	if (! elm) return NULL;
 	elm -> _value = _val;
@@ -93,10 +94,11 @@ void* ez_dlist_pushhead (pez_dlist _list, void* const _val) {
 		_list -> _head -> _prev = elm; // fuck !!!
 	_list -> _head = elm;
 	++ (_list -> _count);
-	return _val;
+	return elm;
 }
 
-void* ez_dlist_pushtail (pez_dlist _list, void* const _val) {
+// the _value must not be NULL
+pdlist_elm ez_dlist_pushtail (pez_dlist _list, void* const _val) {
 	pdlist_elm elm = (pdlist_elm) malloc (SIZE_EZ_DLIST_ELM);
 	if (! elm) return NULL;
 	elm -> _value = _val;
@@ -108,41 +110,68 @@ void* ez_dlist_pushtail (pez_dlist _list, void* const _val) {
 		_list -> _tail -> _next = elm; // fuck !!!
 	_list -> _tail = elm;
 	++ (_list -> _count);
-	return _val;
+	return elm;
 }
 
-void* ez_dlist_pophead (pez_dlist _list) {
+void ez_dlist_pophead (pez_dlist _list) {
 	pdlist_elm elm = _list -> _head;
-	void* tmp = NULL;
-	if (! elm) return NULL;
+	if (! elm) return;
 	if (_list -> _free) {
 		_list -> _free (elm -> _value);
-		tmp = elm -> _value;
+		// tmp = elm -> _value;
 	}
 	elm = elm -> _next;
 	free (_list -> _head);
 	_list -> _head = elm;
 	-- (_list -> _count);
-	return tmp;
+	// return tmp;
 }
 
-void* ez_dlist_poptail (pez_dlist _list) {
+void ez_dlist_poptail (pez_dlist _list) {
 	pdlist_elm elm = _list -> _tail;
-	void* tmp = NULL;
-	if (! elm) return NULL; // empty list.
+	if (! elm) return; // empty list.
 	if (_list -> _free) {
 		_list -> _free (elm -> _value);
-		tmp = elm -> _value;
+		// tmp = elm -> _value;
 	}
 	elm = elm -> _prev;
 	free (_list -> _tail);
 	_list -> _tail = elm;
 	-- (_list -> _count);
-	return tmp;
+	// return tmp;
 }
 
-// void* ez_dlist_search (pez_dlist, const void*);
-// void* ez_dlist_getbyidx (pez_dlist, int);
+// the _value must not be null
+// search from head to tail.
+pdlist_elm ez_dlist_search (pez_dlist _list, void* const _val) {
+	pdlist_elm elm;
+	elm = _list -> _head;
+	while (elm) {
+		if (_list -> _match) {
+			if (_list -> _match (elm -> _value, _val))
+				return elm;// -> _value;
+		} else 
+			if (elm -> _value == _val) 
+				return elm;// -> _value;
+		elm = elm -> _next;
+	}
+	return NULL;
+}
+
+// index ranges from 0 to N
+pdlist_elm ez_dlist_getbyidx (pez_dlist _list, int _idx) {
+	pdlist_elm elm;
+	elm = _list -> _head;
+	if (_idx < 0) return NULL;
+	while (_idx && elm) {
+		elm = elm -> _next;
+		-- _idx;
+	}
+	if (! _idx)
+		return elm; // -> _value;
+	return NULL;
+}
+
 void display_dlist_head (pez_dlist _list, disp_each _disp) {
 	pdlist_elm head = _list -> _head;
 	while (head) {
@@ -161,6 +190,33 @@ void display_dlist_tail (pez_dlist _list, disp_each _disp) {
 	}
 	printf ("list has %d elements \n", 
 				_list -> _count);
+}
+
+
+pez_dlist ez_dlist_duplicate (const pez_dlist _src) {
+	pez_dlist dst = ez_dlist_create ();
+	pdlist_elm elm = _src -> _head;
+	if (! dst) return NULL;
+	set_dlist_match (dst, _src -> _match);
+	set_dlist_free (dst, _src -> _free);
+	set_dlist_dup (dst, _src -> _dup);
+	while (elm) {
+		void* ptr = NULL;
+		if (dst -> _dup) {
+			ptr = dst -> _dup (elm -> _value);
+			if (! ptr) {
+				ez_dlist_dispose (&dst);
+				return NULL;
+			}
+		} else
+			ptr = elm -> _value;
+		// in this function dst update _count field.
+		if (! ez_dlist_pushtail (dst, ptr)) {
+			ez_dlist_dispose (&dst);
+			return NULL;
+		}
+	}
+	return dst;
 }
 
 

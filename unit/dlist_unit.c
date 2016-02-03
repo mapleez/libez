@@ -28,47 +28,56 @@ void signal_handler (int _signo) {
 }
 
 int main (int argc, char* argv []) {
-	if (0)
 	{
-		list = ez_dlist_create (NULL, NULL);
+		list = ez_dlist_create ();
 		int i = 5;
-		display_dlist_head (list, display_each);
-		println ("--------------------");
-		display_dlist_tail (list, display_each);
+		// display_dlist_head (list, display_each);
+		// println ("--------------------");
+		// display_dlist_tail (list, display_each);
 
 		// test pushhead
 		for (; i < 20; i ++) {
-			int res = (int) ez_dlist_pushhead (list, (void*) i);
-			printf ("push header %d\n", res);
+			pdlist_elm res = ez_dlist_pushhead (list, (void*) i);
+			printf ("push header %d\n", (int) (res -> _value));
 		}
-		display_dlist_head (list, display_each);
-		println ("--------------------");
-		display_dlist_tail (list, display_each);
+		// display_dlist_head (list, display_each);
+		// println ("--------------------");
+		// display_dlist_tail (list, display_each);
 
 		println ("--------------------");
 
 		// test pushtail
 		for (; i >= 5; i --) {
-			int res = (int) ez_dlist_pushtail (list, (void*) i);
-			printf ("push tail %d\n", res);
+			pdlist_elm res = ez_dlist_pushtail (list, (void*) i);
+			printf ("push tail %d\n", (int) (res -> _value));
 		}
 		display_dlist_head (list, display_each);
 		println ("--------------------");
-		display_dlist_tail (list, display_each);
+		// display_dlist_tail (list, display_each);
+
+		println ("start search");
+		pdlist_elm elm = ez_dlist_search (list, (void*) 19);
+		if (elm)
+			printf ("prev value = %d, found value = %d, next value = %d\n",
+				(int) (elm -> _prev ? (elm -> _prev -> _value) : -1),
+				(int) (elm -> _value),
+				(int) (elm -> _next ? (elm -> _next -> _value) : -1));
+
 		ez_dlist_dispose (&list);
 	}
 
+	if (0)
 	{
 		if (signal (SIGINT, signal_handler) == SIG_ERR) {
 			fprintf (stderr, "signal failed\n");
 			return -1;
 		}
-		list = ez_dlist_create (NULL, NULL);
+		list = ez_dlist_create ();
 		int i = 0;
 		while (1) {
 			for (i = 1; i < 0x7fffffff; i ++) {
-				int res = (int) ez_dlist_pushhead (list, (void*) i);
-				printf ("push header %d\n", res);
+				pdlist_elm res = ez_dlist_pushhead (list, (void*) i);
+				printf ("push header %d\n", (int) (res -> _value));
 			}
 		}
 	}
