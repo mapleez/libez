@@ -215,6 +215,7 @@ pez_dlist ez_dlist_duplicate (const pez_dlist _src) {
 			ez_dlist_dispose (&dst);
 			return NULL;
 		}
+		elm = elm -> _next; // step towards.
 	}
 	return dst;
 }

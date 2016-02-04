@@ -30,6 +30,7 @@ void signal_handler (int _signo) {
 int main (int argc, char* argv []) {
 	{
 		list = ez_dlist_create ();
+		pez_dlist dup = NULL;
 		int i = 5;
 		// display_dlist_head (list, display_each);
 		// println ("--------------------");
@@ -63,7 +64,17 @@ int main (int argc, char* argv []) {
 				(int) (elm -> _value),
 				(int) (elm -> _next ? (elm -> _next -> _value) : -1));
 
-		ez_dlist_dispose (&list);
+		println ("--------------------");
+		// duplication:
+		dup = ez_dlist_duplicate (list);
+		if (dup) {
+			display_dlist_head (dup, display_each);
+		} else {
+			println ("duplicate error!");
+		}
+
+		if (list) ez_dlist_dispose (&list);
+		if (dup) ez_dlist_dispose (&dup);
 	}
 
 	if (0)
