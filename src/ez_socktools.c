@@ -1,5 +1,6 @@
 #include "internet/ez_socktools.h"
 #include <stdlib.h>
+#include <time.h>
 #include <string.h>
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -146,6 +147,25 @@ int ez_setsock_keepalive (int _fd, int _interval, int _times) {
 #endif // __linux__
 	return RTNVAL_SUCC;
 }
+
+int ez_setsock_sendtimeout (int _fd, long long _ms) {
+	struct timeval tv;
+	tv.tv_sec = _ms / 1000;
+	tv.tv_usec = (_ms % 1000) * 1000;
+	if (setsockopt (_fd, SOL_SOCKET, SOL_SNDTIMEO, &tv, sizeof (tv))
+			== -1) return RTNVAL_FAIL;
+	return RTNVAL_SUCC;
+}
+
+int ez_setsock_recvtimeout (int _fd, long long _ms) {
+	struct timeval tv;
+	tv.tv_sec = _ms / 1000;
+	tv.tv_usec = (_ms % 1000) * 1000;
+	if (setsockopt (_fd, SOL_SOCKET, SOL_RCVTIMEO, &tv, sizeof (tv))
+			== -1) return RTNVAL_FAIL;
+	return RTNVAL_SUCC;
+}
+
 
 #ifdef __cplusplus
 }

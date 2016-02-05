@@ -59,6 +59,27 @@ extern int
 extern int
  ez_setsock_keepalive (int, int, int);
 
+/*
+ * Set the socket send timeout.
+ * @1 file descriptor
+ * @2 specified number of milliseconds to set.
+ *    if pass 0, disable timeout.
+ * Return RTNVAL_SUCC (1) if successful,
+ * Otherwise RTNVAL_FAIL (0).
+*/
+extern int
+ ez_setsock_sendtimeout (int, long long);
+
+/*
+ * Set the socket receive timeout.
+ * @1 file descriptor
+ * @2 specified number of milliseconds to set.
+ *    if pass 0, disable timeout.
+ * Return RTNVAL_SUCC (1) if successful,
+ * Otherwise RTNVAL_FAIL (0).
+*/
+extern int
+ ez_setsock_recvtimeout (int, long long);
 
 /*
  * Get the bounded address from a socket fd.
