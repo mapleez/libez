@@ -115,6 +115,8 @@ int main (int argc, char* argv []) {
 
 	ez_logger_info (logger, "close sockets.");
 
+	shutdown (baidu, SHUT_RDWR);
+	shutdown (ncepu, SHUT_RDWR);
 	close (baidu);
 	close (ncepu);
 	ez_logger_despose (&logger);

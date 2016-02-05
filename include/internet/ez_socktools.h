@@ -37,6 +37,30 @@ extern struct in_addr*
  ez_hostnameto_sockaddr (const char*);
 
 /*
+ * Set socket block or non-block
+ * @1 file descriptor.
+ * @2 whether it's set blocking or not, non-zero for blocking, 
+ *    zero for non-blocking.
+ * return (RTNVAL_SUCC)1 if successful.
+ * else return (RTNVAL_FAIL) 0. 
+*/
+extern int
+ ez_setsockblock (int, int);
+
+/*
+ * Set TCP socket keep alive option to detect dead peers.
+ * @1 file descriptor.
+ * @2 interval for probe sending time (second).
+ 			only used on linux
+ * @3 times for probe.
+ * Return RTNVAL_SUCC(1) if successful.
+ * Otherwise return RTNVAL_FAIL (0).
+*/
+extern int
+ ez_setsock_keepalive (int, int, int);
+
+
+/*
  * Get the bounded address from a socket fd.
  * If successful ,return 0, otherwise return 
  * -1;

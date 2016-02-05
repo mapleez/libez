@@ -3,6 +3,8 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <fcntl.h>
+#include <netinet/tcp.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -112,7 +114,38 @@ ez_hostnameto_sockaddr (const char* _name) {
 		return (struct in_addr*) ret -> h_addr;
 }
 
+int 
+ez_setsockblock (int _fd, int _blocking) {
+	int flags = 0;
+	if ((flags = fcntl (_fd, F_GETFL)) == -1)
+		return RTNVAL_FAIL;
+	if (_blocking)
+		flags |= O_NONBLOCK;
+	else
+		flags &= ~ O_NONBLOCK;
 
+	if (fcntl (_fd, flags) == -1)
+		return RTNVAL_FAIL;
+	return RTNVAL_SUCC;
+}
+
+int ez_setsock_keepalive (int _fd, int _interval, int _times) {
+	int flag = 1;
+	if (setsockopt (_fd, SOL_SOCKET, SO_KEEPALIVE, &flag, sizeof (flag))
+			== -1)
+		return RTNVAL_FAIL;
+#ifdef __linux__
+	// if (setsockopt (_fd, IPPROTO_TCP, TCP_KEEPIDEL, &_times, sizeof (_times)) == -1)
+	//	 return RTNVAL_FAIL;
+	// keep interval.
+	if (setsockopt (_fd, IPPROTO_TCP, TCP_KEEPINTVL, &_interval, sizeof (_interval)) == -1)
+		return RTNVAL_FAIL;
+	// keep check count.
+	if (setsockopt (_fd, IPPROTO_TCP, TCP_KEEPCNT, &_times, sizeof (_times)) == -1)
+		return RTNVAL_FAIL;
+#endif // __linux__
+	return RTNVAL_SUCC;
+}
 
 #ifdef __cplusplus
 }
