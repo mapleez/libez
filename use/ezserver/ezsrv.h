@@ -3,11 +3,16 @@
 
 #include "ez_log.h"
 #include "ez_event.h"
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 #	define DEFAULT_CONN_SOCK 32
+#	define BIND_ADDR  "127.0.0.1"
+#	define BIND_PORT 9999
 
 typedef struct ezsrv {
 	int _sock;
+	struct sockaddr _addr;
 	pez_logger _flog;
 	pezevent_loop _loop;
 	// int (* _init) (pezsrv, void*);
@@ -18,8 +23,8 @@ typedef struct ezsrv {
 #	define SIZE_EZSRV (sizeof (struct ezsrv))
 
 extern pezsrv ezsrv_create ();
-#	define ezsrv_setinit(___S, ___F) (___S) -> _init = (___F)
-#	define ezsrv_setdispose(___S, ___F) (___S) -> _dispose = (___F)
+// #	define ezsrv_setinit(___S, ___F) (___S) -> _init = (___F)
+// #	define ezsrv_setdispose(___S, ___F) (___S) -> _dispose = (___F)
 
 extern int ezsrv_init (pezsrv, void*);
 extern void ezsrv_dispose (pezsrv);

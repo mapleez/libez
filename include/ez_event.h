@@ -62,7 +62,7 @@ void ezevent_rm_fileevent (pezevent_loop, int _fd, int _mask);
 
 int ezevent_process_loop (pezevent_loop, int _proc_flag);
 void ezevent_start_loop (pezevent_loop);
-int ezevent_stop_loop (pezevent_loop);
+void ezevent_stop_loop (pezevent_loop);
 
 int ezevent_get_size (pezevent_loop);
 int ezevent_reset_size (pezevent_loop, int);

@@ -46,7 +46,7 @@ void ezevent_despose_eventloop (pezevent_loop _loop) {
 	_loop -> _occured = NULL;
 }
 
-void ezevent_stop_eventloop (pezevent_loop _loop) {
+void ezevent_stop_loop (pezevent_loop _loop) {
 	_loop -> _canrun = 0;
 }
 
