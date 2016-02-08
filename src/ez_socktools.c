@@ -152,7 +152,7 @@ int ez_setsock_sendtimeout (int _fd, long long _ms) {
 	struct timeval tv;
 	tv.tv_sec = _ms / 1000;
 	tv.tv_usec = (_ms % 1000) * 1000;
-	if (setsockopt (_fd, SOL_SOCKET, SOL_SNDTIMEO, &tv, sizeof (tv))
+	if (setsockopt (_fd, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof (tv))
 			== -1) return RTNVAL_FAIL;
 	return RTNVAL_SUCC;
 }
@@ -161,7 +161,7 @@ int ez_setsock_recvtimeout (int _fd, long long _ms) {
 	struct timeval tv;
 	tv.tv_sec = _ms / 1000;
 	tv.tv_usec = (_ms % 1000) * 1000;
-	if (setsockopt (_fd, SOL_SOCKET, SOL_RCVTIMEO, &tv, sizeof (tv))
+	if (setsockopt (_fd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof (tv))
 			== -1) return RTNVAL_FAIL;
 	return RTNVAL_SUCC;
 }

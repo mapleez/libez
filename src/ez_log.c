@@ -131,7 +131,7 @@ static int _def_release_filelogger (pez_logger* _log) {
 
 static int _def_release_consolelogger (pez_logger* _log) {
 	if (*_log) {
-		ez_logger_info (*_log, "Console logger despose...done!");
+		// ez_logger_info (*_log, "Console logger despose...done!");
 		free (*_log);
 		*_log = NULL;
 	}

@@ -12,13 +12,17 @@ EXEFILES = postfix dfs mbs web
 
 .PHONY: all clean
 
-all: $(EXEFILES)
+all: $(EXEFILES) ezsrv
 
 $(EXEFILES): $(BIN)
+
+ezsrv:
+	$(MAKE) -C ezserver/ all
 
 # postfix: postfix.c 
 # 	$(CC) $(BIN) $(INCLUDE) $(OBJFLAG) $@ $(CFLAG) $^ $(DEBUG)
 
 clean: 
 	rm postfix dfs mbs web
+	$(MAKE) -C ezserver/ clean
 
