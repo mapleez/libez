@@ -38,8 +38,8 @@ int main (int argc, char* argv []) {
 
 		// test pushhead
 		for (; i < 20; i ++) {
-			pdlist_elm res = ez_dlist_pushhead (list, (void*) i);
-			printf ("push header %d\n", (int) (res -> _value));
+			pdlist_elm res = ez_dlist_pushhead (list, (void*)(long) i);
+			printf ("push header %d\n", (long) (res -> _value));
 		}
 		// display_dlist_head (list, display_each);
 		// println ("--------------------");
@@ -49,20 +49,20 @@ int main (int argc, char* argv []) {
 
 		// test pushtail
 		for (; i >= 5; i --) {
-			pdlist_elm res = ez_dlist_pushtail (list, (void*) i);
-			printf ("push tail %d\n", (int) (res -> _value));
+			pdlist_elm res = ez_dlist_pushtail (list, (void*)(long) i);
+			printf ("push tail %d\n", (long) (res -> _value));
 		}
 		display_dlist_head (list, display_each);
 		println ("--------------------");
 		// display_dlist_tail (list, display_each);
 
 		println ("start search");
-		pdlist_elm elm = ez_dlist_search (list, (void*) 19);
+		pdlist_elm elm = ez_dlist_search (list, (void*)(long) 19);
 		if (elm)
 			printf ("prev value = %d, found value = %d, next value = %d\n",
-				(int) (elm -> _prev ? (elm -> _prev -> _value) : -1),
-				(int) (elm -> _value),
-				(int) (elm -> _next ? (elm -> _next -> _value) : -1));
+				(elm -> _prev ? (elm -> _prev -> _value) : (void*)(long) -1),
+				(elm -> _value),
+				(elm -> _next ? (elm -> _next -> _value) : (void*)(long) -1));
 
 		println ("--------------------");
 		// duplication:
@@ -87,8 +87,8 @@ int main (int argc, char* argv []) {
 		int i = 0;
 		while (1) {
 			for (i = 1; i < 0x7fffffff; i ++) {
-				pdlist_elm res = ez_dlist_pushhead (list, (void*) i);
-				printf ("push header %d\n", (int) (res -> _value));
+				pdlist_elm res = ez_dlist_pushhead (list, (void*)(long) i);
+				printf ("push header %d\n", (long) (res -> _value));
 			}
 		}
 	}

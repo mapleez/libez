@@ -85,15 +85,16 @@ static void _client_sock_read
 (pezevent_loop _loop, int _fd, int _mask, void* _data) {
 	char buff [256] = {0, };
 	int read_len = 0;
-	read_len = read (_fd, buff, 256);
+	read_len = recv (_fd, buff, 256, 0);
 	if (read_len > 0) {
 		int i = 0;
 		ez_logger_info (_clog, "received from sock %d", _fd);
-		for (; i < 256; ++ i) {
+		for (; i < read_len; ++ i) {
 			printf ("0x%02x ", buff [i]);
 			if (! (i & 0x07))
-				printf ("\n");
+				println ("");
 		}
+		println ("");
 	}
 }
 
