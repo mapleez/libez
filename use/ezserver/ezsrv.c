@@ -91,7 +91,7 @@ static void _client_sock_read
 		ez_logger_info (_clog, "received from sock %d", _fd);
 		for (; i < read_len; ++ i) {
 			printf ("0x%02x ", buff [i]);
-			if (! (i & 0x07))
+			if (! (i & 0x07) && i)
 				println ("");
 		}
 		println ("");
