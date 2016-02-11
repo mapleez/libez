@@ -29,5 +29,6 @@ extern pezsrv ezsrv_create ();
 extern int ezsrv_init (pezsrv, void*);
 extern void ezsrv_dispose (pezsrv);
 extern void ezsrv_start (pezsrv);
+extern void ezsrv_stop (pezsrv);
 
 #endif // ~ _EZ_SRV_H_

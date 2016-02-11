@@ -1,10 +1,12 @@
 #include "ezsrv.h"
+#include "internet/ez_socktools.h"
 // #include "ez_log.h"
 // #include "ez_event.h"
 #include <unistd.h>
 #include <stdlib.h>
 #include <signal.h>
 #include <stdio.h>
+#include <errno.h>
 
 // #include <netinet/in.h>
 // #include <arpa/inet.h>
@@ -61,7 +63,7 @@ static void _uninitialize () {
 
 static void _bind_sock_proc 
 (pezevent_loop _loop, int _fd, int _mask, void* _data) {
-	int fd;
+	int fd, res;
 	socklen_t addr_len; // client socket
 	pezsrv psrv = (pezsrv) _data;
 	// addr_len = sizeof (struct sockaddr);
@@ -72,6 +74,10 @@ static void _bind_sock_proc
 		ez_logger_alert (_clog, "Error in accept client sock");
 		return;
 	}
+	// set socket options.
+	res = ez_setsock_keepalive (fd, 1, 3);
+	if (res != RTNVAL_SUCC)
+		println ("error in set socket keepalive.");
 
 	if (ezevent_add_fileevent (_loop, fd, 
 			EE_READABLE, _client_sock_read, _data) == RTNVAL_FAIL)
@@ -95,13 +101,23 @@ static void _client_sock_read
 				println ("");
 		}
 		println ("");
+	} else if (read_len == 0) {
+		ez_logger_info (_clog, "client %d closed...", _fd);
+		ezevent_rm_fileevent (_loop, _fd, EE_READABLE);
+		close (_fd);
+	} else /*if (read_len == -1)*/ {
+		if (errno == EAGAIN) {
+			ez_logger_info (_clog, "client %d closed...", _fd);
+			ezevent_rm_fileevent (_loop, _fd, EE_READABLE);
+			close (_fd);
+		}
 	}
 }
 
 static void _signal_inthandler (int _signo) {
 	ez_logger_info (_clog, 
 			"Trigger SIGINT, will now break event loop");
-	ezevent_stop_loop (_server -> _loop);
+	ezsrv_stop (_server);
 }
 
 // ----------- Implementation of Ezserver. ----------
@@ -109,9 +125,9 @@ pezsrv ezsrv_create () {
 	pezsrv srv = (pezsrv) malloc (SIZE_EZSRV);
 	if (! srv) return NULL;
 
-	srv -> _flog = ez_logger_new (NULL, NULL, LOGTYPE_FILE, NULL);
+	// srv -> _flog = ez_logger_new (NULL, NULL, LOGTYPE_FILE, NULL);
 	srv -> _loop = ezevent_create_eventloop (DEFAULT_CONN_SOCK);
-	if (! srv -> _flog || ! srv -> _loop) goto err;
+	if (/*! srv -> _flog ||*/ ! srv -> _loop) goto err;
 	return srv;
 
 err:
@@ -157,9 +173,14 @@ err:
 }
 
 void ezsrv_start (pezsrv _srv) {
-	while (run) {
-		ezevent_start_loop (_srv -> _loop);
-	}
+	ezevent_start_loop (_srv -> _loop);
+}
+
+void ezsrv_stop (pezsrv _srv) {
+	ezevent_stop_loop (_srv -> _loop);
+	ezevent_rm_fileevent (_srv -> _loop, 
+			_srv -> _sock, EE_READABLE);
+	close (_srv -> _sock);
 }
 
 // int _srv_init (pezsrv _srv, void* _arg) {
@@ -179,7 +200,9 @@ int main (int argc, char* argv []) {
 	_initialize ();
 	printf ("Done!\n");
 
+	ez_logger_info (_clog, "Starting server.");
 	ezsrv_start (_server);
+	ez_logger_info (_clog, "Shutdown server.");
 
 	printf ("Dispose...");
 	_uninitialize ();

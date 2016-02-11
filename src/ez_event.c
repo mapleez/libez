@@ -76,8 +76,9 @@ void ezevent_rm_fileevent (pezevent_loop _loop, int _fd, int _mask) {
 	if (_mask & EE_NONE) return;
 	ptr -> _event_mask &= ~_mask;
 
-	if (_fd == _loop -> _size && ptr -> _event_mask & EE_NONE) {
-		int idx = _loop -> _size - 1;
+	// max fd.
+	if (_fd == _loop -> _maxfd && ptr -> _event_mask == EE_NONE) {
+		int idx = _loop -> _maxfd;
 		ezselect_rmevent (_loop, _fd, _mask); // remove from depth register.
 		// update maxfd
 		for (; idx >= 0; -- idx)
