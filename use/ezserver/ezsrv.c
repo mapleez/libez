@@ -96,6 +96,7 @@ static void _client_sock_read
 	read_len = recv (_fd, buff, 256, 0);
 	if (read_len > 0) {
 		// nothing todo...
+
 		// int i = 0;
 		// _stream += read_len;
 		// for (; i < read_len; ++ i) {

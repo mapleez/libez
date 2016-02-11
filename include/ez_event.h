@@ -13,6 +13,11 @@
 #	define EE_NONE_EVENT 0 
 #	define EE_ALL_EVENT (EE_FILE_EVENT)
 
+// microsecond.
+#	define SLEEP_INTERVAL_TOTAL 0
+#	define SLEEP_INTERVAL_SEC (SLEEP_INTERVAL_TOTAL / 1000)
+#	define SLEEP_INTERVAL_MS  (SLEEP_INTERVAL_TOTAL % 1000)
+
 struct ezevent_loop;
 
 // $0 = event loop ptr

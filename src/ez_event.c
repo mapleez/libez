@@ -73,17 +73,19 @@ void ezevent_rm_fileevent (pezevent_loop _loop, int _fd, int _mask) {
 	if (! _loop || _loop -> _size <= _fd) return;
 	pezevent_file ptr = &_loop -> _events [_fd];
 	
-	if (_mask & EE_NONE) return;
+	// note, EE_NONE = 0
+	if (_mask == EE_NONE) return;
 	ptr -> _event_mask &= ~_mask;
+	ezselect_rmevent (_loop, _fd, _mask); // remove from depth register.
 
 	// max fd.
 	if (_fd == _loop -> _maxfd && ptr -> _event_mask == EE_NONE) {
 		int idx = _loop -> _maxfd;
-		ezselect_rmevent (_loop, _fd, _mask); // remove from depth register.
 		// update maxfd
 		for (; idx >= 0; -- idx)
 			if (_loop -> _events [idx]._event_mask != EE_NONE) break;
 		_loop -> _maxfd = idx;
+		return; // debug
 	}
 }
 
@@ -93,8 +95,8 @@ int ezevent_process_loop (pezevent_loop _loop, int _proc_flag) {
 	struct timeval tv;
 	if (! _loop || _proc_flag == EE_NONE_EVENT) return processed;
 	// default, it's a good idea to make it configured.
-	tv.tv_sec = 1;
-	tv.tv_usec = 0;
+	tv.tv_sec = SLEEP_INTERVAL_SEC;
+	tv.tv_usec = SLEEP_INTERVAL_MS;
 
 	// depths API get $eventscount;
 	eventscount = ezselect_poll (_loop, &tv);
