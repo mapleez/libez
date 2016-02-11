@@ -17,6 +17,7 @@
 static pez_logger _clog;
 static pezsrv _server;
 static int run = 1;
+static unsigned long long _stream = 0;
 
 // global function.
 static void _initialize ();
@@ -74,6 +75,7 @@ static void _bind_sock_proc
 		ez_logger_alert (_clog, "Error in accept client sock");
 		return;
 	}
+	ez_logger_info (_clog, "accept socket %d connected.", fd);
 	// set socket options.
 	res = ez_setsock_keepalive (fd, 1, 3);
 	if (res != RTNVAL_SUCC)
@@ -93,14 +95,15 @@ static void _client_sock_read
 	int read_len = 0;
 	read_len = recv (_fd, buff, 256, 0);
 	if (read_len > 0) {
-		int i = 0;
-		ez_logger_info (_clog, "received from sock %d", _fd);
-		for (; i < read_len; ++ i) {
-			printf ("0x%02x ", buff [i]);
-			if (! (i & 0x07) && i)
-				println ("");
-		}
-		println ("");
+		// nothing todo...
+		// int i = 0;
+		// _stream += read_len;
+		// for (; i < read_len; ++ i) {
+		// 	printf ("0x%02x ", buff [i]);
+		// 	if (! (i & 0x07) && i)
+		// 		println ("");
+		// }
+		// println ("");
 	} else if (read_len == 0) {
 		ez_logger_info (_clog, "client %d closed...", _fd);
 		ezevent_rm_fileevent (_loop, _fd, EE_READABLE);

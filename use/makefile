@@ -8,7 +8,7 @@ INCLUDE = -I../include
 BIN = ../libez.a
 DEBUG = -g
 CFLAGS = $(INCLUDE) $(DEBUG)
-EXEFILES = postfix dfs mbs web
+EXEFILES = postfix dfs mbs web ezcli
 
 .PHONY: all clean
 
@@ -23,6 +23,6 @@ ezsrv:
 # 	$(CC) $(BIN) $(INCLUDE) $(OBJFLAG) $@ $(CFLAG) $^ $(DEBUG)
 
 clean: 
-	rm postfix dfs mbs web
+	rm $(EXEFILES)
 	$(MAKE) -C ezserver/ clean
 
