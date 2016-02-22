@@ -18,11 +18,12 @@ ARFLAGS = rs
 
 all: $(BASE)/libez.a
 
-$(BASE)/libez.a: ez_stack.o ez_list.o ez_sort.o ez_search.o ez_modbus.o ez_queue.o ez_endpoint.o ez_channel.o ez_socktools.o ez_bytes.o ez_log.o ez_event.o ez_select.o ez_dlinklist.o
+$(BASE)/libez.a: ez_stack.o ez_list.o ez_sort.o ez_search.o ez_modbus.o ez_queue.o ez_endpoint.o ez_channel.o ez_socktools.o ez_bytes.o ez_log.o ez_event.o ez_select.o ez_dlinklist.o ez_gstack.o
 	@echo "Updating library..."
 	$(AR) $(ARFLAGS) $@ $^
 
 ez_stack.o: $(INCLUDE)/ez_stack.h $(LIBHEAD)
+ez_gstack.o: $(INCLUDE)/ez_gstack.h $(LIBHEAD)
 ez_list.o: $(INCLUDE)/ez_list.h $(LIBHEAD)
 ez_sort.o: $(INCLUDE)/ez_sort.h $(LIBHEAD)
 ez_search.o: $(INCLUDE)/ez_search.h $(LIBHEAD)

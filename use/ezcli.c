@@ -1,4 +1,9 @@
-#include "ez.h"
+/*
+ * Author : ez
+ * Date : 2016/2/11
+ * Describe : a little socket client,
+ *   simpily.
+*/
 #include "internet/ez_socktools.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,6 +16,7 @@
 #	define SERVER_IP "127.0.0.1"
 #	define SERVER_PORT 9999
 
+// random sending data.
 bytes sendbuff = "fnafnaljvnaljflnajflnvklakljfnglbaf";
 
 int main (int argc, char* argv []) {
@@ -24,7 +30,9 @@ int main (int argc, char* argv []) {
 		println ("Error in creating socket."
 				"Will now shutdown...");
 		return -1;
-	}
+	} else
+		printf ("Created socket %d.\n", sockfd);
+
 	srv_addr.sin_family = AF_INET;
 	srv_addr.sin_port = tobigend16 (SERVER_PORT);
 	srv_addr.sin_addr.s_addr = inet_addr (SERVER_IP);
