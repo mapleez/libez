@@ -6,6 +6,7 @@
 // release each element
 typedef int (* _gstack_data_release) (void*);
 
+// generic stack
 typedef struct ez_gstack {
 	int _capa;
 	int _count;
