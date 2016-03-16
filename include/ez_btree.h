@@ -21,6 +21,7 @@ extern pez_btree ez_btree_insert (pez_btree, void*);
 extern pez_btree ez_btree_find (pez_btree, void*);
 extern pez_btree ez_btree_findmax (pez_btree);
 extern pez_btree ez_btree_findmin (pez_btree);
+extern int ez_btree_delete (pez_btree*, void*);
 
 extern void ez_btree_preorder (pez_btree, node_access_func);
 extern void ez_btree_inorder (pez_btree, node_access_func);

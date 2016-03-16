@@ -1,19 +1,59 @@
-// #include <stdio.h>
 #include <stdlib.h>
 #include "ez_btree.h"
 #include "ez.h"
 
+static int __default_match (void*, void*);
+static void* __default_copy (pez_btree, void*);
+static pez_btree __ez_btree_delete (pez_btree, void*);
+
 static int __default_match (void* _a, void* _b) {
 	long a = (long) _a;
 	long b = (long) _b;
-	int res = a > b ? BIGGER : a == b ? EQUAL : SMALLER;
-	return res;
+	return a > b ? BIGGER : 
+		a == b ? EQUAL : SMALLER;
+}
+
+static void* __default_copy (pez_btree _tree, void* _data) {
+	intptr_t a = (intptr_t) _data;
+	intptr_t b = (intptr_t) _tree -> _data;
+	BASIC_SWAP (a, b);
+}
+
+static 
+pez_btree __ez_btree_delete (pez_btree _tree, void* _data) {
+	int cmp = -2; // an invalid comparing return-value.
+	pez_btree tmp = NULL;
+	if (! _tree) return NULL; // not found
+	cmp = __default_match (_tree -> _data, _data);
+	if (cmp == BIGGER) { // go left
+		_tree -> _left = __ez_btree_delete (_tree -> _left, _data);
+	} else if (cmp == SMALLER) { // go right
+		_tree -> _right = __ez_btree_delete (_tree -> _right, _data);
+	} else if (_tree -> _left && _tree -> _right) {
+		/*
+		 * We handle this node that has 2 children in the way,
+		 * which we find the minumim element from it's right child
+		 * and recove the value to current node. Then find the minumim
+		 * node and delete it, which must be a leaf child.
+		*/
+		tmp = ez_btree_findmin (_tree -> _right);
+		_tree -> _data = tmp -> _data;
+		_tree -> _right = __ez_btree_delete 
+			(/*_tree -> _right*/_tree -> _right, _tree -> _data);
+	} else { // found and had one or 0 child.
+		tmp = _tree;
+		if (_tree -> _left == NULL)
+			_tree = _tree -> _right;
+		else if (_tree -> _right == NULL)
+			_tree = _tree -> _left;
+		free (tmp);
+	}
+	return _tree;
 }
 
 static void __default_traversal (pez_btree _tree) {
 	printf ("%i ", (long) _tree -> _data);
 }
-
 
 pez_btree ez_btree_create (void* _data) {
 	pez_btree tree = (pez_btree) malloc (SIZE_BTREENODE);
@@ -108,6 +148,10 @@ pez_btree ez_btree_findmin (pez_btree _tree) {
 	return _tree;
 }
 
+int ez_btree_delete (pez_btree* _tree, void* _data) {
+	*_tree = __ez_btree_delete (*_tree, _data);
+	return 1;
+}
 
 void ez_btree_preorder (pez_btree _tree, node_access_func _func) {
 	node_access_func f = _func ? _func : __default_traversal;

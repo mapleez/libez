@@ -57,6 +57,16 @@ int main (int argc, char* argv []) {
 		println ("\npostorder : \n");
 		ez_btree_postorder (res, NULL);
 
+		println ("");
+		// delete element
+		for (i = 0; i < 5; i ++) {
+			printf ("Delete %i ", (void*) (long) (__datas [i]));
+			ez_btree_delete (&res, (void*) (long) (__datas [i]));
+			println ("Inorder: ");
+			ez_btree_inorder (res, NULL);
+			println ("");
+		}
+
 		ez_btree_dispose (res);
 	}
 	return 0;
