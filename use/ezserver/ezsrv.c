@@ -31,6 +31,7 @@ static void _flog_release (pez_logger*);
 // loop file procedure.
 static void _bind_sock_proc (pezevent_loop, int, int, void*);
 static void _client_sock_read (pezevent_loop, int, int, void*);
+static void _client_sock_write (pezevent_loop, int, int, void*);
 
 // ------------ global initialize -----------
 static void _initialize () {
@@ -95,7 +96,9 @@ static void _client_sock_read
 	int read_len = 0;
 	read_len = recv (_fd, buff, 256, 0);
 	if (read_len > 0) {
-		// nothing todo...
+		send (_fd, buff, 256, 0);
+		// ezevent_add_fileevent 
+		// 	(_loop, _fd, EE_WRITABLE, _client_sock_write, );
 
 		// int i = 0;
 		// _stream += read_len;
@@ -116,6 +119,10 @@ static void _client_sock_read
 			close (_fd);
 		}
 	}
+}
+
+static void _client_sock_write 
+(pezevent_loop _loop, int _fd, int _mask, void* _data) {
 }
 
 static void _signal_inthandler (int _signo) {
@@ -156,13 +163,13 @@ int ezsrv_init (pezsrv _srv, void* _arg) {
 
 	addr = (struct sockaddr_in*) (& _srv -> _addr);
 	addr -> sin_family = AF_INET;
-	addr -> sin_port = ntohs (BIND_PORT); // big-endian decimal 9999
+	addr -> sin_port = htons (BIND_PORT); // big-endian decimal 9999
 	addr -> sin_addr.s_addr = inet_addr (BIND_ADDR);
 
 	if (bind (_srv -> _sock, 
 		(struct sockaddr*) addr, sizeof (*addr)) || 
 			listen (_srv -> _sock, DEFAULT_CONN_SOCK))
-		goto err;
+		goto err; // error.
 
 	tmp = ezevent_add_fileevent (_srv -> _loop, 
 			_srv -> _sock, EE_READABLE, _bind_sock_proc, _srv);
@@ -213,4 +220,5 @@ int main (int argc, char* argv []) {
 	printf ("Done!\n");
 	return 0;
 }
+
 

@@ -13,11 +13,11 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 
-#	define SERVER_IP "127.0.0.1"
-#	define SERVER_PORT 9999
+#	define SERVER_IP "10.14.4.226"
+#	define SERVER_PORT 5000 
 
 // random sending data.
-bytes sendbuff = "fnafnaljvnaljflnajflnvklakljfnglbaf";
+bytes sendbuff = "Hi there!";
 
 int main (int argc, char* argv []) {
 
@@ -35,7 +35,7 @@ int main (int argc, char* argv []) {
 
 	srv_addr.sin_family = AF_INET;
 	srv_addr.sin_port = tobigend16 (SERVER_PORT);
-	srv_addr.sin_addr.s_addr = inet_addr (SERVER_IP);
+	srv_addr.sin_addr.s_addr = inet_addr (SERVER_IP); // already convert into network order.
 
 	if (connect (sockfd, (struct sockaddr*) &srv_addr, 
 				sizeof (srv_addr)))
@@ -52,6 +52,7 @@ int main (int argc, char* argv []) {
 		if (sent_len == -1) {
 			printf ("Send error! errno = %d\n", errno);
 		} else {
+			printf ("%d ", sent_len);
 			// nothing to do ...
 			// printf ("Sent %d length bytes.\n", sent_len);
 		}

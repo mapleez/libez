@@ -7,7 +7,7 @@
 #include <arpa/inet.h>
 
 #	define DEFAULT_CONN_SOCK 32
-#	define BIND_ADDR  "127.0.0.1"
+#	define BIND_ADDR  "10.14.4.173"
 #	define BIND_PORT 9999
 
 typedef struct ezsrv {
