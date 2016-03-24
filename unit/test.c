@@ -246,10 +246,20 @@ main (int argc, char* argv []) {
 
 #endif
 
-#if 0
+
+
+
+#if 1
+
+void _disp_each (const void* _elm) {
+	int value = *(int*) _elm;
+	printf ("%d ", value);
+}
+
 int main (int argc, 
 		char* argv []) {
 
+	display_array (random_int_array (20), 20, sizeof (int), _disp_each);
 	// wchar_t* csd = L"中国";
 	// wprintf ("%s\n", csd);
 	// return 0;

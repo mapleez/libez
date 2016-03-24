@@ -66,17 +66,27 @@ static void _uninitialize () {
 static void _bind_sock_proc 
 (pezevent_loop _loop, int _fd, int _mask, void* _data) {
 	int fd, res;
-	socklen_t addr_len; // client socket
+	unsigned int addr_int;
+	socklen_t addr_len = 0; // client socket
+	struct sockaddr_in client_addr;
 	pezsrv psrv = (pezsrv) _data;
 	// addr_len = sizeof (struct sockaddr);
-	fd = accept (_fd, NULL, &addr_len);
+	fd = accept (_fd, (struct sockaddr*) &client_addr, &addr_len);
 
-	if (fd == -1) { // error.
+	if (fd == -1 || ! addr_len) { // error.
 		ez_logger_alert (psrv -> _flog, "Error in accept client sock");
 		ez_logger_alert (_clog, "Error in accept client sock");
 		return;
 	}
-	ez_logger_info (_clog, "accept socket %d connected.", fd);
+
+	addr_int = client_addr.sin_addr.s_addr;
+	ez_logger_info (_clog, "accept socket %d connected"
+			" from address %d.%d.%d.%d:%d", 
+			fd, addr_int & 0xff,
+			(addr_int & 0xff00) >> 8,
+			(addr_int & 0xff0000) >> 16,
+			(addr_int & 0xff000000) >> 24,
+			(client_addr.sin_port));
 	// set socket options.
 	res = ez_setsock_keepalive (fd, 1, 3);
 	if (res != RTNVAL_SUCC)
@@ -96,7 +106,7 @@ static void _client_sock_read
 	int read_len = 0;
 	read_len = recv (_fd, buff, 256, 0);
 	if (read_len > 0) {
-		send (_fd, buff, 256, 0);
+		printf (".");
 		// ezevent_add_fileevent 
 		// 	(_loop, _fd, EE_WRITABLE, _client_sock_write, );
 

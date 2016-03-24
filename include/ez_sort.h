@@ -45,6 +45,9 @@ extern
 void ez_insert_sort_i (int*, int, cmp_func);
 #endif
 
+extern
+void ez_shell_sort (void*, int, size_t, cmp_func, bool);
+
 /*
    Bubble Sort
 */

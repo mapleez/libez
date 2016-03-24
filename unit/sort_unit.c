@@ -31,10 +31,10 @@ int main (int argc, char* argv []) {
 
 	int i = 0;
 	// ez_insert_sort_i (array, NUM, int_cmp);
-
 	// ez_insert_sort (array, NUM, sizeof (int), int_cmp, true);
+	ez_shell_sort (array, NUM, sizeof (int), int_cmp, true);
 
-	ez_select_sort (array, NUM, sizeof (int), int_cmp, true);
+	// ez_select_sort (array, NUM, sizeof (int), int_cmp, true);
 	// ez_bubble_sort (array, NUM, sizeof (int), int_cmp, true);
 
 	for (; i < NUM; ++ i)
@@ -42,3 +42,4 @@ int main (int argc, char* argv []) {
 				i, array [i]);
 	return 0;
 }
+

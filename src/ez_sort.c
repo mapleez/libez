@@ -11,8 +11,15 @@
 #include <stdlib.h>
 #include <string.h>
 
+static int __default_cmp_func (const void*, const void*);
+
+static int __default_cmp_func (const void* _a, const void* _b) {
+	return _a > _b ? BIGGER : 
+		_a == _b ? EQUAL : SMALLER;
+}
+
 /*
-   swap memory block
+	swap memory block
 */
 size_t ez_mem_swap (void* a, void* b, size_t size) {
 	void* tmp = NULL;
@@ -214,6 +221,48 @@ ez_bubble_sort (
 	}
 
 }
+
+
+// TODO this algorithm is incorrect.
+void ez_shell_sort 
+(void* _arr, int num, size_t elm_size, 
+ cmp_func func, bool asc) {
+	int i, j, inc;
+	int /* void* */ temp;
+	if (! func) func = __default_cmp_func;
+	for (inc = num / 2; inc > 0; inc /= 2)
+		for (i = inc; i < num; ++ i) {
+			temp = i; // we only record the index.
+			for (j = i; j >= inc; j -= inc)
+				if (func (_arr + temp * elm_size, 
+							_arr + (j - inc) * elm_size) == SMALLER)
+					memcpy (_arr + j * elm_size, 
+							_arr + (j - inc) * elm_size, elm_size);
+				else break;
+			memcpy (_arr + j * elm_size, 
+					_arr + temp * elm_size, elm_size);
+		}
+}
+
+
+/*
+ * This function is just for algorithm testing.
+*/
+static void 
+__shell_sort (int* _arr, int _cnt) {
+	int i, j, tmp, inc;
+	for (inc = _cnt / 2; inc > 0; inc /= 2)
+		for (i = inc; i < _cnt; i ++) {
+			tmp = _arr [i];
+			for (j = i; j >= inc; j -= inc)
+				if (tmp < _arr [j - inc]) 
+					_arr [j] = _arr [j - inc];
+				else
+					break;
+			_arr [j] = tmp;
+		}
+}
+
 
 #if 0
 int main (int argc, char* argv []) {

@@ -13,8 +13,8 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 
-#	define SERVER_IP "10.14.4.226"
-#	define SERVER_PORT 5000 
+#	define SERVER_IP "10.14.4.173"
+#	define SERVER_PORT 9999
 
 // random sending data.
 bytes sendbuff = "Hi there!";
