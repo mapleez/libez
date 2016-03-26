@@ -44,9 +44,11 @@ typedef struct ez_minheap {
 		(0 == (___HEAP) -> _size)
 
 extern pez_minheap ez_minheap_create (int);
+// extern pez_minheap ez_minheap_createbyarray (int, void**);
 extern int ez_minheap_insert (pez_minheap, const void*);
 extern void ez_minheap_dispose (pez_minheap);
 extern int ez_minheap_delmin (pez_minheap);
+extern pez_minheap ez_minheap_build (void**, int, _minheap_data_match);
 
 #if  1
 extern void ez_minheap_disp (pez_minheap);
