@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "ez.h"
-#include "ez_minheap.h"
+#include "ez_heap.h"
 #include "ez_unit.h"
 
 int arr [] = {
