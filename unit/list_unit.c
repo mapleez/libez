@@ -36,9 +36,9 @@ int main (argc, argv)
 		if (pos != NULL &&
 				ez_list_insert (mylist, 
 					array [i], pos)) {
-			printf ("insert %c\n", array [i]);
+			printf ("insert %d\n", array [i]);
 		} else 
-			printf ("insert %c error\n", array [i]);
+			printf ("insert %d error\n", array [i]);
 		pos = (_position) (pos -> next);
 	}
 
@@ -52,6 +52,13 @@ int main (argc, argv)
 		printf ("find_pre %d \n", ch -> val);
 	else 
 		printf ("find_pre %d error\n", ch -> val); 
+
+	// testing reverse list
+	mylist = ez_list_reverse (mylist);
+	println ("finshed reverse.");
+	for (pos = mylist; pos -> next; pos = pos -> next)
+		printf ("%d ", pos -> val);
+	println ("");
 
 	ez_list_del_all (mylist);
 

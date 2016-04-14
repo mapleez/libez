@@ -5,6 +5,7 @@
 */
 
 #include "ez_list.h"
+#include "ez.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -243,6 +244,28 @@ ez_list_insert_real (_list _l, const _element _e) {
 
 	(elm = NULL) && (p = NULL);
 	return true;
+}
+
+
+_list ez_list_reverse (_list _head) {
+	_list head, pre, next;
+	head = _head;
+
+	/* Only one elm */
+	pre = head;
+	next = head -> next;
+	if (! next) return head;
+
+	while (next) {
+		pre -> next = next -> next;
+		next -> next = head;
+		/* set 2 pointers to 
+			 right position */
+		head = next;
+		next = pre -> next;
+	}
+	_head -> next = NULL;
+	return head;
 }
 
 

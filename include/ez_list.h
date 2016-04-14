@@ -128,6 +128,9 @@ extern bool
 ez_list_insert_top (_list*, const _element);
 
 
+extern _list 
+ez_list_reverse (_list);
+
 #endif // ~ __cplusplus
 
 

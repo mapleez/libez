@@ -1,8 +1,16 @@
 #include <stdio.h>
 // #include <unistd.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
+
+# define PTR_SWAP(A, B)   \
+		do { \
+			*(intptr_t*) (A) ^= *(intptr_t*) (B); \
+			*(intptr_t*) (B) ^= *(intptr_t*) (A); \
+			*(intptr_t*) (A) ^= *(intptr_t*) (B); \
+		} while (0)
 
 typedef int (*cmp_func) (const void*, const void*);
 
@@ -203,6 +211,33 @@ int cmp_int_func (const void* a, const void* b) {
 // #	define tolittleend16(___D) tobigend16(___D)
 // #	define tolittleend16(___D)  (((uint16_t)((___D) & 0xff00) >> 8) | ((uint16_t)((___D) & 0x00ff) << 8))
 
+#	define BASIC_SWAP(___A, ___B) \
+		do {  \
+			(___A) ^= (___B);  \
+			(___B) ^= (___A);  \
+			(___A) ^= (___B);  \
+		} while (0)
+
+int main (int argc, char* argv []) {
+	uint32_t x = 0x00323331;
+	uint32_t x1 = 0x01020304;
+	long long y = 0x01020304;
+	uint32_t* px = &x;
+	long long *py = &y;
+	// intptr_t temp;
+
+	printf ("%i, %i\n", px, py);
+	// PTR_SWAP (px, py);
+	// BASIC_SWAP (x, x1);
+
+	((intptr_t*) px) ^= ((intptr_t*) py);
+	((intptr_t*) py) ^= ((intptr_t*) px);
+	((intptr_t*) px) ^= ((intptr_t*) py);
+
+	printf ("%i, %i\n", px, py);
+	return 0;
+}
+
 #if 0
 int
 main (int argc, char* argv []) {
@@ -249,7 +284,7 @@ main (int argc, char* argv []) {
 
 
 
-#if 1
+#if 0
 
 void _disp_each (const void* _elm) {
 	int value = *(int*) _elm;
