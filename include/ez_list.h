@@ -23,6 +23,15 @@ struct _node {
 #	define _list_size  (sizeof (struct _node))
 #	define _node_size  _list_size
 
+/*
+ * @1 = circle variable.
+ * @2 = list entity.
+ * @3 = variable for each element.
+ */
+#	define foreach_ez_list(_I, _L, _V) \
+	for (_I = _L; _V = _I -> val, _I -> next;  \
+			_I = _I -> next)
+
 typedef struct _node* _position;
 typedef struct _node* _list;
 

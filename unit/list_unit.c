@@ -19,6 +19,7 @@ int main (argc, argv)
 	char* argv [];
 {	
 	int i = 0, len = 23;
+	int temp;
 	_position ch;
 	mylist = ez_list_create (); 
 	// _element buf = (_element) malloc (sizeof (_element));
@@ -56,8 +57,9 @@ int main (argc, argv)
 	// testing reverse list
 	mylist = ez_list_reverse (mylist);
 	println ("finshed reverse.");
-	for (pos = mylist; pos -> next; pos = pos -> next)
+	foreach_ez_list (pos, mylist, temp)
 		printf ("%d ", pos -> val);
+	// for (pos = mylist; pos -> next; pos = pos -> next)
 	println ("");
 
 	ez_list_del_all (mylist);
