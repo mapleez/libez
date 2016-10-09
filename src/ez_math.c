@@ -26,4 +26,20 @@ void ez_moronic_cowmpouter
 	}
 }
 
+void* ez_array_max 
+(const void** _arr, int _num, cmp_func _func) {
+	
+	_ez_array_max (void*, _arr, _num, _func);
+	// void* max = NULL;
+	// int i = 0;
+	// if (! _arr || ! _func) return NULL;
+
+	// max = (void*) _arr [i ++];
+	// for (; i < _num; ++ i)
+	// 	if (_func (max, _arr [i]) == SMALLER) 
+	// 		max = _arr [i];
+
+	// return max;
+}
+
 

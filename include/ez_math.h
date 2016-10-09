@@ -2,8 +2,21 @@
 #	define _EZ_MATH_H_
 
 #include <stdint.h>
+#include "ez.h"
 
 #	define DEFAULT_COW_LEN  32
+
+#	define _ez_array_max(___TYPE, ___ARRAY, ___N, ___FUNC)  \
+	{ \
+		___TYPE max = (___TYPE) NULL; \
+		int i = 0; \
+		if (! ___ARRAY || ! ___FUNC) return (___TYPE) NULL; \
+		max = (___TYPE) ___ARRAY [i ++]; \
+		for (; i < ___N; ++ i) \
+			if (___FUNC (max, ___ARRAY [i]) == SMALLER)  \
+				max = ___ARRAY [i]; \
+		return (___TYPE) max; \
+	}
 
 /*
  * Convert decimal to other based number.
@@ -11,6 +24,15 @@
  * @2 = Based number.
  */
 extern void ez_moronic_cowmpouter (uint32_t, uint32_t);
+
+/*
+ * Get the maximum element from array.
+ * @1 = array
+ * @2 = the number of element in array.
+ * @3 = comparation function between two elements.
+ * return max element.
+ */
+extern void* ez_array_max (const void**, int, cmp_func);
 
 
 #endif // ~ _EZ_MATH_H_
