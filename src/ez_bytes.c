@@ -93,11 +93,15 @@ bool ez_bytes_hassuffix
 }
 
 
-// convert from unsigned long long to string.
-// return the string lengh. if @1 is not allocated.
-// return 0. the string length cannot include NULL
-// terminal.
-int ez_bytes_ull2string (bytes _buf, unsigned long long _val) {
+/*
+ * Convert an unsigned long long int into string(char*).
+ * @1 = the unsigned long long integer to be converted.
+ * @2 = the buffer to hold the converted string.
+ *
+ * Note: The buffer length must bigger than 23 (2^64).
+ * Return the length of char*, excluding the terminated char.
+ */
+int ez_bytes_ull2string (unsigned long long _val, bytes _buf) {
 	bytes ptr = _buf, tmp = _buf;
 	int len = 0;
 	if (! ptr) return 0;
@@ -121,11 +125,15 @@ int ez_bytes_ull2string (bytes _buf, unsigned long long _val) {
 }
 
 
-// convert from long long to string.
-// return the string lengh. if @1 is not allocated.
-// return 0. the string length cannot include NULL
-// terminal.
-int ez_bytes_ll2string (bytes _buf, long long _val) {
+/*
+ * Convert a long long int into string(char*).
+ * @1 = the long long integer to be converted.
+ * @2 = the buffer to hold the converted string.
+ *
+ * Note: The buffer length must bigger than 23 (2^64).
+ * Return the length of char*, excluding the terminated char.
+ */
+int ez_bytes_ll2string (long long _val, bytes _buf) {
 	bytes ptr = _buf, tmp = _buf;
 	long long val = _val;
 	int len = 0;

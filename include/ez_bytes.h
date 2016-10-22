@@ -41,20 +41,28 @@ ez_bytes_hasprefix (bytes, bytes, int, int);
 extern bool 
 ez_bytes_hassuffix (bytes, bytes, int, int);
 
-// convert from unsigned long long to string.
-// return the string lengh. if @1 is not allocated.
-// return 0. the string length cannot include NULL
-// terminal.
+/*
+ * Convert an unsigned long long int into string(char*).
+ * @1 = the unsigned long long integer to be converted.
+ * @2 = the buffer to hold the converted string.
+ *
+ * Note: The buffer length must bigger than 23 (2^64).
+ * Return the length of char*, excluding the terminated char.
+ */
 extern int
-ez_bytes_ull2string (bytes, unsigned long long);
+ez_bytes_ull2string (unsigned long long, bytes);
 
 
-// convert from long long to string.
-// return the string lengh. if @1 is not allocated.
-// return 0. the string length cannot include NULL
-// terminal.
+/*
+ * Convert a long long int into string(char*).
+ * @1 = the long long integer to be converted.
+ * @2 = the buffer to hold the converted string.
+ *
+ * Note: The buffer length must bigger than 23 (2^64).
+ * Return the length of char*, excluding the terminated char.
+ */
 extern int
-ez_bytes_ll2string (bytes, long long);
+ez_bytes_ll2string (long long, bytes);
 
 #ifdef __cplusplus
 }

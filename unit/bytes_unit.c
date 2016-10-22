@@ -9,10 +9,10 @@ int main (int argc, char* argv []) {
 	char * sep = "f";
 
 	{
-		byte string [20]; // = malloc ()
-		byte string1 [20];
-		int len = ez_bytes_ull2string (string, 327132);
-		len = ez_bytes_ll2string (string1, -7431412);
+		byte string [24]; // = malloc ()
+		byte string1 [24];
+		int len = ez_bytes_ull2string (327132, string);
+		len = ez_bytes_ll2string (-7431412, string1);
 		printf ("%s, %s\n", string, string1);
 	}
 
