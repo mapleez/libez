@@ -11,7 +11,7 @@ OBJFLAG = -o
 LIBNAME = $(BASE)/libez.a
 LIBHEAD = $(INCLUDE)/ez.h
 CXXFLAGS = $(CFLAGS)
-EXEFILES = stack_unit list_unit sort_unit sock_unit bytes_unit log_unit mbs_unit ez_basicunit dlist_unit gstack_unit btree_unit minheap_unit math_unit
+EXEFILES = stack_unit list_unit sort_unit sock_unit bytes_unit log_unit mbs_unit ez_basicunit dlist_unit gstack_unit btree_unit minheap_unit math_unit util_unit
 
 .PHONY: all clean
 

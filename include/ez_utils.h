@@ -11,4 +11,11 @@
 */ 
 extern int ez_daemonize ();
 
+/*
+ * This function only calls the API daemon and 
+ * return whether it's successful.
+ * Return RTNVAL_SUCC or  RTNVAL_FAIL
+ */
+extern int ez_daemon ();
+
 #endif // ~ _EZ_UTILS_H_
