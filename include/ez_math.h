@@ -46,4 +46,6 @@ extern void* ez_array_max (const void**, int, cmp_func);
 extern int* ez_isingle_multipler (int*, size_t, int);
 
 
+
+
 #endif // ~ _EZ_MATH_H_
