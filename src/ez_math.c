@@ -1,8 +1,12 @@
 #include "ez_math.h"
 #include "ez.h"
 
+#include <string.h>
+
 static int* _single_multipler (int*, size_t, size_t, int);
 static int* _multipler (int*, size_t, int*, size_t, int);
+static int* _string2iarr (char*, size_t);
+static char* _iarr2string (int*, size_t);
 
 void ez_moronic_cowmpouter 
 (uint32_t _num, uint32_t _base) {
@@ -107,7 +111,7 @@ static off_t _add
  	off_t idxa = _start, idxb = 0;
 	size_t rga = _alen + _start;
 	size_t rgb = _blen + _start;
-  if (!_a && !_b) return NULL;
+  if (!_a && !_b) return -1;
 	for (; idxa < rga || idxb < rgb; idxa ++, idxb ++) {
 	  int* tmp = _a + idxa;
 		*tmp += *(_b + idxb);
@@ -117,10 +121,91 @@ static off_t _add
 	return idxa > idxb ? idxa : idxb; // return the maximum.
 }
 
-char* iarr2string (int* arr, size_t len) {
+char* _rev (char* _a, size_t _len) {
+	char* ptr = _a;
+	char* real = _a + _len - 1;
+
+	while (ptr < real) {
+		*ptr ^= *real;
+		*real ^= *ptr;
+		*ptr ^= *real;
+		ptr ++;
+		real --;
+	}
+
+	return _a;
+}
+
+char* ez_add (char* _a, size_t _alen, char* _b, size_t _blen) {
+	int* a = _string2iarr (_a, _alen);
+	int* b = _string2iarr (_b, _blen);
+	char* res = NULL;
+	off_t len = 0;
+
+	if (!a || !b) goto ERR;
+	len = _add (a, _alen, b, _blen, 0L);
+
+	if (len > 0)
+		res = _iarr2string (a, len);
+	else
+		goto ERR;
+
+	if (! res) 
+		goto ERR;
+	if (a) free (a);
+	if (b) free (b);
+	return res;
+
+ERR:
+	if (a) free (a);
+	if (b) free (b);
+
+	return NULL;
+}
+
+#if 0
+char* ez_add (char* _a, size_t _alen, char* _b, size_t _blen) {
+	size_t bufflen;
+	off_t idxshort, idxlong;
+	static const int offset = 2;
+	char* shorter = NULL;
+	char* longer = NULL; // TODO
+	char* buff = NULL;
+
+	if (_alen > _blen) {
+		bufflen = _alen;
+		shorter = _b; // the shorter one.
+		longer = _a;
+		buff = (char*) malloc (MEM_ALEGE (bufflen + offset));
+		if (! buff) return NULL;
+	} else {
+		bufflen = _blen;
+		shorter = _a; // the shorter one.
+		longer = _b;
+		buff = (char*) malloc (MEM_ALEGE (bufflen + offset));
+		if (! buff) return NULL;
+	}
+
+#	define charadd(a, b)  (((a) - '0') + ((b) - '0'))
+#	define charsub(a, b)  (((a) - '0') - ((b) - '0'))
+
+	memcpy (buff + offset, longer, bufflen);
+	longer = buff + offset;
+	idxlong = bufflen + offset - 1;
+	for (; idxshort; -- idxshort, -- idxlong) {
+		longer [idxlong] += (longer [idxlonger], shorter [idxshorter]);
+		longer [idxlong] += shorter [idxshort] - '0';
+		buff [idxa - 1] += (buff [idxa] - '0') / 10;
+		buff [idxa] %= 10;
+	}
+}
+#endif
+
+static char* _iarr2string (int* arr, size_t len) {
 	int i = 0;
+	size_t xx = MEM_ALIGE (len + 2);
 	char* ptr = (char*) malloc (MEM_ALIGE(len + 2));
-	if (*ptr) return NULL;
+	if (!ptr) return NULL;
 
 	// auto reverse array.
 	for (; i < len; ++ i)
@@ -129,42 +214,71 @@ char* iarr2string (int* arr, size_t len) {
 	return ptr;
 }
 
+static int* _string2iarr (char* _arr, size_t _len) {
+	int i = 0;
+	size_t xx = MEM_ALIGE (_len + 2);
+	int* ptr = (int*) malloc (xx * sizeof (int));
+	int* tmp = ptr;
+	if (!ptr) return NULL;
+
+	for (; i < _len; ++ i)
+		*(tmp + _len - i - 1) = *_arr ++ - '0';
+	return ptr;
+}
+
 #if 1
 int main (int argc, char* argv []) {
+	
+	// char* a = "2343728";
+	// char* b = "3829";
+	char* a = NULL, 
+		*b = NULL;
+
+	if (argc >= 3) {
+		a = argv [1];
+		b = argv [2];
+	}
+
+	char* res = ez_add (a, strlen (a), b, strlen (b));
+	// printf ("%s + %s = %s\n", a, b, res);
+	printf ("%s", res);
+
+#if 0
 	int bignum [] = {2,3,4,5,6,8,1,0,0}; // number 1865432
 	int bignum1 [] = {3,9,2,3,0}; // number 3293
 	off_t res = 0L;
 	char* ptr = NULL;
 
 	res = _add (bignum, 7l, bignum1, 4l, 1l);
-	ptr = iarr2string (bignum, 7L);
+	ptr = _iarr2string (bignum, 7L);
 	printf ("%s\n", ptr);
 
-	// tmp = _multi (bignum, sizeof (bignum) / sizeof (int), 8);
-	// free (res);
+	tmp = _multi (bignum, sizeof (bignum) / sizeof (int), 8);
+	free (res);
+#endif 
 
 	// _multi (bignum, sizeof (bignum) / sizeof (int), 1);
-	// printf ("%s\n", res = iarr2string (bignum, tmp));
+	// printf ("%s\n", res = _iarr2string (bignum, tmp));
 	// free (res);
 
 	// _multi (bignum, sizeof (bignum) / sizeof (int), 3);
-	// printf ("%s\n", res = iarr2string (bignum, tmp));
+	// printf ("%s\n", res = _iarr2string (bignum, tmp));
 	// free (res);
 
 	// _multi (bignum, sizeof (bignum) / sizeof (int), 2);
-	// printf ("%s\n", res = iarr2string (bignum, 
+	// printf ("%s\n", res = _iarr2string (bignum, 
 	// 	sizeof (bignum) / sizeof (int)));
 	// free (res);
 
 	// _multi (bignum, sizeof (bignum) / sizeof (int), 4);
-	// printf ("%s\n", res = iarr2string (bignum, 
+	// printf ("%s\n", res = _iarr2string (bignum, 
 	// 	sizeof (bignum) / sizeof (int)));
 	// free (res);
 
 	// _multi (bignum, sizeof (bignum) / sizeof (int), 0);
-	// printf ("%s\n", res = iarr2string (bignum, 
+	// printf ("%s\n", res = _iarr2string (bignum, 
 	// 	sizeof (bignum) / sizeof (int)));
-	free (ptr);
+	// free (ptr);
 	return 0;
 }
 #endif

@@ -45,6 +45,17 @@ extern void* ez_array_max (const void**, int, cmp_func);
  */
 // extern int* ez_isingle_multipler (int*, size_t, int);
 
+/*
+ * Return The sum of two big integer
+ * @1 = a
+ * @2 = the length of a, excluding terminal symbol
+ * @3 = b
+ * @4 = the length of b, excluding terminal symbol
+ *
+ * Return The sum of big integer.
+ */
+extern char* ez_add (char*, size_t, char*, size_t);
+
 
 #endif // ~ _EZ_MATH_H_
 
