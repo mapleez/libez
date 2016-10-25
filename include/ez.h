@@ -21,6 +21,11 @@
 			(___A) ^= (___B);  \
 		} while (0)
 
+/* Get the memory aligement based on your machine word. */
+# define MEM_ALIGE(___S) \
+	 ___S&(sizeof (long) - 1) ? \
+	 ___S + (sizeof (long) + ___S & (sizeof (long) - 1)) : ___S
+
 #ifdef __GNUC__
 // depend with byte order
 #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
