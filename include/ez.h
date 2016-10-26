@@ -23,8 +23,8 @@
 
 /* Get the memory aligement based on your machine word. */
 # define MEM_ALIGE(___S) \
-	 ___S&(sizeof (long) - 1) ? \
-	 ___S + (sizeof (long) + ___S & (sizeof (long) - 1)) : ___S
+	 (___S&(sizeof (long) - 1) ? \
+	 ___S + (sizeof (long) + ___S & (sizeof (long) - 1)) : ___S)
 
 #ifdef __GNUC__
 // depend with byte order

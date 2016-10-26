@@ -104,25 +104,82 @@ static int* _single_multipler (int* _big, size_t _maxlen,
 // 	return _a;
 // }
 
-// TODO unit testing
 // Ensure @1 has enough space for result of @1 + @2
 static off_t _add 
  (int* _a, size_t _alen, int* _b, size_t _blen, off_t _start) {
- 	off_t idxa = _start, idxb = 0;
-	size_t rga = _alen + _start;
-	size_t rgb = _blen + _start;
-  if (!_a && !_b) return -1;
-	for (; idxa < rga || idxb < rgb; idxa ++, idxb ++) {
-	  int* tmp = _a + idxa;
-		*tmp += *(_b + idxb);
-		*(tmp + 1) += *tmp / 10;
-		*tmp %= 10;
+ 	int* pa = _a + _start;
+	int* pb = _b;
+	int* plong;
+	int* tmp;
+	int i = 0, j = 0;
+	int x = _alen < _blen ? _alen : _blen;
+	int diff = 0;
+
+	int* buff = (int*) malloc ((_alen > _blen ? _alen : _blen) + 2);
+	// off_t longer = _alen > _blen ? _alen : _blen;
+	// off_t shorter = _alen < _blen ? _alen : _blen;
+
+	if (!_a || !_b || !buff) 
+		return -1;
+
+	tmp = buff;
+	
+	/* The result stored in a. */
+	for (; i < x; ++ i) {
+		*tmp ++ = (*pb ++) + (*pa ++);
+		*tmp += *(tmp - 1) / 10;
+		*(tmp - 1) %= 10;
 	}
-	return idxa > idxb ? idxa : idxb; // return the maximum.
+
+	if (_alen > _blen) {
+		// tmp ++;
+		// *tmp += *(tmp - 1) / 10;
+		// *(tmp - 1) %= 10;
+		diff = _alen - _blen;
+		plong = pa;
+	} else {
+		diff = _blen - _alen;
+		plong = pb;
+	}
+
+	for (; diff >= 0; -- diff) {
+		*tmp ++ += *plong ++;
+		*tmp += *(tmp - 1) / 10;
+		*(tmp - 1) %= 10;
+	}
+
+	// for debug
+	for (j = 0; j <= tmp - buff; ++ j) {
+		printf ("%d", buff [j]);
+	}
+	free (buff);
+
+	return tmp - buff;
+
+ 	// off_t idxa = _start, idxb = 0;
+	// size_t rga = _alen + _start;
+	// size_t rgb = _blen + _start;
+  // if (!_a && !_b) return -1;
+	// for (; idxa < rga || idxb < rgb; idxa ++, idxb ++) {
+	//   int* tmp = _a + idxa;
+	// 	*tmp += *(_b + idxb);
+	// 	*(tmp + 1) += *tmp / 10;
+	// 	*tmp %= 10;
+	// }
+	// return idxa > idxb ? idxa : idxb; // return the maximum.
 }
 
+/*
+ * Reverse a char array with length _len.
+ * @1 The array.
+ * @2 Length of array, contain valid element. Note the null
+ *  terminal character should not included.
+ *
+ * Return the array.
+ */
 char* _rev (char* _a, size_t _len) {
 	char* ptr = _a;
+  /* Point to last element */
 	char* real = _a + _len - 1;
 
 	while (ptr < real) {
@@ -136,6 +193,15 @@ char* _rev (char* _a, size_t _len) {
 	return _a;
 }
 
+/*
+ * Add two big integer represented by char*.
+ * @1 Left operating big integer.
+ * @2 The length of @1, excluding null terminal char
+ * @3 Right operating big integer.
+ * @4 The length of @2, excluding null terminal char
+ *
+ * Return a new allocated char*.
+ */
 char* ez_add (char* _a, size_t _alen, char* _b, size_t _blen) {
 	int* a = _string2iarr (_a, _alen);
 	int* b = _string2iarr (_b, _blen);
@@ -145,6 +211,8 @@ char* ez_add (char* _a, size_t _alen, char* _b, size_t _blen) {
 	if (!a || !b) goto ERR;
 	len = _add (a, _alen, b, _blen, 0L);
 
+	goto ERR;
+/* // for debug
 	if (len > 0)
 		res = _iarr2string (a, len);
 	else
@@ -155,6 +223,7 @@ char* ez_add (char* _a, size_t _alen, char* _b, size_t _blen) {
 	if (a) free (a);
 	if (b) free (b);
 	return res;
+*/
 
 ERR:
 	if (a) free (a);
@@ -201,26 +270,41 @@ char* ez_add (char* _a, size_t _alen, char* _b, size_t _blen) {
 }
 #endif
 
-static char* _iarr2string (int* arr, size_t len) {
+/*
+ * Convert integer array to char array. Note the return
+ * pointer shell be free manually.
+ * 
+ * @1 The array
+ * @2 The number of valid element in @1
+ * Return char array.
+ */
+static char* _iarr2string (int* _arr, size_t _len) {
 	int i = 0;
-	size_t xx = MEM_ALIGE (len + 2);
-	char* ptr = (char*) malloc (MEM_ALIGE(len + 2));
+	char* ptr = (char*) malloc (MEM_ALIGE(_len + 2));
 	if (!ptr) return NULL;
 
 	// auto reverse array.
-	for (; i < len; ++ i)
-		*(ptr + len - i - 1) = '0' + *(arr + i);
+	for (; i < _len; ++ i)
+		*(ptr + _len - i - 1) = '0' + *_arr ++;
 	ptr [i] = '\0';
 	return ptr;
 }
 
+/*
+ * Convert char array to integer array. Note the return 
+ * pointer shell be free manually.
+ *
+ * @1 The char array
+ * @2 The number of valid element in @1, excluding null terminal character.
+ * Return int array.
+ */
 static int* _string2iarr (char* _arr, size_t _len) {
 	int i = 0;
-	size_t xx = MEM_ALIGE (_len + 2);
-	int* ptr = (int*) malloc (xx * sizeof (int));
+	int* ptr = (int*) malloc (MEM_ALIGE (_len + 2) * sizeof (int));
 	int* tmp = ptr;
 	if (!ptr) return NULL;
 
+	// auto reverse array.
 	for (; i < _len; ++ i)
 		*(tmp + _len - i - 1) = *_arr ++ - '0';
 	return ptr;
@@ -241,7 +325,7 @@ int main (int argc, char* argv []) {
 
 	char* res = ez_add (a, strlen (a), b, strlen (b));
 	// printf ("%s + %s = %s\n", a, b, res);
-	printf ("%s", res);
+	// printf ("%s", res);
 
 #if 0
 	int bignum [] = {2,3,4,5,6,8,1,0,0}; // number 1865432
