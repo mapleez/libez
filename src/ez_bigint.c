@@ -37,7 +37,8 @@ pezbigi ezbigi_create_by_char (const char* _cnum) {
 
 	bigi -> len = len = strlen (_cnum);
 	bigi -> capa = len + OVERFLOW_LEN;
-	bigi -> cnum = (char*) malloc (bigi -> capa);
+	/* Including null terminal symbol. */
+	bigi -> cnum = (char*) malloc (bigi -> capa + 1);
 	bigi -> inum = (int*) malloc 
 		(sizeof (int) * bigi -> capa);
 
@@ -50,6 +51,7 @@ pezbigi ezbigi_create_by_char (const char* _cnum) {
 	/* Copy int* num. */
 	for (i = 0; i < len; ++ i)
 		*(bigi -> inum + i) = *(bigi -> cnum + i) - '0';
+	*(bigi -> cnum + i) = '\0';
 	return bigi;
 
 ERR:
@@ -61,7 +63,53 @@ ERR:
 	return NULL;
 }
 
-pezbigi ezbigi_create_by_int (const int*);
+
+/*
+ * Create a new bigint from a int array.
+ * Note all the element cannot smaller than 0 at this version.
+ * That is, unsigned int.
+ * @1 string.
+ *
+ * Return a pointer to ezbigi structure if successful.
+ * Otherwise return NULL;
+ */
+pezbigi ezbigi_create_by_int (const int* _inum, int _len) {
+	pezbigi bigi;
+	int i;
+	if (! _inum) 
+		return NULL;
+
+ 	bigi = (pezbigi) malloc (sizeof (*bigi));
+	if (! bigi) 
+		return NULL;
+
+	bigi -> len = _len;
+	bigi -> capa = _len + OVERFLOW_LEN;
+	/* Including null terminal symbol. */
+	bigi -> cnum = (char*) malloc (bigi -> capa + 1);
+	bigi -> inum = (int*) malloc 
+		(sizeof (int) * bigi -> capa);
+
+	if (! bigi -> cnum || ! bigi -> inum)
+		goto ERR;
+	
+	/* Copy int* num. */
+	memcpy (bigi -> inum, _inum, sizeof (int) * _len);
+
+	/* Copy char* num. */
+	for (i = 0; i < _len; ++ i)
+		*(bigi -> cnum + i) = (char) ('0' + *(bigi -> inum + i));
+	*(bigi -> cnum + i) = '\0';
+	return bigi;
+
+ERR:
+	if (bigi) {
+		if (bigi -> cnum) free (bigi -> cnum);
+		if (bigi -> inum) free (bigi -> inum);
+		free (bigi);
+	}
+	return NULL;
+}
 
 /*
  * Destroy a bigint. If @1 == NULL, then 

@@ -16,6 +16,10 @@ typedef struct _ezbigi {
 extern int ezbigi_iszero (pezbigi);
 extern int ezbigi_isequal (pezbigi, pezbigi);
 
+extern pezbigi ezbigi_reset_by_char (pezbigi, const char*);
+extern pezbigi ezbigi_reset_by_int (pezbigi, const int*);
+extern pezbigi ezbigi_reset (pezbigi, pezbigi);
+
 /*
  * Create a new bigint from char array, a string.
  * Note the string cannot include a signal symbol (-/+)
@@ -23,14 +27,21 @@ extern int ezbigi_isequal (pezbigi, pezbigi);
  * @1 string.
  *
  * Return a pointer to ezbigi structure if successful.
- * Else return NULL;
+ * Otherwise return NULL;
  */
-extern pezbigi ezbigi_reset_by_char (pezbigi, const char*);
-extern pezbigi ezbigi_reset_by_int (pezbigi, const int*);
-extern pezbigi ezbigi_reset (pezbigi, pezbigi);
-
 extern pezbigi ezbigi_create_by_char (const char*);
-extern pezbigi ezbigi_create_by_int (const int*);
+
+/*
+ * Create a new bigint from a int array.
+ * Note all the element cannot smaller than 0 at this version.
+ * That is, unsigned int.
+ * @1 The array.
+ * @2 The length of @1
+ *
+ * Return a pointer to ezbigi structure if successful.
+ * Otherwise return NULL;
+ */
+extern pezbigi ezbigi_create_by_int (const int*, int);
 
 /*
  * Destroy a bigint. If @1 == NULL, then 
