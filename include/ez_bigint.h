@@ -2,24 +2,47 @@
 #	define _EZ_BIGINT_H_
 
 // #include "ez.h"
+#include <stdlib.h>
+
+#	define OVERFLOW_LEN 2
 
 typedef struct _ezbigi {
-	int len;
-	int capa;
+	size_t len;
+	size_t capa;
 	char* cnum;
 	int* inum;
-} ezbigi, * pezbigi
+} ezbigi, * pezbigi;
 
-extern bool ezbigi_iszero (pezbigi);
-extern bool ezbigi_isequal (pezbigi, pezbigi);
+extern int ezbigi_iszero (pezbigi);
+extern int ezbigi_isequal (pezbigi, pezbigi);
 
+/*
+ * Create a new bigint from char array, a string.
+ * Note the string cannot include a signal symbol (-/+)
+ * at this version.
+ * @1 string.
+ *
+ * Return a pointer to ezbigi structure if successful.
+ * Else return NULL;
+ */
 extern pezbigi ezbigi_reset_by_char (pezbigi, const char*);
 extern pezbigi ezbigi_reset_by_int (pezbigi, const int*);
 extern pezbigi ezbigi_reset (pezbigi, pezbigi);
 
 extern pezbigi ezbigi_create_by_char (const char*);
 extern pezbigi ezbigi_create_by_int (const int*);
+
+/*
+ * Destroy a bigint. If @1 == NULL, then 
+ * nothing will be done and return.
+ */
 extern void ezbigi_destroy (pezbigi);
+
+/*
+ * Display a bigint to stdout. The format
+ * is "NUMER(LENGTH/TOTAL_CAPACITY)".
+ */
+extern void ezbigi_disp (const pezbigi);
 
 extern pezbigi ezbigi_add (pezbigi, pezbigi);
 extern pezbigi ezbigi_sub (pezbigi, pezbigi);
