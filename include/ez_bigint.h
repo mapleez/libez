@@ -5,6 +5,8 @@
 #include <stdlib.h>
 
 #	define OVERFLOW_LEN 2
+/* 200% */
+#	define MEM_REALLOC_RATE 2
 
 typedef struct _ezbigi {
 	size_t len;

@@ -120,6 +120,7 @@ void ezbigi_destroy (pezbigi _num) {
 	if (! _num -> cnum) free (_num -> cnum);
 	if (! _num -> inum) free (_num -> inum);
 
+	_num -> len = _num -> capa = 0;
 	_num -> cnum = NULL;
 	_num -> inum = NULL;
 	free (_num);
@@ -141,7 +142,45 @@ pezbigi ezbigi_sub (pezbigi, pezbigi);
 pezbigi ezbigi_multi (pezbigi, pezbigi);
 pezbigi ezbigi_div (pezbigi, pezbigi);
 pezbigi ezbigi_mod (pezbigi, pezbigi);
-pezbigi ezbigi_incream (pezbigi);
+
+/* TODO Synchronise char*. And unit testing */
+pezbigi ezbigi_incream (pezbigi _num) {
+	int overflow [OVERFLOW_LEN] = {0, 0}; // length = 2
+	int* ptr;
+
+	if (! _num) return NULL;
+ 	ptr = _num -> inum + (_num -> len - 1);
+	*ptr += 1;
+	while (*ptr >= 10 && ptr > _num -> inum) {
+		*(ptr - 1) += *ptr / 10;
+		*ptr -- %= 10;
+	}
+
+	/* overflow */
+	if (ptr == _num -> inum) {
+		*overflow += *ptr / 10;
+		*ptr %= 10;
+		/* Remaining enough space. */
+		if (_num -> capa - _num -> len >= 1) {
+			memmove (ptr - 1, ptr, _num -> len);
+			*_num -> inum = *overflow;
+			_num -> len ++;
+		} else {
+			/* Remaining no space. */
+			int* tmp = (int*) realloc (ptr, 
+				_num -> capa * MEM_REALLOC_RATE);
+			if (! tmp) return NULL; // TODO, should recover former stat
+			memmove (tmp + 1, ptr, _num -> len);
+			*tmp = *overflow;
+			_num -> inum = tmp;
+			_num -> len ++;
+			_num -> capa *= MEM_REALLOC_RATE;
+		}
+	}
+
+	return _num;
+}
+
 pezbigi ezbigi_decream (pezbigi);
 
 pezbigi ezbigi_zero (pezbigi);
