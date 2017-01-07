@@ -8,6 +8,9 @@
 #	define NULL ((void*) 0)
 #endif // ~ NULL
 
+#	define T void*
+#	define ELEMENT_SIZE  (sizeof (T))
+
 #	define __xstr(___s) __str (___s)
 #	define __str(___s) #___s
 
@@ -84,6 +87,7 @@ typedef uint8_t* bytes;
 typedef uint8_t  byte;
 
 typedef int (*cmp_func)(const void*, const void*);
+typedef void (*clean_func) (const void*);
 
 static inline uint32_t memrev32 (uint32_t _dat) {
 	uint8_t* ptr = (uint8_t*) &_dat;

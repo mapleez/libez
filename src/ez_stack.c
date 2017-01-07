@@ -2,7 +2,6 @@
 	author : ez
 	date : 2015/5/19
 	describe : stack declaration
-
 */
 
 #include "ez_stack.h"
@@ -12,43 +11,41 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-
-
-bool ez_stack_empty (pez_stack _s) {
-	return ((_s -> sp) == EMPTY_MARK);
-}
-
-bool ez_stack_full (pez_stack _s) {
-	return ((_s -> sp + 1) == 
-			(_s -> capacity));
-}
+void default_stack_clean_func (const void*); 
 
 pez_stack ez_stack_create (int _maxsize) {
-	pez_stack s = (pez_stack) malloc (_stk_size);
-	if (s != NULL) {
-		s -> array = (_tp *) malloc (_tp_size * _maxsize);
+	pez_stack s = (pez_stack) malloc (EZ_STACK_SIZE);
+	if (s) {
+		if (_maxsize <= 0) _maxsize = DEF_STACK_CAPACITY;
+		s -> array = (T*) malloc (ELEMENT_SIZE * _maxsize);
 		if (s -> array == NULL) {
 			free (s);
-			return NULL;
+			return s = NULL;
 		}
-		s -> sp = EMPTY_MARK;
+		s -> sp = STACK_EMPTY_MARK;
 		s -> capacity = _maxsize;
 	}
 	return s;
 }
 
 void ez_stack_clear (pez_stack _s) {
-	if (_s != NULL) {
-		memset (_s -> array, 0, _s -> capacity);
-		_s -> sp = EMPTY_MARK;
+	if (_s) {
+		T ptr = ez_stack_topandpop (_s);
+		clean_func cls = _s -> cls ? 
+			_s -> cls : default_stack_clean_func;
+		while (ptr) {
+			cls (ptr);
+			ptr = ez_stack_topandpop (_s);
+		}
+		_s -> sp = STACK_EMPTY_MARK;
 	}
 }
 
-_tp ez_stack_top (pez_stack _s) {
+T ez_stack_top (pez_stack _s) {
 	if (! ez_stack_empty (_s)) {
 		return _s -> array [_s -> sp];
 	}
-	return 0;
+	return NULL;
 }
 
 bool ez_stack_pop (pez_stack _s) {
@@ -59,27 +56,30 @@ bool ez_stack_pop (pez_stack _s) {
 	return false;
 }
 
-bool ez_stack_push (pez_stack _s, _tp _e) {
-	if (! ez_stack_full (_s)) {
+T ez_stack_push (pez_stack _s, const T _e) {
+	if (! ez_stack_full (_s) && _e) {
 		_s -> array [++ _s -> sp] = _e;
-		return true;
+		return _e;
 	}
-	return false;
+	return NULL;
 }
 
-_tp ez_stack_topandpop (pez_stack _s) {
-	if (! ez_stack_empty (_s)) {
+T ez_stack_topandpop (pez_stack _s) {
+	if (! ez_stack_empty (_s))
 		return _s -> array [_s -> sp --];
-	}
-	return 0;
+	return NULL;
 }
 
 void ez_stack_dispose (pez_stack _s) {
-	if (_s != NULL) {
+	ez_clean_stack (_s);
+	if (_s && _s -> array)
 		free (_s -> array);
-		free (_s);
-		_s = NULL;
-	}
+	free (_s);
+}
+
+
+void default_stack_clean_func (const void* _e) {
+	(void) _e;
 }
 
 #ifdef __debug__
