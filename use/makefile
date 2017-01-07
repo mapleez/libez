@@ -8,7 +8,7 @@ INCLUDE = -I../include
 BIN = ../libez.a
 DEBUG = -g
 CFLAGS = $(INCLUDE) $(DEBUG)
-EXEFILES = postfix dfs mbs web ezcli
+EXEFILES = postfix dfs mbs web ezcli daemonsrv
 
 .PHONY: all clean
 

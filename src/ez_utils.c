@@ -5,7 +5,11 @@
 
 int ez_daemonize () {
 	int nullfd;
-	if (fork () != 0) exit (0); /* parent exits */
+
+	if (fork () != 0)
+		exit (0); /* parent exits */
+
+	setsid (); /* Create a new session. */
 
 	/* child process. */
 	if ((nullfd = open ("/dev/null", O_RDWR, 0)) != -1) {
