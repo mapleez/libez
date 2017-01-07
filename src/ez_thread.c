@@ -48,17 +48,22 @@ void ez_set_mutex_funcs (
 	void (* _unlock)  (volatile void *)
 )
 {
-	if (_create) {
-		ez_mutex_create = _create;
-		ez_mutex_destroy = _destroy;
-		ez_mutex_lock = _lock;
-		ez_mutex_unlock = _unlock;
-	} else {
-		ez_mutex_create = ez_def_mutex_create;
-		ez_mutex_destroy = ez_def_mutex_destroy;
-		ez_mutex_lock = ez_def_mutex_lock;
-		ez_mutex_unlock = ez_def_mutex_unlock;
-	}
+
+	ez_mutex_create = _create ? _create : ez_def_mutex_create;
+	ez_mutex_destroy = _destroy ? _destroy : ez_def_mutex_destroy;
+	ez_mutex_lock = _lock ? _lock : ez_def_mutex_lock;
+	ez_mutex_unlock = _unlock ? _unlock : ez_def_mutex_unlock;
+	// if (_create) {
+	// 	ez_mutex_create = _create;
+	// 	ez_mutex_destroy = _destroy;
+	// 	ez_mutex_lock = _lock;
+	// 	ez_mutex_unlock = _unlock;
+	// } else {
+	// 	ez_mutex_create = ez_def_mutex_create;
+	// 	ez_mutex_destroy = ez_def_mutex_destroy;
+	// 	ez_mutex_lock = ez_def_mutex_lock;
+	// 	ez_mutex_unlock = ez_def_mutex_unlock;
+	// }
 }
 
 

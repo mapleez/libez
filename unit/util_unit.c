@@ -4,7 +4,7 @@
 
 int main (int argc, char* argv []) {
 	int i = 0;
-	int res = ez_daemonize ();
+	/* int res = */ez_daemonize ();
 	FILE* fd = fopen ("./output", "a+");
 
 	if (fd == NULL) {

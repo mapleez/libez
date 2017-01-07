@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <fcntl.h>
 
-int ez_daemonize () {
+void ez_daemonize (void) {
 	int nullfd;
 
 	if (fork () != 0)
@@ -18,10 +18,10 @@ int ez_daemonize () {
 		dup2 (nullfd, STDERR_FILENO);
 		if (nullfd > STDERR_FILENO) 
 			close (nullfd);
-		return RTNVAL_SUCC;
+		// return RTNVAL_SUCC;
 	}
 
-	return RTNVAL_FAIL;
+	// return RTNVAL_FAIL;
 }
 
 // int _ez_daemonize (int out, int err) {

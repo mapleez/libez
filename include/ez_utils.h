@@ -9,7 +9,7 @@
  * otherwize return RTNVAL_FAIL.
  * Return RTNVAL_ERR for error.
 */ 
-extern int ez_daemonize ();
+extern void ez_daemonize (void);
 
 /*
  * This function only calls the API daemon and 
