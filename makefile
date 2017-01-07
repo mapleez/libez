@@ -16,6 +16,7 @@ use:
 	$(MAKE) -C use/ all
 
 clean:
+	rm libez.a
 	$(MAKE) -C src/ clean
 	$(MAKE) -C unit/ clean
 	$(MAKE) -C use/ clean

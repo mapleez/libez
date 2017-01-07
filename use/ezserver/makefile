@@ -3,7 +3,7 @@
 # describe : compile my own server program.
 
 CC = gcc
-INCLUDE = -I../../include
+INCLUDE = -I../../src
 BIN = ../../libez.a
 DEBUG = -g
 CFLAGS = $(INCLUDE) $(DEBUG)

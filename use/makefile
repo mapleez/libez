@@ -4,7 +4,7 @@
 
 
 CC = gcc
-INCLUDE = -I../include
+INCLUDE = -I../src/
 BIN = ../libez.a
 DEBUG = -g
 CFLAGS = $(INCLUDE) $(DEBUG)
@@ -18,9 +18,6 @@ $(EXEFILES): $(BIN)
 
 ezsrv:
 	$(MAKE) -C ezserver/ all
-
-# postfix: postfix.c 
-# 	$(CC) $(BIN) $(INCLUDE) $(OBJFLAG) $@ $(CFLAG) $^ $(DEBUG)
 
 clean: 
 	rm $(EXEFILES)

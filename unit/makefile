@@ -3,7 +3,7 @@
 # describe : compile all the unit testing
 
 BASE = ..
-INCLUDE = $(BASE)/include
+INCLUDE = $(BASE)/src
 
 CFLAGS = -g -I$(INCLUDE) -I$(INCLUDE)/internet
 CC = gcc
@@ -31,5 +31,6 @@ ez_unit.o: $(INCLUDE)/ez.h $(INCLUDE)/ez_unit.h
 # ez_modbus: $(LIBNAME) $(INCLUDE)/ez_modbus.h $(LIBHEAD)
 
 clean:
-	rm $(EXEFILES)
-	rm ez_unit.o
+	@rm $(EXEFILES)
+	@rm ez_unit.o
+
