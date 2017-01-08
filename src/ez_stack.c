@@ -59,7 +59,7 @@ bool ez_stack_pop (pez_stack _s) {
 T ez_stack_push (pez_stack _s, const T _e) {
 	if (! ez_stack_full (_s) && _e) {
 		_s -> array [++ _s -> sp] = _e;
-		return _e;
+		return _s -> array [_s -> sp];
 	}
 	return NULL;
 }
@@ -71,7 +71,7 @@ T ez_stack_topandpop (pez_stack _s) {
 }
 
 void ez_stack_dispose (pez_stack _s) {
-	ez_clean_stack (_s);
+	ez_stack_clear (_s);
 	if (_s && _s -> array)
 		free (_s -> array);
 	free (_s);

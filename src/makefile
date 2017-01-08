@@ -46,6 +46,5 @@ ez_bigint.o: $(INCLUDE)/ez_bigint.h $(LIBHEAD)
 
 clean:
 	rm $(BASE)/*.o
-	rm $(BASE)/libez.a
 
 
