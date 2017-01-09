@@ -28,30 +28,37 @@ static void _dump_stack ();
 
 /* Create new stack entry. */
 static void _create_test () {
-	mystack = ez_stack_create (0);
+	println ("Start create and dispose testing.");
+	println ("stack 0");
+	pez_stack stack = ez_stack_create (0);
 
-	if (!mystack) {
+	if (! stack) {
 		println ("error!\n");
-		ez_stack_dispose (mystack);
+		ez_stack_dispose (stack);
+		return;
+	}
+	ez_stack_dispose (NULL);
+
+	_dump_stack (stack);
+	ez_stack_dispose (stack);
+	stack = NULL;
+
+	println ("stack 120");
+	stack = ez_stack_create (120);
+	if (! stack) {
+		println ("error!\n");
+		ez_stack_dispose (stack);
 		return;
 	}
 
-	_dump_stack (mystack);
-	ez_stack_dispose (mystack);
-	mystack = NULL;
+	_dump_stack (stack);
+	ez_stack_dispose (stack);
 
-	mystack = ez_stack_create (120);
-	if (!mystack) {
-		println ("error!\n");
-		ez_stack_dispose (mystack);
-		return;
-	}
-
-	_dump_stack (mystack);
-	ez_stack_dispose (mystack);
-
-	/* For other testing. */
-	mystack = ez_stack_create (-9);
+	println ("stack -9");
+	stack = ez_stack_create (-9);
+	_dump_stack (stack);
+	ez_stack_dispose (stack);
+	println ("End create and dispose testing.");
 }
 
 static void _full_empty_test () {
@@ -148,13 +155,9 @@ int main (argc, argv)
 	int argc;
 	char* argv [];
 {
-	_full_empty_test ();
-	// _create_test ();
+	_create_test ();
 	// _full_empty_test ();
-
-	_push_test ();
-	// _full_empty_test ();
-	
+	// _push_test ();
 	// _pop_test ();
 
 	return 0;
