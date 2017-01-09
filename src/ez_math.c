@@ -2,6 +2,7 @@
 #include "ez.h"
 
 #include <string.h>
+#include <stdlib.h>
 
 static int* _single_multipler (int*, size_t, size_t, int);
 static int* _multipler (int*, size_t, int*, size_t, int);
