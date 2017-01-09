@@ -50,11 +50,11 @@ typedef struct _ez_stack {
 
 /*
  * Check whether the stack is full or not.
- * $1: stack entry, a ptr. If ptr is NULL, false will be returned.
+ * $1: stack entry, a ptr. If ptr is NULL, true will be returned.
  * Return true (1) if it's full. Or false (0)
  */
 #	define ez_stack_full(__S)    \
-		(!!(__S) && (__S) -> sp + 1 == (__S) -> capacity)
+		((__S) ? ((__S) -> sp + 1 == (__S) -> capacity) : true)
 
 /*
  * Create an empty stack with the original capacity.
