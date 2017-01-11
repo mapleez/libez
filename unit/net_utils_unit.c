@@ -13,11 +13,13 @@ int main (int argc, char* argv []) {
 		exit (0);
 	}
 	addr = host_resolv (argv [1]);
+	/* Note Bigendian. */
 	printf ("%d.%d.%d.%d (%d)\n", 
-			(addr & 0xff000000) >> 24,
-			(addr & 0x00ff0000) >> 16,
+			(addr & 0x000000ff),
 			(addr & 0x0000ff00) >>  8,
-			(addr & 0x000000ff), addr);
+			(addr & 0x00ff0000) >> 16,
+			(addr & 0xff000000) >> 24,
+			addr);
 	
 	return 0;
 }
