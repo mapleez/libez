@@ -56,6 +56,9 @@ typedef struct _ez_stack {
 #	define ez_stack_full(__S)    \
 		((__S) ? ((__S) -> sp + 1 == (__S) -> capacity) : true)
 
+#	define ez_stack_setcls(__S, __F)   \
+		((__S) && ((__S) -> cls = __F))
+
 /*
  * Create an empty stack with the original capacity.
  * $1: The original capacity of stack.

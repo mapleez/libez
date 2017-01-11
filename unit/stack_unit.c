@@ -23,6 +23,7 @@ static void _full_empty_test ();
 static void _push_test ();
 static void _pop_test ();
 static void _clear_test ();
+static void _setcls_test ();
 
 static void _dump_stack ();
 
@@ -172,6 +173,17 @@ static void _clear_test () {
 	println ("Ending clear test.");
 }
 
+static int _test_cls_func (const void* ptr) {
+	(void) ptr;
+	return 1;
+}
+
+static void _setcls_test () {
+	pez_stack stack = ez_stack_create (0);
+	int x = ez_stack_setcls (stack, _test_cls_func);
+	printf ("%d\n", x);
+}
+
 /* Main entry. */
 int main (argc, argv)
 	int argc;
@@ -181,7 +193,8 @@ int main (argc, argv)
 	// _full_empty_test ();
 	// _push_test ();
 	// _pop_test ();
-	_clear_test ();
+	// _clear_test ();
+	// _setcls_test ();
 
 	return 0;
 }
