@@ -22,6 +22,7 @@ static void _create_test ();
 static void _full_empty_test ();
 static void _push_test ();
 static void _pop_test ();
+static void _clear_test ();
 
 static void _dump_stack ();
 
@@ -150,15 +151,37 @@ static void _pop_test () {
 	println ("Ending pop test.");
 }
 
+static void _clear_test () {
+	println ("Starting clear test.");
+	pez_stack stack = ez_stack_create (20);
+	int i = 0;
+	while (++ i <= 20) {
+		void* e = ez_stack_push (stack, (void*) i);
+		printf ("Push %ld\n", (intptr_t) e);
+	}
+
+	ez_stack_clear (stack);
+	_dump_stack (stack);
+
+	println ("____________________");
+	ez_stack_clear (stack);
+	_dump_stack (stack);
+
+	ez_stack_clear (NULL);
+	ez_stack_dispose (stack);
+	println ("Ending clear test.");
+}
+
 /* Main entry. */
 int main (argc, argv)
 	int argc;
 	char* argv [];
 {
-	_create_test ();
+	// _create_test ();
 	// _full_empty_test ();
 	// _push_test ();
 	// _pop_test ();
+	_clear_test ();
 
 	return 0;
 }

@@ -50,7 +50,9 @@ T ez_stack_top (pez_stack _s) {
 
 bool ez_stack_pop (pez_stack _s) {
 	if (! ez_stack_empty (_s)) {
-		_s -> sp --;
+		int last = _s -> sp --;
+		if (_s -> cls) 
+			_s -> cls (_s -> array [last]);
 		return true;
 	}
 	return false;
