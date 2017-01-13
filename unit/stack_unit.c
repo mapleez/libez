@@ -1,8 +1,7 @@
 /*
 	author : ez
 	date : 2015/5/19
-	describe : stack declaration
-
+	describe : Stack Testing.
 */
 
 #include "ez_stack.h"
@@ -14,6 +13,47 @@
 #include <stdlib.h>
 
 #	define BOOL2STR(__B)  ((__B) ? "true" : "false")
+#	define STRUCT_TEST
+
+#ifdef STRUCT_TEST
+typedef struct _test_struct {
+	int x; int y; 
+	char* common;
+} test_struct, *ptest_struct;
+
+
+ptest_struct _create_test_struct () {
+	ptest_struct ptr = (ptest_struct) malloc (sizeof (*ptr));
+	if (! ptr) return NULL;
+	srand ((long) ptr);
+	ptr -> x = rand ();
+	srand (ptr -> x);
+	ptr -> y = rand ();
+	return ptr;
+}
+
+void _test_cls_struct_func (const void* ptr) {
+	ptest_struct p = (ptest_struct) ptr;
+	if (! ptr) return;
+	if (p -> common) free (p -> common);
+	free (ptr);
+}
+
+static char _stringbuff [1024] = {0};
+
+#	define STRUCT2STR(__STRUCT)       \
+		do {                         \
+			if (__STRUCT) {   \
+				snprintf (_stringbuff, 1024, "(%d,%d,%s)",  \
+				((ptest_struct)(__STRUCT)) -> x,       \
+				((ptest_struct)(__STRUCT)) -> y,        \
+				((ptest_struct)(__STRUCT)) -> common);    \
+			} else {    \
+				_stringbuff [0] = '\0'; \
+			}             \
+		} while (0)
+
+#endif
 
 int* array;
 pez_stack mystack;
@@ -116,10 +156,27 @@ static void _push_test () {
 	println ("--------------------");
 	println ("Push to 32 stack.");
 	stack = ez_stack_create (0x20);
+#ifdef STRUCT_TEST
+	ez_stack_setcls (stack, _test_cls_struct_func);
+#endif
 	while (++ i < 100) {
+#ifdef STRUCT_TEST
+		void* ptr = _create_test_struct ();
+		void* e = ez_stack_push (stack, ptr);
+		STRUCT2STR (ptr);
+		if (e) {
+			printf ("pushed %d %s (return %ld)\n", i, 
+				_stringbuff, (intptr_t) e);
+		} else {
+			printf ("not pushed %d %s (return %ld)\n", i, 
+				_stringbuff, (intptr_t) e);
+			if (ptr) _test_cls_struct_func (ptr);
+		}
+#else
 		void* e = ez_stack_push (stack, (void*) i);
 		printf ("push %d %s (return %ld)\n", i, 
 			BOOL2STR (e), (intptr_t) e);
+#endif
 	}
 	ez_stack_dispose (stack);
 	println ("Ending push test.");
@@ -189,9 +246,9 @@ int main (argc, argv)
 	int argc;
 	char* argv [];
 {
-	// _create_test ();
+	_create_test ();
 	// _full_empty_test ();
-	// _push_test ();
+	_push_test ();
 	// _pop_test ();
 	// _clear_test ();
 	// _setcls_test ();

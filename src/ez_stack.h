@@ -56,6 +56,10 @@ typedef struct _ez_stack {
 #	define ez_stack_full(__S)    \
 		((__S) ? ((__S) -> sp + 1 == (__S) -> capacity) : true)
 
+/*
+ * Set clear function. This function shell be invoked durring
+ * pop(), dispose() and clear();
+ */
 #	define ez_stack_setcls(__S, __F)   \
 		((__S) && ((__S) -> cls = __F))
 

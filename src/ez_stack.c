@@ -74,8 +74,10 @@ T ez_stack_topandpop (pez_stack _s) {
 
 void ez_stack_dispose (pez_stack _s) {
 	ez_stack_clear (_s);
-	if (_s && _s -> array)
+	if (_s && _s -> array) {
+		ez_stack_clear (_s);
 		free (_s -> array);
+	}
 	free (_s);
 }
 
@@ -87,7 +89,7 @@ void default_stack_clean_func (const void* _e) {
 #ifdef __debug__
 
 void show (pez_stack _s) {
-	if (_s != NULL && _s -> sp != EMPTY_MARK) {
+	if (_s != NULL && _s -> sp != STACK_EMPTY_MARK) {
 		int i = 0;
 		for (; i < _s -> sp; i ++) {
 			printf ("%d ", _s -> array [i]);
