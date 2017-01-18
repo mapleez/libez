@@ -156,7 +156,6 @@ extern pez_listnode ez_list_search_post (pez_list, const T);
  */
 #	define ez_list_count(__LIST)   \
 		((__LIST) ? (__LIST) -> size : 0)
-// extern int ez_list_count (const pez_list);
 
 /*
  * Delete all elements in the list.

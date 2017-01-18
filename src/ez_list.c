@@ -11,6 +11,16 @@
 #include <stdint.h>
 #include <stddef.h>
 
+static bool __safe_equal (cmp_func, pez_listnode, T);
+
+
+
+
+static bool __safe_equal (cmp_func cmp, pez_listnode _p, T _e) {
+	return cmp ? (cmp (_p -> val, _e) == EQUAL) : 
+		(_p -> val == _e)
+}
+
 // #	define get_val(___N)   ((___N) -> val)
 // #   define equal(___list_elm, ___a)    \
 //         (get_val (___list_elm) ==  ___a)
@@ -21,16 +31,16 @@
  * NOTE: A new list made by ez_list_create ()
  * will include one element originally.
  */
-int
-ez_list_count (const _list _l) {
-	_position ptr = _l;
-	int i = 1;
-	while (ptr -> next) {
-		++ i;
-		ptr = ptr -> next;
-	}
-	return i;
-}
+// int
+// ez_list_count (const _list _l) {
+// 	_position ptr = _l;
+// 	int i = 1;
+// 	while (ptr -> next) {
+// 		++ i;
+// 		ptr = ptr -> next;
+// 	}
+// 	return i;
+// }
 
 /*
  * Create a List,
@@ -59,11 +69,8 @@ pez_list ez_list_create () {
  */
 bool ez_list_islast (const pez_list _l, const T _p) {
 	if (! _l || ! _p || ez_list_isempty (_l)) return false;
-	T tail = _l -> tail;
-	if (_l -> cmp) 
-		return (_l -> cmp (tail, _p) == EQUAL);
-	else
-		return (tail == _p);
+	pez_listnode tail = _l -> tail;
+	return __safe_equal (_l -> cmp, tail, _p);
 }
 
 pez_listnode ez_list_gethead (pez_list _l) {
@@ -124,49 +131,58 @@ pez_listnode ez_list_pushtail (pez_list _l, const T _e) {
  * $2 an element to be inserted.
  * $3 the index at which will be inserted.
  * Return the node ptr if successful, else return NULL.
- * TODO...
  */
 pez_listnode ez_list_pushbyidx (pez_list _l, 
 	const T _e, int _idx) {
 	pez_listnode node;
 	pez_listnode ptr;
-	if (! *_l) return NULL;
+	if (! *_l || _idx < 0) return NULL;
+
+	/* Push at the head. */
+	if (_idx == 0) 
+		return ez_list_pushhead (_l, _e);
+
+	/* Push at the tail. */
+	if (_idx - 1 >= _l -> size) 
+		return ez_list_pushtail (_l, _e);
 
 	node = (pez_listnode) calloc (1, EZ_LISTNODE_SIZE);
 	if (! node) return NULL;
 	node -> val = _e;
-	// node -> next = _l -> elms;
 
+  /* TODO Test whether ptr could be NULL. */
 	ptr = _l -> elms;
 	while (ptr) {
-		if (_idx != 0)
+		if (_idx != 1) {
 			ptr = ptr -> next;
-		else {
-			ptr -> next;
+			_idx --;
+		} else {
+			node -> next = ptr -> next;
+			ptr -> next = node;
+			_l -> size ++;
 		}
 	}
-	// _l -> elms = node;
-	// _l -> size ++;
 	return node;
 }
 
 /*
-   Delete the element from list,
-   if the element doesn't exist, nothing
-   will be done.
-*/
-void 
-ez_list_del (_list _l, const _element _e) {
+ * Delete the element from the list,
+ * if the element doesn't exist, nothing
+ * will be done.
+ * $1: List entry ptr.
+ * $2: Element with type void*.
+ */
+void ez_list_del (pez_list _l, const T _e) {
+	pez_list pre;
+	if (! _l) return;
 
-	_position tmp = _l;
-	if (equal (_l, _e)) { // list header
-		_l = _l -> next;
-		free (tmp);
-		tmp = NULL;
-		return;
-	}
+	pre = _l -> elms;
+	if (__safe_equal (pre -> val, _e))
+		ez_list_pophead (_l);
 
-	while (tmp -> next) {
+	pre = pre -> next;
+	/* TODO... */
+	while (pre) {
 		if (! equal (tmp -> next, _e))
 			tmp = tmp -> next;
 		else {
@@ -276,29 +292,6 @@ void ez_list_del_all (_list _l) {
 //    }
 //
 //}
-
-/*
-   Insert an element at the end of list.
-   Return true if successful, otherwise
-   return false.
-*/
-bool 
-ez_list_insert_real (_list _l, const _element _e) {
-	_position p = _l;
-	_position elm = calloc (1, _list_size);
-
-	if (!_l || !elm)
-		return false;
-
-	while (p -> next != NULL)
-		p = p -> next;
-
-	elm -> val = _e;
-	p -> next = elm;
-
-	(elm = NULL) && (p = NULL);
-	return true;
-}
 
 
 _list ez_list_reverse (_list _head) {
