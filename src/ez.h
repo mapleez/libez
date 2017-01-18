@@ -88,6 +88,7 @@ typedef uint8_t  byte;
 
 typedef int (*cmp_func)(const void*, const void*);
 typedef void (*clean_func) (const void*);
+typedef void* (*dup_func) (void*);
 
 static inline uint32_t memrev32 (uint32_t _dat) {
 	uint8_t* ptr = (uint8_t*) &_dat;

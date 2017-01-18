@@ -11,34 +11,16 @@
 #include <stdint.h>
 #include <stddef.h>
 
-
-// if you want other element type, 
-// change the two macros and redefine _element
-#	define get_val(___N)   ((___N) -> val)
-#   define equal(___list_elm, ___a)    \
-        (get_val (___list_elm) ==  ___a)
+// #	define get_val(___N)   ((___N) -> val)
+// #   define equal(___list_elm, ___a)    \
+//         (get_val (___list_elm) ==  ___a)
 
 /*
-   Check whether the list is empty.
-   return true if it is, otherwise 
-   false;
-
-   WARNING: because of the header of list,
-   each created list will include at least
-   one element, so in this version, the 
-   function always return true.
-*/
-bool ez_list_empty (const _list _l) {
-	return (_l -> next == NULL);
-}
-
-/*
-   Return the number of element 
-   in the list;
-
-   NOTE: A new list made by ez_list_create ()
-   will include one element originally.
-*/
+ * Return the number of element 
+ * in the list;
+ * NOTE: A new list made by ez_list_create ()
+ * will include one element originally.
+ */
 int
 ez_list_count (const _list _l) {
 	_position ptr = _l;
@@ -51,49 +33,121 @@ ez_list_count (const _list _l) {
 }
 
 /*
-   Create a List,
+ * Create a List,
+ * Return the pointer to the first
+ * element if successful,  else 
+ * return NULL.
+ */
+pez_list ez_list_create () {
+	pez_list list = (pez_list) malloc (EZ_LIST_SIZE);
+	if (! list) return NULL;
+	list -> elms = list -> tail = NULL;
+	list -> size = 0;
 
-   return the pointer to the first
-   element if successful,  else 
-   return NULL.
-*/
-_list ez_list_create () {
-	_list res = (_list) calloc (1, _list_size);
-	return res;
+	/* We donot set default func. */
+	list -> cmp = NULL;
+	list -> cls = NULL;
+	list -> dup = NULL;
+	return list;
 }
 
 
 /*
-   Check whether the position is
-   the last element in a list.
-
-   return true or false.
-*/
-bool ez_list_islast 
-	(const _list _l, const _position _p) 
-{
-	return (_p -> next == NULL);
+ * Check whether the element whose value equals $2 is
+ * the last element in a list.
+ * Return true or false.
+ */
+bool ez_list_islast (const pez_list _l, const T _p) {
+	if (! _l || ! _p || ez_list_isempty (_l)) return false;
+	T tail = _l -> tail;
+	if (_l -> cmp) 
+		return (_l -> cmp (tail, _p) == EQUAL);
+	else
+		return (tail == _p);
 }
 
+pez_listnode ez_list_gethead (pez_list _l) {
+	if (! _l || ez_list_isempty (_l)) return NULL;
+	return _l -> elms;
+}
+
+pez_listnode ez_list_gettail (pez_list _l) {
+	if (! _l || ez_list_isempty (_l)) return NULL;
+	return _l -> tail;
+}
 
 /*
    Insert an element at the top of list.
    Return true if successful, else return
    false.
-   
    NOTE: if the *@1 is NULL, a new list will
    be created and value will set to @2
 */
-bool ez_list_insert_top 
-	(_list* _l, const _element _e) 
-{
-	_position ptr = 
-		(_position) calloc (1, _node_size);
-	if (! *_l && ! ptr) return false;
-	get_val (ptr) = _e;
-	ptr -> next = *_l;
-	*_l = ptr;
-	return true;
+pez_listnode ez_list_pushtail (pez_list _l, const T _e) {
+	pez_listnode node;
+	if (! *_l) return NULL;
+
+	node = (pez_listnode) 
+		calloc (1, EZ_LISTNODE_SIZE);
+	if (! node) return NULL;
+	node -> val = _e;
+	node -> next = NULL;
+	_l -> tail -> next = node;
+	_l -> size ++;
+	return node;
+}
+
+/*
+ * Insert an element at the end of list. 
+ * $1: List ptr.
+ * $2: Element value.
+ * Return the node ptr if successful, otherwise return NULL.
+ */
+pez_listnode ez_list_pushtail (pez_list _l, const T _e) {
+	pez_listnode node;
+	if (! *_l) return NULL;
+
+	node = (pez_listnode)
+		calloc (1, EZ_LISTNODE_SIZE);
+	if (! node) return NULL;
+	node -> val = _e;
+	node -> next = _l -> elms;
+	_l -> elms = node;
+	_l -> size ++;
+	return node;
+}
+
+
+/*
+ * Insert an element into list by index.
+ * $1 list ptr
+ * $2 an element to be inserted.
+ * $3 the index at which will be inserted.
+ * Return the node ptr if successful, else return NULL.
+ * TODO...
+ */
+pez_listnode ez_list_pushbyidx (pez_list _l, 
+	const T _e, int _idx) {
+	pez_listnode node;
+	pez_listnode ptr;
+	if (! *_l) return NULL;
+
+	node = (pez_listnode) calloc (1, EZ_LISTNODE_SIZE);
+	if (! node) return NULL;
+	node -> val = _e;
+	// node -> next = _l -> elms;
+
+	ptr = _l -> elms;
+	while (ptr) {
+		if (_idx != 0)
+			ptr = ptr -> next;
+		else {
+			ptr -> next;
+		}
+	}
+	// _l -> elms = node;
+	// _l -> size ++;
+	return node;
 }
 
 /*

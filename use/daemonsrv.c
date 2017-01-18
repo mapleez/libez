@@ -30,7 +30,8 @@ void daemonize(void) {
 
 int main (int argc, char* argv []) {
 	
-	ez_daemonize ();
+	// ez_daemonize ();
+	daemonize ();
 
 	while (1) {
 		printf ("%lld\n", (long long int) time (NULL));

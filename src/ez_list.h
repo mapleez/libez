@@ -1,8 +1,9 @@
 /*
-	author : ez
-	date : 2015/5/21
-	describe : The linked list declaration.
-*/
+ * author : ez
+ * date : 2015/5/21
+ * describe : The linked list declaration. It's not a thread-safe
+ * implementation
+ */
 
 #ifndef _EZ_LIST_H_
 #	define _EZ_LIST_H_
@@ -31,6 +32,9 @@ typedef struct _ez_list {
 	/* Element list */
 	struct _ez_listnode* elms;
 
+  /* The tail node ptr. */
+	struct _ez_listnode* tail;
+
 	/* Current count of element in list. */
 	int size;
 
@@ -39,6 +43,9 @@ typedef struct _ez_list {
 
   /* Clean function for each element. */
 	clean_func cls;
+
+	/* Duplication function for each element. */
+	dup_func dup;
 } ez_list, *pez_list;
 
 
@@ -69,13 +76,58 @@ extern pez_list ez_list_create ();
 extern void ez_list_del (pez_list, const T);
 
 /*
+ * Delete all the elements whose value equals to $1.
+ * This function will iterate the whole list and delete
+ * each found note.
+ * $1: List entry ptr.
+ * $2: value ptr (void*).
+ * Note if function cmp_func doesn't be assigned, we just
+ * compare ptr value.
+ * Return the number of deleted element.
+ */
+extern int ez_list_delall (pez_list, const T);
+
+/*
+ * Pop head element if existing. No effect if it's empty.
+ * $1: List entry ptr.
+ */
+extern void ez_list_pophead (pez_list);
+
+/*
+ * Pop tail element if existing. No effect if list's empty.
+ * $1: List entry ptr.
+ */
+extern void ez_list_poptail (pez_list);
+
+/*
+ * Get the head element of list.
+ * $1: List entry ptr.
+ * Return element. If the list is empty, return NULL.
+ */
+extern pez_listnode ez_list_gethead (pez_list);
+
+/*
+ * Get the tail element of list.
+ * $1: List entry ptr.
+ * Return element. If the list is empty, return NULL.
+ */
+extern pez_listnode ez_list_gettail (pez_list);
+
+/*
+ * Get the head element of list.
+ * $1: List entry ptr.
+ * Return element. If the list is empty, return NULL.
+ */
+extern pez_listnode ez_list_getbyidx (pez_list);
+
+/*
  * Find the first element equalling argument $2,
  * If such an element doesn't exist, return NULL,
  * else return the node.
  * $1: List entry ptr.
  * $2: Element with type void*.
  */
-extern pez_listnode ez_list_find (pez_list, const T);
+extern pez_listnode ez_list_search (pez_list, const T);
 
 /*
  * Find the pre element of the equalling argument $2, 
@@ -85,14 +137,26 @@ extern pez_listnode ez_list_find (pez_list, const T);
  * $1: List entry ptr.
  * $2: Element with type void*.
  */
-extern pez_listnode ez_list_find_pre (pez_list, const T);
+extern pez_listnode ez_list_search_pre (pez_list, const T);
+
+/*
+ * Find the post element of the equalling argument $2, 
+ * If such element doesn't exist or the post of 
+ * element doesn't exist, return NULL, else return the
+ * node.
+ * $1: List entry ptr.
+ * $2: Element with type void*.* 
+ */
+extern pez_listnode ez_list_search_post (pez_list, const T);
 
 /*
  * Return the number of element in the list;
  * NOTE: A new list made by ez_list_create ()
  * will include no element originally.
  */
-extern int ez_list_count (const pez_list);
+#	define ez_list_count(__LIST)   \
+		((__LIST) ? (__LIST) -> size : 0)
+// extern int ez_list_count (const pez_list);
 
 /*
  * Delete all elements in the list.
@@ -106,23 +170,24 @@ extern void ez_list_del_all (pez_list);
  * Return true if it is, otherwise 
  * false;
  */
-extern bool ez_list_empty (const pez_list);
+#	define ez_list_isempty(__LIST)   \
+		(!! (__LIST) && (__LIST) -> size <= 0)
 
 /*
- * Check whether the position is
+ * Check whether the element whose value equals $2 is
  * the last element in a list.
  * Return true or false.
  */
 extern bool ez_list_islast (const pez_list, const T);
 
 /*
- * Insert an element into list.
+ * Insert an element into list by index.
  * $1 list ptr
  * $2 an element to be inserted.
- * $3 the position that will be inserted ahead.
+ * $3 the index at which will be inserted.
  * Return the node ptr if successful, else return NULL.
  */
-extern pez_node ez_list_insert (pez_list, const T, int idx);
+extern pez_listnode ez_list_pushbyidx (pez_list, const T, int);
 
 /*
  * Insert an element at the end of list. 
@@ -130,7 +195,7 @@ extern pez_node ez_list_insert (pez_list, const T, int idx);
  * $2: Element value.
  * Return the node ptr if successful, otherwise return NULL.
  */
-extern pez_node ez_list_insert_real (pez_list, const T);
+extern pez_listnode ez_list_pushtail (pez_list, const T);
 
 /*
  * Insert an element in front of the first element.
@@ -138,7 +203,7 @@ extern pez_node ez_list_insert_real (pez_list, const T);
  * $2: The element value.
  * Return true if successful, else return NULL.
  */
-extern pez_node ez_list_insert_head (pez_list, const T);
+extern pez_listnode ez_list_pushhead (pez_list, const T);
 
 /*
  * Release all the memory in list. If its cls_func is set,
@@ -146,6 +211,13 @@ extern pez_node ez_list_insert_head (pez_list, const T);
  * $1: List ptr. If NULL, doing nothing.
  */
 extern void ez_list_dispose (pez_list);
+
+/*
+ * Duplicate a new list entry from $1.
+ * $1: List entry to be copied.
+ * Return the list entry if successful. else return NULL.
+ */
+extern pez_list ez_list_duplicate (pez_list);
 
 /*
  * Reverse list. Nothing will be done if it's empty.
