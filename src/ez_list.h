@@ -88,6 +88,13 @@ extern void ez_list_del (pez_list, const T);
 extern int ez_list_delall (pez_list, const T);
 
 /*
+ * Delete all the elements in the list.
+ * $1: List entry ptr.
+ * Return the number of deleted element.
+ */
+extern int ez_list_clean (pez_list);
+
+/*
  * Pop head element if existing. No effect if it's empty.
  * $1: List entry ptr.
  */
@@ -158,13 +165,6 @@ extern pez_listnode ez_list_search_post (pez_list, const T);
 		((__LIST) ? (__LIST) -> size : 0)
 
 /*
- * Delete all elements in the list.
- * If clean_func is set, then it will be invoked for 
- * each element.
- */
-extern void ez_list_del_all (pez_list);
-
-/*
  * Check whether the list is empty.
  * Return true if it is, otherwise 
  * false;
@@ -209,7 +209,7 @@ extern pez_listnode ez_list_pushhead (pez_list, const T);
  * invoke it for each element.
  * $1: List ptr. If NULL, doing nothing.
  */
-extern void ez_list_dispose (pez_list);
+extern void ez_list_dispose (pez_list*);
 
 /*
  * Duplicate a new list entry from $1.
