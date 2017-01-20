@@ -54,9 +54,9 @@ typedef struct _ez_list {
  * @2 = list entity.
  * @3 = variable for each element.
  */
-#	define foreach_ez_list(_I, _L, _V) \
-	for (_I = _L; _V = _I -> val, _I -> next;  \
-			_I = _I -> next)
+// #	define foreach_ez_list(_I, _L, _V) \
+// 	for (_I = _L; _V = _I -> val, _I -> next;  \
+// 			_I = _I -> next)
 
 /*
  * Create a List.

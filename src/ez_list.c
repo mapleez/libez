@@ -12,9 +12,9 @@
 #include <stddef.h>
 
 static bool __safe_equal (cmp_func, pez_listnode, T);
-static void __safe_dup (dup_func, T, T);
+static void __safe_dup (dup_func, T*, T*);
 static void __ez_list_del_back (pez_list, pez_listnode);
-static pez_listnode __ez_list_dup_node (pez_listnode);
+static pez_listnode __ez_list_dup_node (dup_func, pez_listnode);
 
 #	define __safe_clean(cls, p)   \
 	do {     \
@@ -226,7 +226,7 @@ void ez_list_del (pez_list _l, const T _e) {
 int ez_list_delall (pez_list _l, const T _e) {
 	pez_listnode pre;
 	int i = 0;
-	if (! _l || ez_list_isempty (_l)) return;
+	if (! _l || ez_list_isempty (_l)) return i;
 
 	while (1) {
 		pre = ez_list_search_pre (_l, _e);
@@ -310,7 +310,7 @@ void ez_list_pophead (pez_list _l) {
 	if (ez_list_isempty (_l)) return;
 	p = _l -> elms;
 	_l -> elms = p -> next;
-	__safe_clean (_l, p -> val);
+	__safe_clean (_l -> cls, p -> val);
 	_l -> size --;
 	free (p); p = NULL;
 }
@@ -377,14 +377,14 @@ void ez_list_dispose (pez_list* _l) {
 	free (*_l); *_l = NULL;
 }
 
-static pez_listnode __ez_list_dup_node (pez_listnode _n) {
+static pez_listnode __ez_list_dup_node (dup_func _dup, pez_listnode _n) {
 	pez_listnode ret = NULL;
 	if (! _n) return ret;
 	ret = (pez_listnode) malloc (EZ_LISTNODE_SIZE);
 
 	if (! ret) return ret;
 	ret -> next = NULL;
-	__safe_dup (& ret -> val, & _n -> val);
+	__safe_dup (_dup, & ret -> val, & _n -> val);
 	return ret;	
 }
 
@@ -407,12 +407,12 @@ pez_list ez_list_duplicate (pez_list _l) {
 	ret -> dup = _l -> dup;
 
 	p = _l -> elms;
-	ret -> elms = __ez_list_dup_node (p);
+	ret -> elms = __ez_list_dup_node (_l -> dup, p);
 	p = p -> next;
 	newp = ret -> elms;
 
 	while (p) {
-		pez_listnode tmp = __ez_list_dup_node (p);
+		pez_listnode tmp = __ez_list_dup_node (_l -> dup, p);
 		if (! tmp) goto bad;
 		newp -> next = tmp;
 		ret -> tail = newp;
@@ -425,7 +425,7 @@ pez_list ez_list_duplicate (pez_list _l) {
 	return ret;
 
 bad:
-	if (ret) ez_list_dispose (ret);
+	if (ret) ez_list_dispose (& ret);
 	return NULL;
 }
 
@@ -445,7 +445,6 @@ pez_list ez_list_reverse (pez_list _l) {
 	while (idx --) {
 		// TODO...
 	}
-
 
 	return _l;
 }
