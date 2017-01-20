@@ -12,6 +12,9 @@
 #include <stddef.h>
 
 static bool __safe_equal (cmp_func, pez_listnode, T);
+static void __safe_dup (dup_func, T, T);
+static void __ez_list_del_back (pez_list, pez_listnode);
+static pez_listnode __ez_list_dup_node (pez_listnode);
 
 #	define __safe_clean(cls, p)   \
 	do {     \
@@ -22,6 +25,12 @@ static bool __safe_equal (cmp_func, pez_listnode, T);
 static bool __safe_equal (cmp_func cmp, pez_listnode _p, T _e) {
 	return cmp ? (cmp (_p -> val, _e) == EQUAL) : 
 		(_p -> val == _e);
+}
+
+
+static void __safe_dup (dup_func dup, T* dst, T* src) {
+	if (! dup) *dst = *src;
+	*dst = dup (*src);
 }
 
 /*
@@ -154,6 +163,21 @@ pez_listnode ez_list_pushbyidx (pez_list _l,
 	return node;
 }
 
+static void __ez_list_del_back (pez_list _l, pez_listnode _pre) {
+	pez_listnode p;
+	if (! _pre) return;
+
+	/* Delete p */
+	p = _pre -> next;
+	if (! p) return;
+	
+	__safe_clean (_l -> cls, p -> val);
+	_pre -> next = p -> next;
+	_l -> size --;
+	free (p);
+}
+
+
 /*
  * Delete the element from the list,
  * if the element doesn't exist, nothing
@@ -165,26 +189,31 @@ void ez_list_del (pez_list _l, const T _e) {
 	pez_listnode pre;
 	if (! _l || ez_list_isempty (_l)) return;
 
-	pre = _l -> elms;
-	if (__safe_equal (_l -> cmp, pre -> val, _e))
-		ez_list_pophead (_l);
+	pre = ez_list_search_pre (_l, _e);
+	if (! pre) return;
 
-	while (pre) {
-		pez_listnode p = pre -> next;
-		if (! p) break;
+	__ez_list_del_back (_l, pre);
 
-		if (__safe_equal (_l -> cmp, p -> val, _e)) {
-			__safe_clean (_l -> cls, p -> val);
-			pre -> next = p -> next;
-			_l -> size --;
-			free (p); p = NULL;
-			return;
-		} else
-			pre = p;
-	}
+	// pre = _l -> elms;
+	// if (__safe_equal (_l -> cmp, pre -> val, _e))
+	// 	ez_list_pophead (_l);
+
+	// while (pre) {
+	// 	pez_listnode p = pre -> next;
+	// 	if (! p) break;
+
+	// 	if (__safe_equal (_l -> cmp, p -> val, _e)) {
+	// 		__safe_clean (_l -> cls, p -> val);
+	// 		pre -> next = p -> next;
+	// 		_l -> size --;
+	// 		free (p); p = NULL;
+	// 		return;
+	// 	} else
+	// 		pre = p;
+	// }
 }
 
-/* TODO...
+/*
  * Delete all the elements whose value equals to $1.
  * This function will iterate the whole list and delete
  * each found note.
@@ -194,21 +223,42 @@ void ez_list_del (pez_list _l, const T _e) {
  * compare ptr value.
  * Return the number of deleted element.
  */
-extern int ez_list_delall (pez_list, const T);
+int ez_list_delall (pez_list _l, const T _e) {
+	pez_listnode pre;
+	int i = 0;
+	if (! _l || ez_list_isempty (_l)) return;
 
-/* TODO...
+	while (1) {
+		pre = ez_list_search_pre (_l, _e);
+		if (! pre) return i;
+		__ez_list_del_back (_l, pre);
+		i ++;
+	}
+	
+}
+
+/*
  * Find the first element equalling argument $2,
  * If such an element doesn't exist, return NULL,
  * else return the node.
  * $1: List entry ptr.
  * $2: Element with type void*.
  */
-pez_listnode ez_list_search (pez_list, const T) {
-  while (p -> next && ! equal (p, _e)) p = p -> next;
-	return p;
+pez_listnode ez_list_search (pez_list _l, const T _e) {
+	pez_listnode p;
+	if (! _l || ez_list_isempty (_l)) return NULL;
+	p = _l -> elms;
+
+	while (p) {
+		if (__safe_equal (_l -> cmp, p -> val, _e))
+			return p;
+		p = p -> next;
+	}
+
+	return NULL;
 } 
 
-/* TODO...
+/*
  * Find the pre element of the equalling argument $2, 
  * If such element doesn't exist or the front of list 
  * element doesn't exist, return NULL, else return the
@@ -217,19 +267,27 @@ pez_listnode ez_list_search (pez_list, const T) {
  * $2: Element with type void*.
  */
 pez_listnode ez_list_search_pre (pez_list _l, const T _e) {    
+	pez_listnode pre;
+	/* _l == NULL
+	 * _l is empty
+	 * _l has only one element.
+	 */
+	if (! _l || ez_list_isempty (_l) || 
+			ez_list_count (_l) == 1) return NULL;
+	pre = _l -> elms;
+	
+	while (pre) {
+		pez_listnode p = pre -> next;
+		if (p == NULL) return NULL;
+		if (__safe_equal (_l -> cmp, p -> val, _e))
+			return pre;
+		pre = p;
+	}
 
-    _position pre = _l;
-    if (equal (pre, _e))
-        return NULL;
-    while (pre -> next && 
-            ! equal (pre -> next,  _e)) 
-        pre = pre -> next;
-	return pre;
-    // return (equal (pre, _e) ? 
-    //         pre : NULL);
+	return NULL;
 }
 
-/* TODO...
+/*
  * Find the post element of the equalling argument $2, 
  * If such element doesn't exist or the post of 
  * element doesn't exist, return NULL, else return the
@@ -237,7 +295,11 @@ pez_listnode ez_list_search_pre (pez_list _l, const T _e) {
  * $1: List entry ptr.
  * $2: Element with type void*.* 
  */
-pez_listnode ez_list_search_post (pez_list, const T);
+pez_listnode ez_list_search_post (pez_list _l, const T _e) {
+	pez_listnode ret = ez_list_search (_l, _e);
+	if (ret) return ret -> next;
+	return NULL;
+}
 
 /*
  * Pop head element if existing. No effect if it's empty.
@@ -315,35 +377,98 @@ void ez_list_dispose (pez_list* _l) {
 	free (*_l); *_l = NULL;
 }
 
+static pez_listnode __ez_list_dup_node (pez_listnode _n) {
+	pez_listnode ret = NULL;
+	if (! _n) return ret;
+	ret = (pez_listnode) malloc (EZ_LISTNODE_SIZE);
 
-/* TODO...
+	if (! ret) return ret;
+	ret -> next = NULL;
+	__safe_dup (& ret -> val, & _n -> val);
+	return ret;	
+}
+
+/*
  * Duplicate a new list entry from $1.
  * $1: List entry to be copied.
  * Return the list entry if successful. else return NULL.
  */
-extern pez_list ez_list_duplicate (pez_list);
+pez_list ez_list_duplicate (pez_list _l) {
+	pez_list ret = NULL;
+	pez_listnode p, newp;
+	if (! _l) return ret;
 
+	ret = ez_list_create ();
+	if (! ret) return NULL;
 
-// TODO...
-_list ez_list_reverse (_list _head) {
-	_list head, pre, next;
-	head = _head;
+	/* Copy functions. */
+	ret -> cmp = _l -> cmp;
+	ret -> cls = _l -> cls;
+	ret -> dup = _l -> dup;
 
-	/* Only one elm */
-	pre = head;
-	next = head -> next;
-	if (! next) return head;
+	p = _l -> elms;
+	ret -> elms = __ez_list_dup_node (p);
+	p = p -> next;
+	newp = ret -> elms;
 
-	while (next) {
-		pre -> next = next -> next;
-		next -> next = head;
-		/* set 2 pointers to 
-			 right position */
-		head = next;
-		next = pre -> next;
+	while (p) {
+		pez_listnode tmp = __ez_list_dup_node (p);
+		if (! tmp) goto bad;
+		newp -> next = tmp;
+		ret -> tail = newp;
+		ret -> size ++;
+
+		newp = newp -> next;
+		p = p -> next;
 	}
-	_head -> next = NULL;
-	return head;
+
+	return ret;
+
+bad:
+	if (ret) ez_list_dispose (ret);
+	return NULL;
 }
+
+
+
+/*
+ * Reverse list. Nothing will be done if it's empty.
+ * $1: List entry ptr.
+ * Return $1 forever.
+ */
+pez_list ez_list_reverse (pez_list _l) {
+	int idx = _l -> size - 1;
+	if (! _l || ez_list_isempty (_l) ||
+			ez_list_count (_l) == 1) 
+		return _l;
+
+	while (idx --) {
+		// TODO...
+	}
+
+
+	return _l;
+}
+
+// _list ez_list_reverse (_list _head) {
+// 	_list head, pre, next;
+// 	head = _head;
+// 
+// 	/* Only one elm */
+// 	pre = head;
+// 	next = head -> next;
+// 	if (! next) return head;
+// 
+// 	while (next) {
+// 		pre -> next = next -> next;
+// 		next -> next = head;
+// 		/* set 2 pointers to 
+// 			 right position */
+// 		head = next;
+// 		next = pre -> next;
+// 	}
+// 	_head -> next = NULL;
+// 	return head;
+// }
 
 
