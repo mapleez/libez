@@ -7,6 +7,9 @@
 #include <fcntl.h>
 #include <netinet/tcp.h>
 
+#include <errno.h>
+#include <poll.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif 
@@ -130,6 +133,42 @@ ez_setsockblock (int _fd, int _blocking) {
 	return RTNVAL_SUCC;
 }
 
+int ez_setsock_hdrincl (int _fd) {
+	int flag = 1;
+  if (setsockopt (_fd, IPPROTO_IP, IP_HDRINCL, 
+		&flag, sizeof (flag)) == -1)
+		return RTNVAL_FAIL;
+	return RTNVAL_SUCC;
+}
+
+int ez_setsock_maxsndbuf (int _fd) {
+	unsigned int i;
+	int n = 0;
+  int len = sizeof (n);
+  /* Getting SO_SNDBUF. */
+  if (getsockopt (_fd, SOL_SOCKET, SO_SNDBUF, &n, &len) == -1) {
+    printf ("Error getting socket buffer: \"%s\"", 
+			strerror (errno));
+  }
+
+  /* Setting the maximum SO_SNDBUF in bytes.
+   * 128      =  1 Kib
+   * 10485760 = 80 Mib */
+  for (i = n + 128; i < 10485760; i += 128) {
+    /* Setting SO_SNDBUF. */
+    if (setsockopt (_fd, SOL_SOCKET, SO_SNDBUF, &i, 
+			sizeof (unsigned int)) == -1 ) {
+      if (errno == ENOBUFS)
+        break;
+
+      printf ("Error setting socket buffer: \"%s\"", 
+				strerror (errno));
+    }
+  }
+
+	return i - 128;
+}
+
 int ez_setsock_keepalive (int _fd, int _interval, int _times) {
 	int flag = 1;
 	if (setsockopt (_fd, SOL_SOCKET, SO_KEEPALIVE, &flag, sizeof (flag))
@@ -164,6 +203,32 @@ int ez_setsock_recvtimeout (int _fd, long long _ms) {
 	if (setsockopt (_fd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof (tv))
 			== -1) return RTNVAL_FAIL;
 	return RTNVAL_SUCC;
+}
+
+int ez_setsock_broadcast (int _fd) {
+	int n = 1;
+  if (setsockopt (_fd, SOL_SOCKET, SO_BROADCAST, &n, sizeof (n)) 
+		== -1 ) {
+    /* printf ("error setting socket broadcast flag: \"%s\"", 
+			strerror(errno)); */
+		return RTNVAL_FAIL;
+	}
+	return RTNVAL_SUCC;
+}
+
+int ez_sock_waitio (int fd, int timeout) {
+  int r;
+  struct pollfd pfd = { 
+		.fd = fd, 
+		.events = POLLOUT 
+	};
+
+  /* NOTE: Assume poll will not fail. */
+  do {
+    r = poll (&pfd, 1, timeout);
+  } while (! (r == -1 && errno == EINTR));
+
+  return r;
 }
 
 
