@@ -83,6 +83,10 @@
 #	define RTNVAL_FAIL 0 
 #	define RTNVAL_ERR  -1
 
+#	define KB    (0x3FF)
+#	define MB    (0xFFFFF)
+#	define GB    (0x3FFFFFFF)
+
 typedef uint8_t* bytes;
 typedef uint8_t  byte;
 
