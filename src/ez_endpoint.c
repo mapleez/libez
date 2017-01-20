@@ -7,6 +7,10 @@
 #include <winsock2.h>
 #elif defined __GNUC__
 
+#ifdef __linux__
+#include <unistd.h>
+#endif
+
 #include <sys/socket.h>
 #include <sys/types.h>
 #endif

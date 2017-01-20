@@ -1,6 +1,7 @@
 #include "internet/ez_socktools.h"
 #include <stdlib.h>
 #include <time.h>
+#include <ctype.h>
 #include <string.h>
 #include <sys/socket.h>
 #include <sys/types.h>
