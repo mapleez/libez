@@ -3,6 +3,7 @@
 #include "ez_list.h"
 #include <stdint.h>
 #include <stdlib.h>
+#include <limits.h>
 #include <string.h>
 #include <stddef.h>
 
@@ -11,15 +12,79 @@ int array [] = {
 1,2,3,4,5,6,7,8,9, 10,
 11,12,13, 14,15,16,17,18,19,20,21,22,23};
 
+typedef void (*elm_prt) (void*);
 
-_list mylist;
+static void __default_elm_print (void* p) {
+	if (p)
+		printf ("elm = %ld\n", p);
+	else
+		println ("elm = NULL");
+}
+
+
+static void _dump_list (elm_prt _print, pez_list _l) {
+	pez_listnode e;
+	if (! _print) _print = __default_elm_print;
+	if (! _l) { println ("NULL List."); return; }
+	printf ("-------------\n"
+					"* size : %d\n"
+					"* cmp : %ld\n"
+					"* cls : %ld\n"
+					"* dup : %ld\n"
+					"-------------\n",
+					_l -> size, _l -> cmp,
+					_l -> cls, _l -> dup);
+	e = _l -> elms;
+	while (e) {
+		_print (e -> val);
+		e = e -> next;
+	}
+	println ("-------------");
+}
+
+// _list mylist;
+
+void _create_test () {
+	println ("------ Create testing ------");
+	pez_list list = ez_list_create ();
+	if (list) println ("Create good.");
+	else println ("Create error.");
+	_dump_list (NULL, list);
+	ez_list_dispose (&list);
+	println ("----------------------------");
+}
+
+void _push_test () {
+	int i = 0;
+	int j = 20;
+	println ("------ Push   testing ------");
+	pez_list list = ez_list_create ();
+	if (! list) { println ("Create error"); return; }
+
+	// while (j --) {
+
+	  for (i = 0; i < SHRT_MAX/* sizeof (array) / sizeof (int)*/ ; i ++) {
+	  	pez_listnode p = ez_list_pushhead (list, (void*) i); // (void*) array [i]);
+	  	// if (p) printf ("Pushed element %d OK\n", p -> val);
+	  	// else printf ("Pushed element %d ERR\n", i/* array [i]*/ );
+	  }
+	// }
+
+	// _dump_list (NULL, list);
+
+	ez_list_dispose (&list);
+	println ("----------------------------");
+}
 
 int main (argc, argv) 
 	int argc;
 	char* argv [];
 {	
+	// _create_test ();
+	_push_test ();
 
-	if (1) {
+#if 0
+	if (0) {
 		int i = 0;
 		_position pos;
 		mylist = ez_list_create ();
@@ -87,6 +152,7 @@ int main (argc, argv)
 
 		ez_list_del_all (mylist);
 	}
+#endif
 
 	return 0;
 }
