@@ -1,0 +1,12 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${prefix}/share/libez
+includedir=/usr/include/libez
+
+Name: libez
+Version: 1.2
+Description: My own library for C programing utils.
+Requires:
+Libs: -L${libdir} -lez
+Cflags: -I${includedir}
+
