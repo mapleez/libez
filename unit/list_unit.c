@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "ez.h"
 #include "ez_list.h"
+#include "ez_stack.h"
 #include <stdint.h>
 #include <stdlib.h>
 #include <limits.h>
@@ -64,7 +65,12 @@ void _push_test () {
 	// while (j --) {
 
 	  for (i = 0; i < SHRT_MAX/* sizeof (array) / sizeof (int)*/ ; i ++) {
-	  	pez_listnode p = ez_list_pushhead (list, (void*) i); // (void*) array [i]);
+			pez_listnode p = ez_list_pushtail (list, (void*) i);
+			if (p) 
+				printf ("Pushed element %d OK\n", p-> val);
+			else 
+				printf ("Push element %d ERR\n", i);
+	  	// pez_listnode p = ez_list_pushhead (list, (void*) i); // (void*) array [i]);
 	  	// if (p) printf ("Pushed element %d OK\n", p -> val);
 	  	// else printf ("Pushed element %d ERR\n", i/* array [i]*/ );
 	  }
@@ -76,12 +82,47 @@ void _push_test () {
 	println ("----------------------------");
 }
 
+void _push_test1 () {
+	int i = 0;
+	pez_list list = ez_list_create ();
+	ez_list_setcls (list, ez_stack_dispose);
+
+	
+	for (; i < 100; i ++) {
+		pez_stack s = ez_stack_create (20);
+		pez_listnode node = NULL;
+		if (! s) { println ("Creating stack error! "); continue; }
+		node = ez_list_pushtail (list, s);
+		if (node) {
+			show (node -> val);
+		} else {
+			println ("Push list error!");
+		}
+	}
+
+	ez_list_dispose (&list);
+}
+
+void _test_setfunc() {
+	pez_list list = ez_list_create ();
+	if (! list) { println ("Creating error."); return; }
+
+	ez_list_setcls (list, NULL);
+	// ez_list_setdup (list, NULL);
+	// ez_list_setcmp (list, NULL);
+
+	ez_list_dispose (list);
+}
+
+
 int main (argc, argv) 
 	int argc;
 	char* argv [];
 {	
 	// _create_test ();
-	_push_test ();
+	// _push_test ();
+	// _test_setfunc();
+	_push_test1 ();
 
 #if 0
 	if (0) {

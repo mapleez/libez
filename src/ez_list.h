@@ -48,6 +48,17 @@ typedef struct _ez_list {
 	dup_func dup;
 } ez_list, *pez_list;
 
+#	define _set_list_func(__L, __SLOT, __F)  \
+		((__L) && ((__L) -> __SLOT = __F))
+	
+#	define ez_list_setcls(__L, __F)   \
+		_set_list_func (__L, cls, __F)
+
+#	define ez_list_setcmp(__L, __F)   \
+		_set_list_func (__L, cmp, __F)
+
+#	define ez_list_setdup(__L, __F)   \
+		_set_list_func (__L, dup, __F)
 
 /*
  * @1 = circle variable.

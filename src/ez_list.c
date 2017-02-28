@@ -97,7 +97,10 @@ pez_listnode ez_list_pushtail (pez_list _l, const T _e) {
 	if (! node) return NULL;
 	node -> val = _e;
 	node -> next = NULL;
-	_l -> tail -> next = node;
+	if (ez_list_isempty (_l))
+		_l -> tail = _l -> elms = node;
+	else
+		_l -> tail -> next = node;
 	_l -> size ++;
 	return node;
 }

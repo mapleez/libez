@@ -118,6 +118,10 @@ extern T ez_stack_top (pez_stack);
  */
 extern T ez_stack_topandpop (pez_stack);
 
+#ifndef  __debug__
+#	define __debug__
+#endif
+
 #ifdef __debug__
 extern void show (pez_stack);
 #endif // ~ __debug__
